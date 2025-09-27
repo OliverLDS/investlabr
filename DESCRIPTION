@@ -1,0 +1,18 @@
+Package: investlabr
+Title: Investment Strategy Evaluation Toolkit
+Version: 0.0.1
+Authors@R: person("Oliver", "Lee", email = "olee7149@gmail.com",
+                 role = c("aut", "cre"))
+Description: Tools for evaluating investment events and strategies, 
+    computing performance metrics, and visualizing backtest results.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 3.5.0)
+Imports:
+    data.table,
+    ggplot2,
+    ggrepel,
+    quadprog,
+    stats
+RoxygenNote: 7.2.3
+
