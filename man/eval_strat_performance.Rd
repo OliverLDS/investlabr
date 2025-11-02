@@ -10,8 +10,10 @@ eval_strat_performance(
   bg_time = as.POSIXct(NA),
   ed_time = as.POSIXct(NA),
   fee_rate = 0,
+  leverage = 1,
   rf_rate = 0,
-  mode = c("new_open", "last_close")
+  mode = c("new_open", "last_close"),
+  fee_sides = 1L
 )
 }
 \arguments{

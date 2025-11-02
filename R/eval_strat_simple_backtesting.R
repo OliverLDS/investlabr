@@ -8,21 +8,18 @@
 #' @return Numeric vector of log returns (same length as inputs).
 #' @keywords internal
 #' @noRd
-.pos_to_log_ret <- function(pos, close, open, fee_rate, mode = c('new_open', 'last_close')) {
+.pos_to_log_ret <- function(pos, close, open, fee_rate, leverage = 1, mode = c('new_open', 'last_close'), fee_sides = 1L) {
   mode <- match.arg(mode)
   
   lag_pos   <- data.table::shift(pos, type = "lag", fill = 0L)
   lag_close <- data.table::shift(close, type = "lag")
   
-  pos_change <- abs(pos - lag_pos)
-  fee_cost <- fee_rate * pos_change
+  r_simple <- if (mode == "new_open") (close / open) - 1 else (close / lag_close) - 1
+  turnover <- abs(pos - lag_pos)
   
-  if (mode == 'new_open') {
-    log_ret <- lag_pos * log((close - fee_cost) / open)  
-  } else {
-    log_ret <- lag_pos * log((close - fee_cost) / lag_close)
-  }
-
+  fee_frac <- fee_rate * fee_sides * turnover * leverage
+  log_ret <- log(lag_pos * leverage * r_simple - fee_frac + 1)
+  
   log_ret[is.na(log_ret)] <- 0
   return(log_ret)
 }
@@ -120,7 +117,7 @@
 #' @param mode one of \code{"new_open"}, \code{"last_close"}; execution pricing basis.
 #' @return Invisibly: data.table (one row) with metrics and list-col \code{log_ret_dt}.
 #' @export
-eval_strat_performance <- function(DT, pos_col_name, bg_time = as.POSIXct(NA), ed_time = as.POSIXct(NA), fee_rate = 0, rf_rate = 0, mode = c("new_open", "last_close")) {
+eval_strat_performance <- function(DT, pos_col_name, bg_time = as.POSIXct(NA), ed_time = as.POSIXct(NA), fee_rate = 0, leverage = 1, rf_rate = 0, mode = c("new_open", "last_close"), fee_sides = 1L) {
   
   mode <- match.arg(mode)
   stopifnot(all(pos_col_name %in% names(DT)))
@@ -132,7 +129,7 @@ eval_strat_performance <- function(DT, pos_col_name, bg_time = as.POSIXct(NA), e
   open <- DT[["open"]]
   pos <- DT[[pos_col_name]] #----- add pos and event to DT since it is easy to debug ----
   
-  log_ret <- .pos_to_log_ret(pos, close, open, fee_rate = fee_rate, mode = mode) # assume the position order based on previous bar and executed at the price of new open
+  log_ret <- .pos_to_log_ret(pos, close, open, fee_rate = fee_rate, leverage = leverage, mode = mode, fee_sides = fee_sides) # assume the position order based on previous bar and executed at the price of new open
   
   # n_pos_changes <- sum(diff(pos) != 0)
   

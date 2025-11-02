@@ -101,6 +101,7 @@ gen_yield_curve_plot <- function(DT, selected_windows = c("Now", "One week ago",
     ggplot2::labs(title = "U.S. Treasury Yield Curve", color = NULL) +
     ggplot2::theme_minimal(base_size = 12) +
     ggplot2::theme(
+	  plot.background = ggplot2::element_rect(fill = "white", color = NA),
       legend.text = ggplot2::element_text(size = 9)  # adjust legend label size
     )
 }
