@@ -15,4 +15,5 @@ Imports:
     quadprog,
     stats
 RoxygenNote: 7.2.3
+Remote: github::OliverLDS/investlabr
 
