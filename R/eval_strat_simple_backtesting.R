@@ -8,17 +8,20 @@
 #' @return Numeric vector of log returns (same length as inputs).
 #' @keywords internal
 #' @noRd
-.pos_to_log_ret <- function(pos, close, open, fee_rate, leverage = 1, mode = c('new_open', 'last_close'), fee_sides = 1L) {
+.pos_to_log_ret <- function(pos, close, open, fee_rate = 0.0007, leverage = 1, funding_rate = 0.00004, interest_rate = 0.00005, mode = c('new_open', 'last_close'), fee_sides = 1L) {
   mode <- match.arg(mode)
   
   lag_pos   <- data.table::shift(pos, type = "lag", fill = 0L)
   lag_close <- data.table::shift(close, type = "lag")
   
   r_simple <- if (mode == "new_open") (close / open) - 1 else (close / lag_close) - 1
-  turnover <- abs(pos - lag_pos)
   
+  turnover <- abs(pos - lag_pos)
   fee_frac <- fee_rate * fee_sides * turnover * leverage
-  log_ret <- log(lag_pos * leverage * r_simple - fee_frac + 1)
+  
+  carry_cost <- abs(lag_pos) * (funding_rate + interest_rate) * leverage
+  
+  log_ret <- log(lag_pos * leverage * r_simple - fee_frac - carry_cost + 1)
   
   log_ret[is.na(log_ret)] <- 0
   return(log_ret)
@@ -117,7 +120,7 @@
 #' @param mode one of \code{"new_open"}, \code{"last_close"}; execution pricing basis.
 #' @return Invisibly: data.table (one row) with metrics and list-col \code{log_ret_dt}.
 #' @export
-eval_strat_performance <- function(DT, pos_col_name, bg_time = as.POSIXct(NA), ed_time = as.POSIXct(NA), fee_rate = 0, leverage = 1, rf_rate = 0, mode = c("new_open", "last_close"), fee_sides = 1L) {
+eval_strat_performance <- function(DT, pos_col_name, bg_time = as.POSIXct(NA), ed_time = as.POSIXct(NA), fee_rate = 0.0007, funding_rate = 0.00004, interest_rate = 0.00005, leverage = 1, rf_rate = 0, mode = c("new_open", "last_close"), fee_sides = 1L, tz = Sys.timezone()) {
   
   mode <- match.arg(mode)
   stopifnot(all(pos_col_name %in% names(DT)))
@@ -129,13 +132,13 @@ eval_strat_performance <- function(DT, pos_col_name, bg_time = as.POSIXct(NA), e
   open <- DT[["open"]]
   pos <- DT[[pos_col_name]] #----- add pos and event to DT since it is easy to debug ----
   
-  log_ret <- .pos_to_log_ret(pos, close, open, fee_rate = fee_rate, leverage = leverage, mode = mode, fee_sides = fee_sides) # assume the position order based on previous bar and executed at the price of new open
+  log_ret <- .pos_to_log_ret(pos, close, open, fee_rate = fee_rate, funding_rate = funding_rate, interest_rate = interest_rate, leverage = leverage, mode = mode, fee_sides = fee_sides) # assume the position order based on previous bar and executed at the price of new open
   
   # n_pos_changes <- sum(diff(pos) != 0)
   
   inst_id <- attributes(DT)$inst_id
-  if (! is.na(bg_time)) bg_time <- as.POSIXct(bg_time)
-  if (! is.na(ed_time)) ed_time <- as.POSIXct(ed_time)
+  if (! is.na(bg_time)) bg_time <- as.POSIXct(bg_time, tz = tz)
+  if (! is.na(ed_time)) ed_time <- as.POSIXct(ed_time, tz = tz)
   strat_name <- attributes(pos)$strat_name
   strat_par <- attributes(pos)$strat_par
 
@@ -168,15 +171,22 @@ eval_strat_plot_scatter_maxdd_annret <- function(bt_res_list, plot_title = '', o
 #' @param bt_res single-row data.table from \code{eval_strat_performance()}.
 #' @return ggplot object.
 #' @export
-eval_strat_plot_tsline_eq <- function(bt_res) {
+eval_strat_plot_tsline_eq <- function(bt_res, benchmark_bt_res = NULL) {
   bt_dt <- bt_res$log_ret_dt[[1]]
   data.table::set(bt_dt, j = 'eq', value = .log_ret_to_equity(bt_dt$log_ret))
-  bt_dt |> ggplot2::ggplot(ggplot2::aes(x = datetime, y = eq)) +
-    ggplot2::geom_line() +
-    ggplot2::labs(x='', y='', 
-      title = sprintf("%s | %s", bt_res$asset_name, bt_res$strat_label),
-      subtitle = sprintf("%s ~ %s", format(bt_res$start, '%Y-%m-%d'), format(bt_res$end, '%Y-%m-%d')),
-      caption = sprintf("total_ret: %s%%; ann_ret: %s%%; max_dd: %s%%", round(bt_res$total_return*100, 2), round(bt_res$annual_return*100, 2), round(bt_res$max_drawdown*100, 2))) +
+  p <- bt_dt |> ggplot2::ggplot(ggplot2::aes(x = datetime, y = eq)) + ggplot2::geom_line(color = '#E69F00')
+  title <- sprintf("%s | %s", bt_res$asset_name, bt_res$strat_label)
+  subtitle <- sprintf("%s ~ %s", format(bt_res$start, '%Y-%m-%d'), format(bt_res$end, '%Y-%m-%d'))
+  caption <- sprintf("Evaluated | total_ret: %s%%; ann_ret: %s%%; max_dd: %s%%", round(bt_res$total_return*100, 2), round(bt_res$annual_return*100, 2), round(bt_res$max_drawdown*100, 2))
+  if (!is.null(benchmark_bt_res)) {
+    benchmark_bt_dt <- benchmark_bt_res$log_ret_dt[[1]]
+    data.table::set(benchmark_bt_dt, j = 'eq', value = .log_ret_to_equity(benchmark_bt_dt$log_ret))
+    p <- p + ggplot2::geom_line(data = benchmark_bt_dt, ggplot2::aes(x = datetime, y = eq), color = '#7F7F7F')
+    caption <- paste0(caption, sprintf("\nBenchmark | total_ret: %s%%; ann_ret: %s%%; max_dd: %s%%", round(benchmark_bt_res$total_return*100, 2), round(benchmark_bt_res$annual_return*100, 2), round(benchmark_bt_res$max_drawdown*100, 2)))
+  }
+  p <- p + ggplot2::labs(x='', y='', 
+      title = title, subtitle = subtitle, caption = caption) +
     ggplot2::theme_minimal()
+  return(p)
 }
 

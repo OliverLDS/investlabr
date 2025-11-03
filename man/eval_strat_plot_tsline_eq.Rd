@@ -4,7 +4,7 @@
 \alias{eval_strat_plot_tsline_eq}
 \title{Plot equity curve (time series)}
 \usage{
-eval_strat_plot_tsline_eq(bt_res)
+eval_strat_plot_tsline_eq(bt_res, benchmark_bt_res = NULL)
 }
 \arguments{
 \item{bt_res}{single-row data.table from \code{eval_strat_performance()}.}

@@ -9,11 +9,14 @@ eval_strat_performance(
   pos_col_name,
   bg_time = as.POSIXct(NA),
   ed_time = as.POSIXct(NA),
-  fee_rate = 0,
+  fee_rate = 7e-04,
+  funding_rate = 4e-05,
+  interest_rate = 5e-05,
   leverage = 1,
   rf_rate = 0,
   mode = c("new_open", "last_close"),
-  fee_sides = 1L
+  fee_sides = 1L,
+  tz = Sys.timezone()
 )
 }
 \arguments{
