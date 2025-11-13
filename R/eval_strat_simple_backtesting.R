@@ -1,3 +1,66 @@
+.pos_to_transactions <- function(datetime, open, close, pos, mode = c('new_open', 'last_close')) {
+  
+  mode <- match.arg(mode)
+  
+  lag_pos <- data.table::shift(pos, type = "lag", fill = 0)
+
+  same_side_pos <- ifelse(sign(pos) == sign(lag_pos), pos, 0)
+  same_side_lag_pos <- ifelse(sign(pos) == sign(lag_pos), lag_pos, 0)
+
+  # Quantities to close/open (absolute, >= 0)
+  close_qty <- pmax(0, abs(lag_pos) - abs(same_side_pos))
+  open_qty  <- pmax(0, abs(pos) - abs(same_side_lag_pos))
+
+  # Indices with actual trades
+  idx_close <- which(close_qty > 0)
+  idx_open  <- which(open_qty  > 0)
+  
+  if (mode == 'new_open') price_col <- open else price_col <- close
+
+  # Build close legs
+  if (length(idx_close)) {
+    tx_close <- data.table::data.table(
+      datetime  = as.character(datetime[idx_close]),
+      action    = "close",
+      direction = ifelse(lag_pos[idx_close] > 0, "long", "short"),
+      size      = close_qty[idx_close],
+      price     = price_col[idx_close]
+    )
+  } else {
+    tx_close <- data.table::data.table(
+      datetime = character(),
+      action = character(),
+      direction = character(),
+      size = numeric(),
+      price = numeric()
+    )
+  }
+
+  # Build open legs
+  if (length(idx_open)) {
+    tx_open <- data.table::data.table(
+      datetime  = as.character(datetime[idx_open]),
+      action    = "open",
+      direction = ifelse(pos[idx_open] > 0, "long", "short"),
+      size      = open_qty[idx_open],
+      price     = price_col[idx_open]
+    )
+  } else {
+    tx_open <- data.table::data.table(
+      datetime = character(),
+      action = character(),
+      direction = character(),
+      size = numeric(),
+      price = numeric()
+    )
+  }
+
+  # Concatenate and order by time (opens and closes at same bar both execute at bar open)
+  out <- data.table::rbindlist(list(tx_close, tx_open), use.names = TRUE)
+  if (nrow(out)) data.table::setorder(out, datetime)
+  out[]
+}
+
 #' Position → per-bar log returns
 #'
 #' @param pos numeric vector of positions (e.g., -1..1).
@@ -12,9 +75,10 @@
   mode <- match.arg(mode)
   
   lag_pos   <- data.table::shift(pos, type = "lag", fill = 0L)
+  lag_open <- data.table::shift(open, type = "lag")
   lag_close <- data.table::shift(close, type = "lag")
   
-  r_simple <- if (mode == "new_open") (close / open) - 1 else (close / lag_close) - 1
+  r_simple <- if (mode == "new_open") (open / lag_open) - 1 else (close / lag_close) - 1
   
   turnover <- abs(pos - lag_pos)
   fee_frac <- fee_rate * fee_sides * turnover * leverage
@@ -51,7 +115,7 @@
 #' @return data.table (single row) with summary metrics and list-col \code{log_ret_dt}.
 #' @keywords internal
 #' @noRd
-.log_ret_to_bt_res <- function(datetime, log_ret, asset_name, bg_time, ed_time, strat_name, strat_par, strat_label, rf_rate) {
+.log_ret_to_bt_res <- function(log_ret, datetime, asset_name = 'Asset Name', bg_time = as.POSIXct(NA), ed_time = as.POSIXct(NA), strat_name = 'Strategy Name', strat_par = 'Strategy Parameters', strat_label = 'Strategy Label', rf_rate = 0) {
   
   stopifnot(length(datetime) == length(log_ret))
   d <- diff(datetime)
@@ -142,7 +206,7 @@ eval_strat_performance <- function(DT, pos_col_name, bg_time = as.POSIXct(NA), e
   strat_name <- attributes(pos)$strat_name
   strat_par <- attributes(pos)$strat_par
 
-  bt_res <- .log_ret_to_bt_res(datetime, log_ret, 
+  bt_res <- .log_ret_to_bt_res(log_ret, datetime, 
     asset_name = inst_id, bg_time = bg_time, ed_time = ed_time,
     strat_name = strat_name, strat_par = list(strat_par), strat_label = pos_col_name, 
     rf_rate = rf_rate)

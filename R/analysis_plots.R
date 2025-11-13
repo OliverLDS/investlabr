@@ -1,3 +1,39 @@
+#' @export
+gen_plot_event_tsline_cum_ret <- function(res, threshold = 0.02) {
+  wide_DT <- res$performance_by_horizons[[1]][, c('Horizon', '10%', '25%', '50%', '75%', '90%')]
+  long_DT <- data.table::melt(wide_DT, id.vars = "Horizon", variable.name = "stat", value.name = "value")
+  ggplot2::ggplot(long_DT, ggplot2::aes(x = Horizon, y = value, color = stat)) +
+    ggplot2::geom_line(linewidth = 0.8) +
+    ggplot2::geom_hline(yintercept = threshold, linetype = "dashed", color = "gray40") +
+    ggplot2::geom_hline(yintercept = -threshold, linetype = "dashed", color = "gray40") +
+    ggplot2::labs(
+      title = "",
+      x = "",
+      y = "",
+      color = NULL
+    ) +
+    ggplot2::theme_minimal()
+}
+
+#' @export
+gen_plot_comparing_events <- function(first_event_res, second_event_res, first_event_label, second_event_label, first_event_color = '#2ECC71', second_event_color = '#E74C3C') {
+  event_res <- rbind(
+    first_event_res$performance_by_horizons[[1]][, .(Horizon, Mean)][, pos:=first_event_label],
+    second_event_res$performance_by_horizons[[1]][, .(Horizon, Mean)][, pos:=second_event_label]
+    )
+  event_res |> ggplot2::ggplot(ggplot2::aes(x = Horizon, y = Mean, group = pos, color = pos)) +
+    ggplot2::geom_line(linewidth = 1.5) +
+    ggplot2::scale_color_manual(
+      values = setNames(
+        c(first_event_color, second_event_color),
+        c(first_event_label, second_event_label)
+      )
+    ) +
+    ggplot2::labs(x = '', y = '') +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "none")
+}
+
 #' Generate candlestick plot with support and resistance lines
 #'
 #' @param DT A data.table containing OHLC data with columns \code{datetime}, \code{open}, \code{high}, \code{low}, and \code{close}.
@@ -152,4 +188,115 @@ gen_yield_curve_plot_grid <- function(DT, selected_windows = c("Now", "One week 
       ggplot2::theme(
         legend.text = ggplot2::element_text(size = 9)  # adjust legend label size
       )
+}
+
+#' @export
+gen_grid_of_plots_with_labels <- function(
+  plots,
+  n_rows, n_cols,
+  row_labs = NULL,              # character vector or NULL
+  col_labs = NULL,              # character vector or NULL
+  title    = NULL,              # character or NULL
+  bottom   = NULL,              # character or NULL
+  row_label_width_cm   = 2.2,   # width of left label column (if shown)
+  col_header_height_cm = 1.2,   # height of top header row (if shown)
+  row_label_gp = grid::gpar(fontface = "bold", cex = 0.95),
+  col_label_gp = grid::gpar(fontface = "bold", cex = 1.0),
+  title_gp     = grid::gpar(fontsize = 16, fontface = "bold"),
+  bottom_gp    = grid::gpar(fontsize = 11)
+) {
+  stopifnot(length(plots) == n_rows * n_cols)
+  
+  # Treat NULL plots as blanks so they still occupy their cell
+  blank_grob <- grid::nullGrob()
+  plots <- lapply(plots, function(p) if (is.null(p)) blank_grob else p)
+
+  show_row_labs <- !is.null(row_labs)
+  show_col_labs <- !is.null(col_labs)
+  if (show_row_labs) stopifnot(length(row_labs) == n_rows)
+  if (show_col_labs) stopifnot(length(col_labs) == n_cols)
+
+  n_layout_rows <- n_rows + as.integer(show_col_labs)
+  n_layout_cols <- n_cols + as.integer(show_row_labs)
+
+  # Build label grobs
+  blank_grob <- grid::rectGrob(gp = grid::gpar(col = NA, fill = NA))
+  col_header_grobs <- if (show_col_labs) {
+    lapply(as.character(col_labs), function(lbl)
+      grid::textGrob(lbl, gp = col_label_gp)
+    )
+  } else list()
+  row_label_grobs <- if (show_row_labs) {
+    lapply(row_labs, function(lbl)
+      grid::textGrob(lbl, x = grid::unit(1, "npc"), hjust = 1, gp = row_label_gp)
+    )
+  } else list()
+
+  # Assemble grob list in draw order and map into a layout matrix
+  grobs <- list()
+  lay   <- matrix(NA_integer_, nrow = n_layout_rows, ncol = n_layout_cols)
+  idx <- 0L
+
+  top_row    <- 1L
+  left_col   <- 1L
+  plot_row_0 <- if (show_col_labs) 2L else 1L
+  plot_col_0 <- if (show_row_labs) 2L else 1L
+
+  # Corner (only if both headers exist)
+  if (show_row_labs && show_col_labs) {
+    grobs[[length(grobs) + 1L]] <- blank_grob; idx <- idx + 1L
+    lay[top_row, left_col] <- idx
+  }
+
+  # Column headers
+  if (show_col_labs) {
+    for (j in seq_len(n_cols)) {
+      grobs[[length(grobs) + 1L]] <- col_header_grobs[[j]]; idx <- idx + 1L
+      lay[top_row, plot_col_0 - 1L + j] <- idx
+    }
+  }
+
+  # Row labels
+  if (show_row_labs) {
+    for (i in seq_len(n_rows)) {
+      grobs[[length(grobs) + 1L]] <- row_label_grobs[[i]]; idx <- idx + 1L
+      lay[plot_row_0 - 1L + i, left_col] <- idx
+    }
+  }
+
+  # Plots (row-major)
+  for (i in seq_len(n_rows)) {
+    for (j in seq_len(n_cols)) {
+      grobs[[length(grobs) + 1L]] <- plots[[ (i - 1L) * n_cols + j ]]
+      idx <- idx + 1L
+      lay[plot_row_0 - 1L + i, plot_col_0 - 1L + j] <- idx
+    }
+  }
+
+  # Sizes
+  widths <- if (show_row_labs) {
+    grid::unit.c(grid::unit(row_label_width_cm, "cm"),
+                 rep(grid::unit(1, "null"), n_cols))
+  } else {
+    rep(grid::unit(1, "null"), n_cols)
+  }
+  heights <- if (show_col_labs) {
+    grid::unit.c(grid::unit(col_header_height_cm, "cm"),
+                 rep(grid::unit(1, "null"), n_rows))
+  } else {
+    rep(grid::unit(1, "null"), n_rows)
+  }
+
+  # Title / bottom grobs (optional)
+  top_grob    <- if (!is.null(title))  grid::textGrob(title,  gp = title_gp)  else NULL
+  bottom_grob <- if (!is.null(bottom)) grid::textGrob(bottom, gp = bottom_gp) else NULL
+
+  gridExtra::grid.arrange(
+    grobs = grobs,
+    layout_matrix = lay,
+    widths  = widths,
+    heights = heights,
+    top     = top_grob,
+    bottom  = bottom_grob
+  )
 }

@@ -50,9 +50,10 @@
 #' @param threshold numeric hit threshold (absolute return).
 #' @return Invisibly: data.table (one row) with summary stats and list-cols \code{performance_by_cases}, \code{performance_by_horizons}.
 #' @export
-eval_event_performance <- function(DT, event_col, event_score_cols = character(0L), H = 1L:42L, threshold = 0.02) {
+eval_event_performance <- function(DT, event_col, event_score_cols = character(0L), H = 1L:42L, pos_hit_threshold = 0.05, neg_hit_threshold = -0.05) {
   
   datetime <- DT$datetime
+  if (length(datetime) < length(H)) return(NULL)
   start_dt <- datetime[1L]
   end_dt <- datetime[length(datetime)]
   
@@ -61,13 +62,14 @@ eval_event_performance <- function(DT, event_col, event_score_cols = character(0
   
   event_rows <- which(DT[[event_col]] == 1L)
   n_event <- length(event_rows)
+  if (n_event<=0) return(NULL)
   
   event_ret_cum_mat <- ret_cum_mat[event_rows, , drop = FALSE]
   # event_ret_step_mat <- ret_step_mat[event_rows, , drop = FALSE]
   max_horizon_ret <- event_ret_cum_mat[, length(H)]
   
-  pos_hit_mat <- event_ret_cum_mat >= threshold
-  neg_hit_mat <- event_ret_cum_mat <= -threshold
+  pos_hit_mat <- event_ret_cum_mat >= pos_hit_threshold
+  neg_hit_mat <- event_ret_cum_mat <= neg_hit_threshold
   get_first_hit_idx <- function(row) which(row)[1]
   pos_hit_success <- apply(pos_hit_mat, 1, get_first_hit_idx) - apply(neg_hit_mat, 1, get_first_hit_idx) < 0
   
@@ -120,24 +122,5 @@ eval_event_performance <- function(DT, event_col, event_score_cols = character(0
   return(invisible(res))
 }
 
-#' Plot event cumulative-return bands
-#'
-#' @param res result from \code{eval_event_performance()}.
-#' @param threshold numeric; dashed reference lines at \eqn{\pm}threshold.
-#' @return ggplot object.
-#' @export
-eval_event_plot_tsline_cum_ret <- function(res, threshold = 0.02) {
-  wide_DT <- res$performance_by_horizons[[1]][, c('Horizon', '10%', '25%', '50%', '75%', '90%')]
-  long_DT <- data.table::melt(wide_DT, id.vars = "Horizon", variable.name = "stat", value.name = "value")
-  ggplot2::ggplot(long_DT, ggplot2::aes(x = Horizon, y = value, color = stat)) +
-    ggplot2::geom_line(linewidth = 0.8) +
-    ggplot2::geom_hline(yintercept = threshold, linetype = "dashed", color = "gray40") +
-    ggplot2::geom_hline(yintercept = -threshold, linetype = "dashed", color = "gray40") +
-    ggplot2::labs(
-      title = "",
-      x = "",
-      y = "",
-      color = NULL
-    ) +
-    ggplot2::theme_minimal()
-}
+
+

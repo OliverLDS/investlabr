@@ -9,7 +9,8 @@ eval_event_performance(
   event_col,
   event_score_cols = character(0L),
   H = 1L:42L,
-  threshold = 0.02
+  pos_hit_threshold = 0.05,
+  neg_hit_threshold = -0.05
 )
 }
 \arguments{
