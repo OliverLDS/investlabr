@@ -300,3 +300,27 @@ gen_grid_of_plots_with_labels <- function(
     bottom  = bottom_grob
   )
 }
+
+#' @export
+gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_labels) {
+  DT_long <- melt(
+      DT,
+      id.vars = id_vars,
+      measure.vars = measure_vars,
+      variable.name = "metric",
+      value.name   = "value"
+    )
+    
+    DT_long[, metric := factor(
+      metric,
+      levels = measure_vars,
+      labels = measure_labels
+    )]
+    
+    ggplot2::ggplot(DT_long, ggplot2::aes(x = month, y = value)) +
+      ggplot2::geom_line() +
+      ggplot2::geom_point() +
+      ggplot2::facet_grid(metric ~ ., scales = "free_y") +
+      ggplot2::theme_bw() +
+      ggplot2::labs(x = NULL, y = NULL)
+}

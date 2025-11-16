@@ -1,4 +1,4 @@
-.pos_to_transactions <- function(datetime, open, close, pos, mode = c('new_open', 'last_close')) {
+.pos_to_transactions <- function(datetime, open, close, pos, mode = c('new_open', 'last_close'), debug_mode = FALSE, leverage = 1, fee_rate = 0.0007, fee_sides = 1L) {
   
   mode <- match.arg(mode)
   
@@ -57,9 +57,162 @@
 
   # Concatenate and order by time (opens and closes at same bar both execute at bar open)
   out <- data.table::rbindlist(list(tx_close, tx_open), use.names = TRUE)
-  if (nrow(out)) data.table::setorder(out, datetime)
+  if (nrow(out)<=0) return(NULL)
+  
+  data.table::setorder(out, datetime)
+  
+  if (debug_mode) {
+    output_stats <- c("balance_long_size", "balance_short_size", "average_long_price", "average_short_price", "pre_fee_log_ret", "cumulative_pre_fee_pnl_ratio", "is_win", "cumulative_win_rate")
+    } else {
+      output_stats <- c("pre_fee_log_ret", "cumulative_pre_fee_pnl_ratio", "is_win", "cumulative_win_rate")
+  }
+  
+  out[, (output_stats) :=
+    {
+      n  <- .N
+      bl <- rep(NA_real_, n)  # balance_long_size
+      bs <- rep(NA_real_, n)  # balance_short_size
+      al <- rep(NA_real_, n)  # average_long_price
+      as <- rep(NA_real_, n)  # average_short_price
+      lr <- rep(NA_real_, n)  # pre_fee_log_ret
+      cr <- rep(NA_real_, n)  # cumulative_pnl_ratio
+      iw <- rep(NA_real_, n)  # is_win
+      wr <- rep(NA_real_, n)  # cumulative_win_rate
+  
+      long_size  <- 0 # when your leverage > 1, the size is not the real size you placed but just the portion your mortgage used  
+      long_cost  <- 0  # sum(size * entry_price) for current long position
+      short_size <- 0
+      short_cost <- 0  # sum(size * entry_price) for current short position
+  
+      cum_logr    <- 0
+      cum_pnl_ratio <- 0
+      n_closed   <- 0L
+      n_wins     <- 0L
+  
+      for (i in seq_len(n)) {
+        act <- action[i]
+        dir <- direction[i]
+        sz  <- size[i]
+        px  <- price[i]
+  
+        if (dir == "long") {
+          if (act == "open") {
+            long_size <- long_size + sz
+            long_cost <- long_cost + sz * px
+            logr <- NA_real_
+            is_win <- NA_real_
+          } else { # close long
+            if (long_size <= 0) stop("Closing long with no existing long position")
+            
+            avg_entry  <- long_cost / long_size
+            fee_frac <- fee_rate * fee_sides * sz * avg_entry * leverage
+            pnl_ratio <- ((px - avg_entry) * sz * leverage - fee_frac) / avg_entry
+            logr  <- log1p(pnl_ratio)                    # log return
+            cum_logr <- cum_logr + logr              # cumulative log return
+            cum_pnl_ratio <- exp(cum_logr) - 1           # geometric compounded PnL ratio
+
+            n_closed <- n_closed + 1L
+            if (pnl_ratio > 0) {
+              is_win <- 1
+              n_wins <- n_wins + 1L
+            } else {
+              is_win <- 0
+            }
+            
+            long_size <- long_size - sz
+            long_cost <- long_cost - avg_entry * sz
+          }
+  
+        } else if (dir == "short") {
+          if (act == "open") {
+            short_size <- short_size + sz
+            short_cost <- short_cost + sz * px
+            logr <- NA_real_
+            is_win <- NA_real_
+          } else { # close short
+            if (short_size <= 0) stop("Closing short with no existing short position")
+            
+            avg_entry  <- short_cost / short_size
+            fee_frac <- fee_rate * fee_sides * sz * avg_entry * leverage
+            pnl_ratio <- ((avg_entry - px) * sz * leverage - fee_frac) / px
+            logr  <- log1p(pnl_ratio)                    # log return
+            cum_logr <- cum_logr + logr              # cumulative log return
+            cum_pnl_ratio <- exp(cum_logr) - 1           # geometric compounded PnL ratio
+  
+            n_closed <- n_closed + 1L
+            if (pnl_ratio > 0) {
+              is_win <- 1
+              n_wins <- n_wins + 1L
+            } else {
+              is_win <- 0
+            }
+  
+            short_size <- short_size - sz
+            short_cost <- short_cost - avg_entry * sz
+          }
+        }
+  
+        bl[i] <- long_size
+        bs[i] <- short_size
+  
+        al[i] <- if (long_size  > 0) long_cost  / long_size  else NA_real_
+        as[i] <- if (short_size > 0) short_cost / short_size else NA_real_
+  
+        lr[i] <- logr
+        cr[i] <- cum_pnl_ratio
+        iw[i] <- is_win
+        wr[i] <- if (n_closed > 0) n_wins / n_closed else NA_real_
+      }
+  
+      if (debug_mode) return(list(bl, bs, al, as, lr, cr, iw, wr)) else return(list(lr, cr, iw, wr))
+    }
+  ]
+  
   out[]
 }
+
+#' @export
+gen_rolling_monthly_stats <- function(transaction_dt, N_rolling = 6L, debug_mode = FALSE) {
+  trades <- transaction_dt[action == "close", .(datetime, pre_fee_log_ret, is_win)]
+  trades[, month := as.Date(format(as.POSIXct(datetime), "%Y-%m-01"))]
+  monthly <- trades[
+    ,
+    .(
+      sum_log_ret = sum(pre_fee_log_ret, na.rm = TRUE),   # sum of log returns in the month
+      wins        = sum(is_win),
+      trades      = .N                            # number of closed trades in the month
+    ),
+    by = month
+  ][order(month)]
+  full_months <- data.table(
+    month = seq(min(monthly$month), max(monthly$month), by = "month")
+  )
+  monthly <- monthly[full_months, on = "month"]
+  monthly[, sum_log_ret_ms := frollsum(sum_log_ret, N_rolling, align = "right", na.rm = TRUE)]
+  monthly[, wins_ms        := frollsum(wins,        N_rolling, align = "right", na.rm = TRUE)]
+  monthly[, trades_ms      := frollsum(trades,      N_rolling, align = "right", na.rm = TRUE)]
+  monthly[, months_in_window := pmin(N_rolling, seq_len(.N))]
+  monthly[, geom_ret_ms :=
+    fifelse(trades_ms > 0, exp(sum_log_ret_ms) - 1, NA_real_)
+  ]
+  monthly[, win_rate_ms :=
+    fifelse(trades_ms > 0, wins_ms / trades_ms, NA_real_)
+  ]
+  monthly[, avg_trades_ms :=
+    fifelse(trades_ms > 0, trades_ms / months_in_window, NA_real_)
+  ]
+  monthly_ms_stats <- monthly[
+    ,
+    .(
+      month,
+      geom_ret_ms,      # geometric compounded return over last 12 months
+      win_rate_ms,      # win rate over last 12 months
+      avg_trades_ms     # avg number of closed trades per month over last 12 months
+    )
+  ]
+  if (debug_mode) return(monthly) else return(monthly_ms_stats)
+}
+
 
 #' Position → per-bar log returns
 #'
