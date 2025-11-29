@@ -4,7 +4,13 @@
 \alias{gen_candle_plots_with_sr_lines}
 \title{Generate candlestick plot with support and resistance lines}
 \usage{
-gen_candle_plots_with_sr_lines(DT, support_pts, resistance_pts)
+gen_candle_plots_with_sr_lines(
+  DT,
+  support_pts,
+  resistance_pts,
+  near_frac = 0.01,
+  label_digits = 2
+)
 }
 \arguments{
 \item{DT}{A data.table containing OHLC data with columns \code{datetime}, \code{open}, \code{high}, \code{low}, and \code{close}.}

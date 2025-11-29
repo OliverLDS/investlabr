@@ -42,13 +42,56 @@ gen_plot_comparing_events <- function(first_event_res, second_event_res, first_e
 #'
 #' @return A ggplot2 object showing candlestick chart with support and resistance lines.
 #' @export
-gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts) {
+gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near_frac = 0.01, label_digits = 2) {
 
   DT[, candle_color := ifelse(open < close, "forestgreen", "firebrick")]
   body_half <- 0.45 * median(diff(as.numeric(DT$datetime)))
   wick_half <- body_half * 0.15
   
-  DT |> ggplot2::ggplot(ggplot2::aes(x = datetime)) +
+  line_dt <- data.table::data.table(
+    y    = c(support_pts, resistance_pts),
+    kind = c(
+      rep("support",    length(support_pts)),
+      rep("resistance", length(resistance_pts))
+    )
+  )
+  
+  if (nrow(line_dt) > 0L) {
+    line_dt[, color := ifelse(kind == "support", "steelblue", "darkorange")]
+    line_dt <- line_dt[order(y)]
+
+    rng_diff    <- max(DT$high)-min(DT$low)
+    base_step   <- rng_diff * 0.01          # basic offset size in price units
+    thresh      <- rng_diff * near_frac     # “close” threshold
+
+    line_dt[, y_offset := +base_step]
+
+    if (nrow(line_dt) > 1L) {
+      for (i in 2:nrow(line_dt)) {
+        if (abs(line_dt$y[i] - line_dt$y[i - 1L]) < thresh) {
+          # upper line label above, lower line label below
+          if (line_dt$y[i] > line_dt$y[i - 1L]) {
+            line_dt$y_offset[i]       <- +base_step
+            line_dt$y_offset[i - 1L]  <- -base_step
+          } else {
+            line_dt$y_offset[i]       <- -base_step
+            line_dt$y_offset[i - 1L]  <- +base_step
+          }
+        }
+      } 
+    }
+  } else {
+    line_dt <- NULL
+  }
+  
+  x_min <- min(DT$datetime)
+  x_max <- max(DT$datetime)
+  x_lab <- x_max # x position for labels: near right edge
+  
+  # ----- plot -----
+  p <- DT |>
+    ggplot2::ggplot(ggplot2::aes(x = datetime)) +
+    # wicks
     ggplot2::geom_rect(
       ggplot2::aes(
         xmin = datetime - wick_half,
@@ -59,6 +102,7 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts) {
       ),
       color = NA
     ) +
+    # bodies
     ggplot2::geom_rect(
       ggplot2::aes(
         xmin = datetime - body_half,
@@ -68,13 +112,49 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts) {
         fill = candle_color
       ),
       color = NA
-    ) +
-    ggplot2::geom_hline(yintercept = support_pts, color = 'steelblue') +
-    ggplot2::geom_hline(yintercept = resistance_pts, color = 'darkorange') +
-    ggplot2::labs(x = '', y = '') +
+    )
+
+  # SR lines
+  if (!is.null(line_dt) && nrow(line_dt) > 0L) {
+    p <- p +
+      ggplot2::geom_hline(
+        data = line_dt[kind == "support"],
+        ggplot2::aes(yintercept = y),
+        color = "steelblue"
+      ) +
+      ggplot2::geom_hline(
+        data = line_dt[kind == "resistance"],
+        ggplot2::aes(yintercept = y),
+        color = "darkorange"
+      ) +
+      ggplot2::geom_text(
+        data = line_dt,
+        ggplot2::aes(
+          x     = x_lab,
+          y     = y + y_offset,
+          label = round(y, label_digits),
+          color = color
+        ),
+        hjust = -0.1,
+        size  = 3,
+        show.legend = FALSE
+      ) +
+      ggplot2::scale_color_identity()
+  }
+
+  # expand x-range a bit on the right so labels are visible
+  p +
+    ggplot2::labs(x = "", y = "") +
     ggplot2::scale_fill_identity() +
+    ggplot2::coord_cartesian(
+      xlim  = c(x_min, x_max + (x_max - x_min) * 0.05),
+      clip  = "off"
+    ) +
     ggplot2::theme_minimal() +
-    ggplot2::theme(legend.position = "none")
+    ggplot2::theme(
+      legend.position = "none",
+      plot.margin = ggplot2::margin(5.5, 40, 5.5, 5.5)
+    )
 }
 
 .get_yield_of_date <- function(yield_dt, date_selected = NULL) {
@@ -317,7 +397,7 @@ gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_l
       labels = measure_labels
     )]
     
-    ggplot2::ggplot(DT_long, ggplot2::aes(x = month, y = value)) +
+    ggplot2::ggplot(DT_long, ggplot2::aes(x = .data[[id_vars]], y = value)) +
       ggplot2::geom_line() +
       ggplot2::geom_point() +
       ggplot2::facet_grid(metric ~ ., scales = "free_y") +
