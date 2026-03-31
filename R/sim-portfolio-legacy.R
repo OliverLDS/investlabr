@@ -5,7 +5,7 @@
 #' @keywords internal
 #' @noRd
 .log_ret_dt_to_mat <- function(log_ret_dt) {
-  do.call(cbind, lapply(log_ret_dt, function(dt) dt$log_ret)) # need to be converted to ann_ret here
+  do.call(cbind, lapply(log_ret_dt, function(dt) dt$log_ret))
 }
 
 #' Covariance matrix from backtest results
@@ -43,39 +43,35 @@
 #' @return List with \code{weights}, \code{exp_return}, \code{vol_annual}, \code{status}.
 #' @keywords internal
 #' @noRd
-.do_min_risk_optim <- function(ann_ret, cov_mat, target_return = 0.10,
-                           long_only = TRUE, equal_target = FALSE, ridge = 1e-8) {
+.do_min_risk_optim <- function(ann_ret, cov_mat, target_return = 0.10, long_only = TRUE, equal_target = FALSE, ridge = 1e-8) {
   stopifnot(is.numeric(ann_ret), is.matrix(cov_mat))
-  n <- length(ann_ret); stopifnot(n == ncol(cov_mat), ncol(cov_mat) == nrow(cov_mat))
+  n <- length(ann_ret)
+  stopifnot(n == ncol(cov_mat), ncol(cov_mat) == nrow(cov_mat))
 
-  # make PD and symmetric; scale by 2 for quadprog's 1/2 x^T D x
   D <- (cov_mat + t(cov_mat)) / 2
   D <- D + diag(ridge, n)
   D <- 2 * D
 
-  d <- rep(0, n)  # pure variance minimization
+  d <- rep(0, n)
 
-  # constraints A^T x >= b
   A_budget <- rep(1, n)
-  A_ret    <- ann_ret
+  A_ret <- ann_ret
 
-  Amat <- cbind(A_budget)           # sum(weights) = 1 will be equality via meq
+  Amat <- cbind(A_budget)
   bvec <- c(1)
 
   if (equal_target) {
-    # exact target return: treat as equality (brittle but sometimes desired)
     Amat <- cbind(Amat, A_ret)
     bvec <- c(bvec, target_return)
-    meq  <- 2
+    meq <- 2
   } else {
-    # return >= target (more practical/robust)
     Amat <- cbind(Amat, A_ret)
     bvec <- c(bvec, target_return)
-    meq  <- 1
+    meq <- 1
   }
 
   if (long_only) {
-    Amat <- cbind(Amat, diag(n))    # x_i >= 0
+    Amat <- cbind(Amat, diag(n))
     bvec <- c(bvec, rep(0, n))
   }
 
@@ -102,10 +98,10 @@ get_optimal_weights <- function(bt_res_list, target_return = 0.10) {
   names(weights) <- dimnames(cov_mat)[[1]]
   non_zero_weights <- weights[weights != 0]
   df <- data.frame(
-    name  = names(non_zero_weights),
+    name = names(non_zero_weights),
     value = non_zero_weights
   )
-  df <- df[order(-df$value), ] 
+  df <- df[order(-df$value), ]
   list(
     optimal_weights = weights,
     optimal_weights_table = df
@@ -120,22 +116,21 @@ get_optimal_weights <- function(bt_res_list, target_return = 0.10) {
 #' @export
 eval_portfolio_performance <- function(bt_res_list, target_return) {
   weight_res <- get_optimal_weights(bt_res_list, target_return = target_return)
-  
+
   datetime <- bt_res_list$log_ret_dt[1][[1]]$datetime
   log_ret_p <- .log_ret_dt_to_mat(bt_res_list$log_ret_dt) %*% weight_res$optimal_weights
-  
+
   tbl <- weight_res$optimal_weights_table[1:3, ]
-  
+
   port_res <- .log_ret_to_bt_res(
-    datetime, log_ret_p, 
-    asset_name = 'Optimized Portfolio', 
-    bg_time = as.POSIXct(NA), ed_time = as.POSIXct(NA), 
-    rf_rate = 0, 
-    strat_name = 'Minimizing sd', 
-    strat_par=list(Target_Ret = target_return), 
+    log_ret_p, datetime,
+    asset_name = "Optimized Portfolio",
+    bg_time = as.POSIXct(NA), ed_time = as.POSIXct(NA),
+    rf_rate = 0,
+    strat_name = "Minimizing sd",
+    strat_par = list(Target_Ret = target_return),
     strat_label = paste(sprintf("%s: %.2f", tbl$name, tbl$value), collapse = "; ")
   )
-  
-  return(invisible(port_res))
-}
 
+  invisible(port_res)
+}

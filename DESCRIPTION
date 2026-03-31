@@ -1,19 +1,34 @@
 Package: investlabr
-Title: Investment Strategy Evaluation Toolkit
+Title: Research Workflows for Macro and Cross-Asset Analysis
 Version: 0.0.1
-Authors@R: person("Oliver", "Lee", email = "olee7149@gmail.com",
+Authors@R: person("Oliver", "Zhou", email = "oliver.yxzhou@gmail.com",
                  role = c("aut", "cre"))
-Description: Tools for evaluating investment events and strategies, 
-    computing performance metrics, and visualizing backtest results.
+Description: Reusable research workflows for macro-financial and
+    cross-asset analysis. The package sits on top of data packages such
+    as 'investdatar' and focuses on transforming existing market and
+    macro data into analysis-ready research tables, factor and indicator
+    constructions, event and regime overlays, sensitivity estimates,
+    scenario comparisons, and research-grade visualization outputs.
 License: MIT + file LICENSE
+URL: https://github.com/OliverLDS/investlabr
+BugReports: https://github.com/OliverLDS/investlabr/issues
 Encoding: UTF-8
 Depends: R (>= 3.5.0)
 Imports:
     data.table,
     ggplot2,
     ggrepel,
+    grid,
+    gridExtra,
+    patchwork,
     quadprog,
-    stats
+    scales,
+    stats,
+	Rcpp
+LinkingTo:
+    Rcpp
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
 RoxygenNote: 7.2.3
 Remote: github::OliverLDS/investlabr
-

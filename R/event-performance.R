@@ -14,16 +14,13 @@
   close <- DT[["close"]]
   base  <- if (use_log) log(close) else close
 
-  # Prices at t+h
   leads_list <- data.table::shift(base, n = H, type = "lead")
   F <- do.call(cbind, leads_list)
 
   if (mode == "cum") {
-    # cumulative: t -> t+h
     B <- matrix(base, nrow = length(base), ncol = length(H))
     ret <- if (use_log) (F - B) else (F / B - 1)
   } else {
-    # step (per-moment): (t+h-1) -> (t+h), with h=1 comparing to t
     prev_list <- lapply(H, function(h) if (h == 1L) base else data.table::shift(base, n = h - 1L, type = "lead"))
     Pprev <- do.call(cbind, prev_list)
     ret <- if (use_log) (F - Pprev) else (F / Pprev - 1)
@@ -32,13 +29,12 @@
   if (matrix_mode) {
     dimnames(ret) <- list(NULL, paste0("h", H))
     return(invisible(ret))
-  } else {
-    # write columns back to DT
-    nm <- if (mode == "cum") sprintf("fut_ret_%d", H) else sprintf("fut_step_ret_%d", H)
-    ret_list <- lapply(seq_along(H), function(i) ret[, i])
-    data.table::set(DT, j = nm, value = ret_list)
-    return(invisible(DT))
   }
+
+  nm <- if (mode == "cum") sprintf("fut_ret_%d", H) else sprintf("fut_step_ret_%d", H)
+  ret_list <- lapply(seq_along(H), function(i) ret[, i])
+  data.table::set(DT, j = nm, value = ret_list)
+  invisible(DT)
 }
 
 #' Evaluate event performance
@@ -51,30 +47,25 @@
 #' @return Invisibly: data.table (one row) with summary stats and list-cols \code{performance_by_cases}, \code{performance_by_horizons}.
 #' @export
 eval_event_performance <- function(DT, event_col, event_score_cols = character(0L), H = 1L:42L, pos_hit_threshold = 0.05, neg_hit_threshold = -0.05) {
-  
   datetime <- DT$datetime
   if (length(datetime) < length(H)) return(NULL)
   start_dt <- datetime[1L]
   end_dt <- datetime[length(datetime)]
-  
-  ret_cum_mat <- .eval_calc_future_returns(DT, H, use_log = FALSE, matrix_mode = TRUE, mode = 'cum')
-  # ret_step_mat <- .eval_calc_future_returns(DT, H, use_log = TRUE, matrix_mode = TRUE, mode = 'step')
-  
+
+  ret_cum_mat <- .eval_calc_future_returns(DT, H, use_log = FALSE, matrix_mode = TRUE, mode = "cum")
+
   event_rows <- which(DT[[event_col]] == 1L)
   n_event <- length(event_rows)
-  if (n_event<=0) return(NULL)
-  
+  if (n_event <= 0) return(NULL)
+
   event_ret_cum_mat <- ret_cum_mat[event_rows, , drop = FALSE]
-  # event_ret_step_mat <- ret_step_mat[event_rows, , drop = FALSE]
   max_horizon_ret <- event_ret_cum_mat[, length(H)]
-  
+
   pos_hit_mat <- event_ret_cum_mat >= pos_hit_threshold
   neg_hit_mat <- event_ret_cum_mat <= neg_hit_threshold
   get_first_hit_idx <- function(row) which(row)[1]
   pos_hit_success <- apply(pos_hit_mat, 1, get_first_hit_idx) - apply(neg_hit_mat, 1, get_first_hit_idx) < 0
-  
-  # ---- summarized statistics ----
-  
+
   qs <- quantile(max_horizon_ret, c(.1, .25, .5, .75, .9), na.rm = TRUE)
   res <- data.table::data.table(
     inst_id = attributes(DT)$inst_id,
@@ -91,9 +82,7 @@ eval_event_performance <- function(DT, event_col, event_score_cols = character(0
     pos_hit_success_rate = length(which(pos_hit_success == TRUE)) / n_event,
     neg_hit_success_rate = length(which(pos_hit_success == FALSE)) / n_event
   )
-  
-  # ---- statistics by cases ----
-  
+
   performance_by_cases <- data.table::data.table(
     pos_hit_success = pos_hit_success,
     max_horizon_ret = max_horizon_ret
@@ -103,11 +92,8 @@ eval_event_performance <- function(DT, event_col, event_score_cols = character(0
       performance_by_cases[[event_score_col]] <- DT[event_rows, event_score_col]
     }
   }
-  
-  res[['performance_by_cases']] <- list(performance_by_cases)
-  
-  # ---- statistics by horizon ----
-  
+  res[["performance_by_cases"]] <- list(performance_by_cases)
+
   performance_by_horizons <- data.table::data.table(
     t(rbind(
       Horizon = H,
@@ -116,11 +102,7 @@ eval_event_performance <- function(DT, event_col, event_score_cols = character(0
       apply(event_ret_cum_mat, 2, function(x) quantile(x, c(.1, .25, .5, .75, .9), na.rm = TRUE))
     ))
   )
-  
-  res[['performance_by_horizons']] <- list(performance_by_horizons)
+  res[["performance_by_horizons"]] <- list(performance_by_horizons)
 
-  return(invisible(res))
+  invisible(res)
 }
-
-
-
