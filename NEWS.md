@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.3
+
+- Fixed README examples so the portfolio mix workflow uses a feasible target return.
+- Fixed the mocked candle-data example so generated OHLC values always satisfy candle-chart constraints.
+- Added a Yahoo Finance plus `investdatar` end-to-end market-chart example to the README.
+- Removed tracked local junk files from the repository working tree.
+
 ## 0.0.2
 
 - Clarified package boundaries between `investlabr`, `investdatar`, and `strategyr`.

@@ -259,8 +259,11 @@ bt_a <- mk_bt_res("DEMO-ASSET-A", seed = 1)
 bt_b <- mk_bt_res("DEMO-ASSET-B", seed = 2)
 bt_res_list <- data.table::rbindlist(list(bt_a, bt_b), fill = TRUE)
 
-weight_res <- get_optimal_weights(bt_res_list, target_return = 0.05)
-port_res <- eval_portfolio_performance(bt_res_list, target_return = 0.05)
+# Keep the target feasible for the sample inputs.
+target_return <- min(bt_res_list$annual_return) * 0.8
+
+weight_res <- get_optimal_weights(bt_res_list, target_return = target_return)
+port_res <- eval_portfolio_performance(bt_res_list, target_return = target_return)
 
 weight_res$optimal_weights_table
 eval_strat_plot_tsline_eq(port_res)
@@ -272,12 +275,20 @@ eval_strat_plot_tsline_eq(port_res)
 library(data.table)
 library(investlabr)
 
+set.seed(1)
+n <- 40
+datetime <- seq.POSIXt(as.POSIXct("2024-01-01", tz = "UTC"), by = "day", length.out = n)
+open <- 100 + cumsum(rnorm(n, 0.1, 1))
+close <- open + rnorm(n, 0, 1)
+upper_wick <- abs(rnorm(n, 0.8, 0.3))
+lower_wick <- abs(rnorm(n, 0.8, 0.3))
+
 DT <- data.table(
-  datetime = seq.POSIXt(as.POSIXct("2024-01-01", tz = "UTC"), by = "day", length.out = 40),
-  open = 100 + cumsum(rnorm(40, 0.1, 1)),
-  high = 102 + cumsum(rnorm(40, 0.1, 1)),
-  low = 98 + cumsum(rnorm(40, 0.1, 1)),
-  close = 100 + cumsum(rnorm(40, 0.1, 1))
+  datetime = datetime,
+  open = open,
+  high = pmax(open, close) + upper_wick,
+  low = pmin(open, close) - lower_wick,
+  close = close
 )
 
 gen_candle_plots_with_sr_lines(
@@ -358,10 +369,35 @@ investlabr::gen_yield_curve_plot(
 )
 ```
 
-This is the intended package boundary:
+### Yahoo Finance candles via `investdatar`
+
+This example uses `investdatar` as the Yahoo Finance access layer and `investlabr` as the charting layer.
+
+```r
+library(data.table)
+library(investdatar)
+library(investlabr)
+
+investdatar::sync_local_quantmod_OHLC(
+  ticker = "SPY",
+  from = "2024-01-01",
+  to = "2024-12-31",
+  src = "yahoo"
+)
+
+spy_dt <- investdatar::get_local_quantmod_OHLC("SPY", src = "yahoo")
+
+investlabr::gen_candle_plots_with_sr_lines(
+  data.table::as.data.table(spy_dt)[1:60, .(datetime, open, high, low, close)],
+  support_pts = c(500, 520),
+  resistance_pts = c(560, 580)
+)
+```
+
+These examples show the intended package boundary:
 
 - `investdatar` handles data syncing and local access
-- `investlabr` turns those series into a reusable research object and chart
+- `investlabr` turns those series into reusable research objects and charts
 - `strategyr` is where dynamically adaptive, execution-grade strategy logic should live
 
 ## Design Principles
