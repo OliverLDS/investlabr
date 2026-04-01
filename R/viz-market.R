@@ -3,11 +3,13 @@
 #' @param DT A data.table containing OHLC data with columns \code{datetime}, \code{open}, \code{high}, \code{low}, and \code{close}.
 #' @param support_pts Numeric vector of support price levels.
 #' @param resistance_pts Numeric vector of resistance price levels.
+#' @inheritParams viz_style_get
 #'
 #' @return A ggplot2 object showing candlestick chart with support and resistance lines.
 #' @export
-gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near_frac = 0.01, label_digits = 2, show_ema_lines = FALSE) {
-  DT[, candle_color := ifelse(open < close, "forestgreen", "firebrick")]
+gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near_frac = 0.01, label_digits = 2, show_ema_lines = FALSE, style = NULL, context = NULL) {
+  resolved <- .viz_resolve_style(style = style, context = context)
+  DT[, candle_color := ifelse(open < close, resolved$up, resolved$down)]
   body_half <- 0.45 * median(diff(as.numeric(DT$datetime)))
   wick_half <- body_half * 0.15
 
@@ -20,7 +22,7 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
   )
 
   if (nrow(line_dt) > 0L) {
-    line_dt[, color := ifelse(kind == "support", "steelblue", "darkorange")]
+    line_dt[, color := ifelse(kind == "support", resolved$support, resolved$resistance)]
     line_dt <- line_dt[order(y)]
 
     rng_diff <- max(DT$high) - min(DT$low)
@@ -76,18 +78,9 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
   if (show_ema_lines) {
     stopifnot(all(c("ema_20", "ema_50", "ema_100", "ema_200") %in% names(DT)))
 
-    ema_cols <- c(
-      ema_20 = "#1f77b4",
-      ema_50 = "#2ca02c",
-      ema_100 = "#7f7f7f",
-      ema_200 = "#9467bd"
-    )
-    ema_alpha <- c(
-      ema_20 = 0.90,
-      ema_50 = 0.80,
-      ema_100 = 0.70,
-      ema_200 = 0.60
-    )
+    ema_specs <- .viz_market_ema_specs(style = resolved)
+    ema_cols <- ema_specs$colors
+    ema_alpha <- ema_specs$alpha
 
     ema_label_dt <- data.table::data.table(
       x_lab_ema = min(DT$datetime),
@@ -124,12 +117,12 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
       ggplot2::geom_hline(
         data = line_dt[kind == "support"],
         ggplot2::aes(yintercept = y),
-        color = "steelblue"
+        color = resolved$support
       ) +
       ggplot2::geom_hline(
         data = line_dt[kind == "resistance"],
         ggplot2::aes(yintercept = y),
-        color = "darkorange"
+        color = resolved$resistance
       ) +
       ggplot2::geom_text(
         data = line_dt,
@@ -140,12 +133,12 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
           color = color
         ),
         hjust = -0.1,
-        size = 3,
+        size = resolved$label_size,
         show.legend = FALSE
       )
   }
 
-  p +
+  p <- p +
     ggplot2::scale_color_identity() +
     ggplot2::scale_alpha_identity() +
     ggplot2::labs(x = "", y = "") +
@@ -154,15 +147,14 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
       xlim = c(x_min, x_max + (x_max - x_min) * 0.05),
       clip = "off"
     ) +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(
-      legend.position = "none",
-      plot.margin = ggplot2::margin(5.5, 40, 5.5, 5.5)
-    )
+    ggplot2::theme(plot.margin = ggplot2::margin(5.5, 40, 5.5, 5.5))
+  p <- viz_theme_apply(p, style = resolved, legend_position = "none")
+  viz_annotate_last_value(p, DT, x = "datetime", y = "close", prefix = "Last: ", digits = label_digits, color = resolved$ink, style = resolved)
 }
 
 .gen_candle_plot <- function(DT) {
-  DT[, candle_color := ifelse(open < close, "forestgreen", "firebrick")]
+  resolved <- .viz_resolve_style()
+  DT[, candle_color := ifelse(open < close, resolved$up, resolved$down)]
   body_half <- 0.45 * median(diff(as.numeric(DT$datetime)))
   wick_half <- body_half * 0.15
 
@@ -190,6 +182,7 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
     )
 }
 
+#' @inheritParams viz_style_get
 #' @export
 gen_candle_plots_with_sr_dts <- function(
   DT,
@@ -199,17 +192,20 @@ gen_candle_plots_with_sr_dts <- function(
   resistance_dt = NULL,
   near_frac = 0.01,
   label_digits = 2,
-  show_ema_lines = FALSE
+  show_ema_lines = FALSE,
+  style = NULL,
+  context = NULL
 ) {
+  resolved <- .viz_resolve_style(style = style, context = context)
   stopifnot(!is.null(support_dt) && !is.null(resistance_dt))
   stopifnot(nrow(support_dt) > 0L && nrow(resistance_dt) > 0L)
 
-  DT[, candle_color := ifelse(open < close, "forestgreen", "firebrick")]
+  DT[, candle_color := ifelse(open < close, resolved$up, resolved$down)]
   body_half <- 0.45 * median(diff(as.numeric(DT$datetime)))
   wick_half <- body_half * 0.15
 
   line_dt <- rbind(support_dt[, kind := "support"], resistance_dt[, kind := "resistance"])
-  line_dt[, color := ifelse(kind == "support", "steelblue", "darkorange")]
+  line_dt[, color := ifelse(kind == "support", resolved$support, resolved$resistance)]
   line_dt <- line_dt[order(zone_center)]
 
   rng_diff <- max(DT$high) - min(DT$low)
@@ -259,18 +255,9 @@ gen_candle_plots_with_sr_dts <- function(
   if (show_ema_lines) {
     stopifnot(all(c("ema_20", "ema_50", "ema_100", "ema_200") %in% names(DT)))
 
-    ema_cols <- c(
-      ema_20 = "#1f77b4",
-      ema_50 = "#2ca02c",
-      ema_100 = "#7f7f7f",
-      ema_200 = "#9467bd"
-    )
-    ema_alpha <- c(
-      ema_20 = 0.90,
-      ema_50 = 0.80,
-      ema_100 = 0.70,
-      ema_200 = 0.60
-    )
+    ema_specs <- .viz_market_ema_specs(style = resolved)
+    ema_cols <- ema_specs$colors
+    ema_alpha <- ema_specs$alpha
 
     ema_label_dt <- data.table::data.table(
       x_lab_ema = min(DT$datetime),
@@ -309,40 +296,40 @@ gen_candle_plots_with_sr_dts <- function(
       data = line_dt[kind == "support"],
       ggplot2::aes(xmin = as.POSIXct(-Inf), xmax = as.POSIXct(Inf), ymin = zone_low, ymax = zone_high),
       inherit.aes = FALSE,
-      fill = "steelblue",
+      fill = resolved$support,
       alpha = zone_alpha,
       color = NA
     ) +
     ggplot2::geom_hline(
       data = line_dt[kind == "support"],
       ggplot2::aes(yintercept = zone_center),
-      color = "steelblue"
+      color = resolved$support
     ) +
     ggplot2::geom_rect(
       data = line_dt[kind == "resistance"],
       ggplot2::aes(xmin = as.POSIXct(-Inf), xmax = as.POSIXct(Inf), ymin = zone_low, ymax = zone_high),
       inherit.aes = FALSE,
-      fill = "darkorange",
+      fill = resolved$resistance,
       alpha = zone_alpha,
       color = NA
     ) +
     ggplot2::geom_hline(
       data = line_dt[kind == "resistance"],
       ggplot2::aes(yintercept = zone_center),
-      color = "darkorange"
+      color = resolved$resistance
     ) +
-    ggplot2::geom_text(
-      data = line_dt,
-      ggplot2::aes(
-        x = x_lab,
-        y = zone_center + y_offset,
-        label = formatC(round(zone_center, label_digits), format = "f", big.mark = ",", digits = label_digits),
-        color = color
-      ),
-      hjust = -0.1,
-      size = 3,
-      show.legend = FALSE
-    )
+      ggplot2::geom_text(
+        data = line_dt,
+        ggplot2::aes(
+          x = x_lab,
+          y = zone_center + y_offset,
+          label = formatC(round(zone_center, label_digits), format = "f", big.mark = ",", digits = label_digits),
+          color = color
+        ),
+        hjust = -0.1,
+        size = resolved$label_size,
+        show.legend = FALSE
+      )
 
   p_main <- p_main +
     ggplot2::scale_color_identity() +
@@ -353,8 +340,9 @@ gen_candle_plots_with_sr_dts <- function(
     ggplot2::coord_cartesian(
       xlim = c(x_min, x_max + (x_max - x_min) * 0.05),
       clip = "off"
-    ) +
-    ggplot2::theme_minimal()
+    )
+  p_main <- viz_theme_apply(p_main, style = resolved)
+  p_main <- viz_annotate_last_value(p_main, DT, x = "datetime", y = "close", prefix = "Last: ", digits = label_digits, color = resolved$ink, style = resolved)
 
   p_main <- p_main +
     ggplot2::theme(
@@ -370,18 +358,19 @@ gen_candle_plots_with_sr_dts <- function(
     label = c("10th Quantile", "20th Quantile", "80th Quantile", "90th Quantile")
   )
 
+  atr_specs <- .viz_market_atr_specs(style = resolved)
   p_atr <- ggplot2::ggplot(DT[(.N + 1 - window_length):.N, ], ggplot2::aes(x = datetime, y = atr_logr_12)) +
-    ggplot2::geom_line(ggplot2::aes(y = atr_q_10_12_300), linewidth = 0.4, linetype = "dotted") +
-    ggplot2::geom_line(ggplot2::aes(y = atr_q_20_12_300), linewidth = 0.4, linetype = "dashed") +
-    ggplot2::geom_line(ggplot2::aes(y = atr_q_80_12_300), linewidth = 0.4, linetype = "dashed") +
-    ggplot2::geom_line(ggplot2::aes(y = atr_q_90_12_300), linewidth = 0.4, linetype = "dotted") +
-    ggplot2::geom_line(linewidth = 0.5) +
+    ggplot2::geom_line(ggplot2::aes(y = atr_q_10_12_300), linewidth = 0.4, linetype = "dotted", color = atr_specs$low) +
+    ggplot2::geom_line(ggplot2::aes(y = atr_q_20_12_300), linewidth = 0.4, linetype = "dashed", color = atr_specs$mid) +
+    ggplot2::geom_line(ggplot2::aes(y = atr_q_80_12_300), linewidth = 0.4, linetype = "dashed", color = atr_specs$mid) +
+    ggplot2::geom_line(ggplot2::aes(y = atr_q_90_12_300), linewidth = 0.4, linetype = "dotted", color = atr_specs$high) +
+    ggplot2::geom_line(linewidth = resolved$line_width, color = atr_specs$current) +
     ggplot2::labs(x = "", y = "ATR (log version)") +
     ggplot2::coord_cartesian(
       xlim = c(x_min, x_max + (x_max - x_min) * 0.05),
       clip = "off"
-    ) +
-    ggplot2::theme_minimal()
+    )
+  p_atr <- viz_theme_apply(p_atr, style = resolved)
 
   p_atr <- p_atr + ggplot2::geom_text(
     data = atr_label_dt,
@@ -391,7 +380,7 @@ gen_candle_plots_with_sr_dts <- function(
       label = label
     ),
     hjust = -0.1,
-    size = 3,
+    size = resolved$label_size,
     show.legend = FALSE
   )
 

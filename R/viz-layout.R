@@ -1,3 +1,4 @@
+#' @inheritParams viz_style_get
 #' @export
 gen_grid_of_plots_with_labels <- function(
   plots,
@@ -8,11 +9,18 @@ gen_grid_of_plots_with_labels <- function(
   bottom = NULL,
   row_label_width_cm = 2.2,
   col_header_height_cm = 1.2,
-  row_label_gp = grid::gpar(fontface = "bold", cex = 0.95),
-  col_label_gp = grid::gpar(fontface = "bold", cex = 1.0),
-  title_gp = grid::gpar(fontsize = 16, fontface = "bold"),
-  bottom_gp = grid::gpar(fontsize = 11)
+  row_label_gp = NULL,
+  col_label_gp = NULL,
+  title_gp = NULL,
+  bottom_gp = NULL,
+  style = NULL,
+  context = NULL
 ) {
+  resolved <- .viz_resolve_style(style = style, context = context)
+  if (is.null(row_label_gp)) row_label_gp <- grid::gpar(fontface = "bold", cex = resolved$base_size / 11, col = resolved$ink)
+  if (is.null(col_label_gp)) col_label_gp <- grid::gpar(fontface = "bold", cex = resolved$base_size / 10, col = resolved$ink)
+  if (is.null(title_gp)) title_gp <- grid::gpar(fontsize = resolved$title_size, fontface = "bold", col = resolved$ink)
+  if (is.null(bottom_gp)) bottom_gp <- grid::gpar(fontsize = resolved$caption_size + 2, col = resolved$muted)
   stopifnot(length(plots) == n_rows * n_cols)
 
   blank_grob <- grid::nullGrob()
@@ -97,8 +105,10 @@ gen_grid_of_plots_with_labels <- function(
   )
 }
 
+#' @inheritParams viz_style_get
 #' @export
-gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_labels) {
+gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_labels, style = NULL, context = NULL) {
+  resolved <- .viz_resolve_style(style = style, context = context)
   DT_long <- data.table::melt(
     DT,
     id.vars = id_vars,
@@ -113,10 +123,10 @@ gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_l
     labels = measure_labels
   )]
 
-  ggplot2::ggplot(DT_long, ggplot2::aes(x = .data[[id_vars]], y = value)) +
-    ggplot2::geom_line() +
-    ggplot2::geom_point() +
+  p <- ggplot2::ggplot(DT_long, ggplot2::aes_string(x = id_vars, y = "value")) +
+    ggplot2::geom_line(color = resolved$accent, linewidth = resolved$line_width) +
+    ggplot2::geom_point(color = resolved$accent2, size = resolved$point_size) +
     ggplot2::facet_grid(metric ~ ., scales = "free_y") +
-    ggplot2::theme_bw() +
     ggplot2::labs(x = NULL, y = NULL)
+  viz_theme_apply(p, style = resolved)
 }

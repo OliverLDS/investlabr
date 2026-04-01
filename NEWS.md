@@ -1,5 +1,13 @@
 # investlabr news
 
+## 0.0.4
+
+- Added a shared visualization style system with named styles and output contexts.
+- Added reusable visualization helpers for palettes, themes, and common annotations.
+- Refactored event, yield-curve, market-chart, backtest, and layout plots to accept `style` and `context`.
+- Improved direct labeling and style-aware overlays for event, equity-curve, and market-chart outputs.
+- Expanded README guidance for the new visualization styling layer.
+
 ## 0.0.3
 
 - Fixed README examples so the portfolio mix workflow uses a feasible target return.

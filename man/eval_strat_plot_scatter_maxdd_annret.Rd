@@ -7,7 +7,9 @@
 eval_strat_plot_scatter_maxdd_annret(
   bt_res_list,
   plot_title = "",
-  opt_portfolio_line = FALSE
+  opt_portfolio_line = FALSE,
+  style = NULL,
+  context = NULL
 )
 }
 \arguments{
@@ -16,6 +18,10 @@ eval_strat_plot_scatter_maxdd_annret(
 \item{plot_title}{string.}
 
 \item{opt_portfolio_line}{logical; unused placeholder.}
+
+\item{style}{Named style family or `NULL` to use the package default.}
+
+\item{context}{Output context or `NULL` to use the package default.}
 }
 \value{
 ggplot object.

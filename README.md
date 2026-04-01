@@ -131,6 +131,42 @@ The codebase is now organized by module family:
 
 Some current exported functions still use older `eval_*` and `gen_*` names. Those remain for compatibility while the package migrates toward the new module naming convention.
 
+## Visualization Styles
+
+`investlabr` now includes a shared visualization style layer so charts can use a more professional and varied visual language without rewriting each plotting function.
+
+Current named styles include:
+
+- `research_note`
+- `macro_classic`
+- `terminal_risk`
+- `cross_asset_color`
+- `minimal_print`
+- `presentation_bold`
+
+Current contexts include:
+
+- `report`
+- `slide`
+- `dashboard`
+
+You can inspect or change the defaults with:
+
+```r
+library(investlabr)
+
+viz_style_get()
+viz_style_set(style = "macro_classic", context = "slide")
+```
+
+Most plotting functions now accept `style` and `context`, for example:
+
+```r
+gen_yield_curve_plot(curve_dt, style = "macro_classic", context = "slide")
+gen_plot_event_tsline_cum_ret(evt, style = "presentation_bold", context = "report")
+eval_strat_plot_tsline_eq(bt_res, style = "terminal_risk", context = "dashboard")
+```
+
 ## Basic Usage
 
 ### Event workflow

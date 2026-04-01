@@ -29,10 +29,12 @@ get_yield_data_DT <- function(yield_dt_list, yield_dates) {
 #'
 #' @param DT A data.table returned from \code{get_yield_data_DT()}.
 #' @param selected_windows Character vector specifying which yield curves to display (e.g., \code{"Now"}, \code{"One week ago"}).
+#' @inheritParams viz_style_get
 #'
 #' @return A ggplot2 object visualizing selected yield curves.
 #' @export
-gen_yield_curve_plot <- function(DT, selected_windows = c("Now", "One week ago", "One month ago")) {
+gen_yield_curve_plot <- function(DT, selected_windows = c("Now", "One week ago", "One month ago"), style = NULL, context = NULL) {
+  resolved <- .viz_resolve_style(style = style, context = context)
   DT_long <- data.table::melt(
     DT,
     id.vars = c("maturity", "log_maturity", "maturity_label"),
@@ -41,35 +43,31 @@ gen_yield_curve_plot <- function(DT, selected_windows = c("Now", "One week ago",
   )
   DT_long <- DT_long[curve_date %in% selected_windows, ]
 
-  okabe_ito <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2")
-
-  DT_long |>
+  p <- DT_long |>
     ggplot2::ggplot(ggplot2::aes(x = log_maturity, y = yield, color = curve_date, group = curve_date)) +
-    ggplot2::geom_line(linewidth = 1) +
-    ggplot2::geom_point(size = 1.5) +
+    ggplot2::geom_line(linewidth = resolved$line_width) +
+    ggplot2::geom_point(size = resolved$point_size) +
     ggplot2::scale_x_continuous(
       name = "Maturity",
       breaks = DT$log_maturity,
       labels = DT$maturity_label
     ) +
-    ggplot2::scale_color_manual(values = okabe_ito) +
+    ggplot2::scale_color_manual(values = rep_len(resolved$discrete, length(unique(DT_long$curve_date)))) +
     ggplot2::scale_y_continuous(name = "Yield (%)") +
-    ggplot2::labs(title = "U.S. Treasury Yield Curve", color = NULL) +
-    ggplot2::theme_minimal(base_size = 12) +
-    ggplot2::theme(
-      plot.background = ggplot2::element_rect(fill = "white", color = NA),
-      legend.text = ggplot2::element_text(size = 9)
-    )
+    ggplot2::labs(title = "U.S. Treasury Yield Curve", color = NULL)
+  viz_theme_apply(p, style = resolved)
 }
 
 #' Generate yield curve comparison grid
 #'
 #' @param DT A data.table returned from \code{get_yield_data_DT()}.
 #' @param selected_windows Character vector specifying yield curve snapshots for comparison.
+#' @inheritParams viz_style_get
 #'
 #' @return A faceted ggplot2 object comparing yield curves across multiple time windows.
 #' @export
-gen_yield_curve_plot_grid <- function(DT, selected_windows = c("Now", "One week ago", "One month ago", "Six months ago", "One year ago")) {
+gen_yield_curve_plot_grid <- function(DT, selected_windows = c("Now", "One week ago", "One month ago", "Six months ago", "One year ago"), style = NULL, context = NULL) {
+  resolved <- .viz_resolve_style(style = style, context = context)
   if (is.null(selected_windows)) {
     selected_windows <- c("Now", "One week ago", "One month ago", "Six months ago", "One year ago", "Two years ago", "Five years ago", "Ten years ago", "Fifteen years ago", "Twenty years ago")
   }
@@ -95,20 +93,18 @@ gen_yield_curve_plot_grid <- function(DT, selected_windows = c("Now", "One week 
     value.name = "yield"
   )
 
-  DT_long |>
+  p <- DT_long |>
     ggplot2::ggplot(ggplot2::aes(x = log_maturity, y = yield, color = panel, group = panel)) +
-    ggplot2::geom_line(linewidth = 1) +
-    ggplot2::geom_point(size = 1.5) +
+    ggplot2::geom_line(linewidth = resolved$line_width) +
+    ggplot2::geom_point(size = resolved$point_size) +
     ggplot2::scale_x_continuous(
       name = "Maturity",
       breaks = DT$log_maturity,
       labels = DT$maturity_label
     ) +
+    ggplot2::scale_color_manual(values = rep_len(resolved$discrete, length(unique(DT_long$panel)))) +
     ggplot2::scale_y_continuous(name = "Yield (%)") +
     ggplot2::facet_wrap(~before_window, nrow = nrow_grids) +
-    ggplot2::labs(title = "U.S. Treasury Yield Curve", color = NULL) +
-    ggplot2::theme_minimal(base_size = 12) +
-    ggplot2::theme(
-      legend.text = ggplot2::element_text(size = 9)
-    )
+    ggplot2::labs(title = "U.S. Treasury Yield Curve", color = NULL)
+  viz_theme_apply(p, style = resolved)
 }

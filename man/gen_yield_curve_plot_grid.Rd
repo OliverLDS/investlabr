@@ -7,13 +7,19 @@
 gen_yield_curve_plot_grid(
   DT,
   selected_windows = c("Now", "One week ago", "One month ago", "Six months ago",
-    "One year ago")
+    "One year ago"),
+  style = NULL,
+  context = NULL
 )
 }
 \arguments{
 \item{DT}{A data.table returned from \code{get_yield_data_DT()}.}
 
 \item{selected_windows}{Character vector specifying yield curve snapshots for comparison.}
+
+\item{style}{Named style family or `NULL` to use the package default.}
+
+\item{context}{Output context or `NULL` to use the package default.}
 }
 \value{
 A faceted ggplot2 object comparing yield curves across multiple time windows.

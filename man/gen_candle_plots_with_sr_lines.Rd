@@ -10,7 +10,9 @@ gen_candle_plots_with_sr_lines(
   resistance_pts,
   near_frac = 0.01,
   label_digits = 2,
-  show_ema_lines = FALSE
+  show_ema_lines = FALSE,
+  style = NULL,
+  context = NULL
 )
 }
 \arguments{
@@ -19,6 +21,10 @@ gen_candle_plots_with_sr_lines(
 \item{support_pts}{Numeric vector of support price levels.}
 
 \item{resistance_pts}{Numeric vector of resistance price levels.}
+
+\item{style}{Named style family or `NULL` to use the package default.}
+
+\item{context}{Output context or `NULL` to use the package default.}
 }
 \value{
 A ggplot2 object showing candlestick chart with support and resistance lines.

@@ -6,13 +6,19 @@
 \usage{
 gen_yield_curve_plot(
   DT,
-  selected_windows = c("Now", "One week ago", "One month ago")
+  selected_windows = c("Now", "One week ago", "One month ago"),
+  style = NULL,
+  context = NULL
 )
 }
 \arguments{
 \item{DT}{A data.table returned from \code{get_yield_data_DT()}.}
 
 \item{selected_windows}{Character vector specifying which yield curves to display (e.g., \code{"Now"}, \code{"One week ago"}).}
+
+\item{style}{Named style family or `NULL` to use the package default.}
+
+\item{context}{Output context or `NULL` to use the package default.}
 }
 \value{
 A ggplot2 object visualizing selected yield curves.

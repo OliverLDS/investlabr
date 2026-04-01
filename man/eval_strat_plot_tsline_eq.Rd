@@ -4,10 +4,19 @@
 \alias{eval_strat_plot_tsline_eq}
 \title{Plot equity curve (time series)}
 \usage{
-eval_strat_plot_tsline_eq(bt_res, benchmark_bt_res = NULL)
+eval_strat_plot_tsline_eq(
+  bt_res,
+  benchmark_bt_res = NULL,
+  style = NULL,
+  context = NULL
+)
 }
 \arguments{
 \item{bt_res}{single-row data.table from \code{eval_strat_performance()}.}
+
+\item{style}{Named style family or `NULL` to use the package default.}
+
+\item{context}{Output context or `NULL` to use the package default.}
 }
 \value{
 ggplot object.
