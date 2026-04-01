@@ -6,6 +6,16 @@
 #' event and regime views, sensitivity estimates, scenario comparisons, and
 #' research-grade visuals.
 #'
+#' Relative to related packages:
+#'
+#' - `investdatar` gets and stores the data
+#' - `strategyr` turns strategy logic into executable trading decisions
+#' - `investlabr` helps explore, visualize, and communicate investment ideas
+#'
+#' `investlabr` may include lightweight and simplified backtesting helpers for
+#' exploratory research and communication, but it is not intended to be the
+#' package that decides live actions or produces broker-ready execution logic.
+#'
 #' Intended module families include:
 #'
 #' - `prep_*` for research data preparation
@@ -18,6 +28,8 @@
 #' The package does not own raw data downloading, source sync, execution,
 #' portfolio accounting, or LLM orchestration.
 #'
+#' @name investlabr-package
+#' @aliases investlabr
+#' @docType package
 #' @keywords internal
 "_PACKAGE"
-

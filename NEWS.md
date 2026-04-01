@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.2
+
+- Clarified package boundaries between `investlabr`, `investdatar`, and `strategyr`.
+- Expanded package-level documentation for scope, architecture, and README usage examples.
+- Added an end-to-end `investdatar` example to the README.
+- Made README workflow examples more self-contained and representative of the current exported surface.
+
 ## 0.0.1
 
 - Repositioned `investlabr` as a macro-financial and cross-asset research workflow package.

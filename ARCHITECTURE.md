@@ -12,6 +12,12 @@ The package should take already-available market or macro data and turn it into:
 - scenario and sensitivity outputs
 - publication-ready charts and briefing objects
 
+Relative to neighboring packages:
+
+- `investdatar` is the data-access and local-sync layer
+- `strategyr` is the execution-oriented strategy and dynamic backtesting layer
+- `investlabr` is the exploratory research, visualization, and communication layer
+
 ## Design Boundary
 
 `investlabr` should own:
@@ -29,6 +35,8 @@ The package should take already-available market or macro data and turn it into:
 - provider-specific parsing
 - agent memory or orchestration engines
 - broker execution or portfolio accounting
+
+`investlabr` may keep lightweight backtesting helpers where they help explain a market pattern, compare a simple hypothesis, or build a visual briefing object. When the problem becomes "what should the strategy do right now?" with realistic, path-dependent, execution-grade logic, that belongs in `strategyr`.
 
 ## Module Families
 
@@ -78,6 +86,7 @@ Scenario and structural simulation. Current status:
 
 - includes legacy backtesting and portfolio-simulation helpers from the older package scope
 - should gradually broaden toward scenario and structural comparison tools
+- should keep any retained backtesting helpers clearly framed as exploratory rather than execution-grade
 
 ### `viz-*`
 

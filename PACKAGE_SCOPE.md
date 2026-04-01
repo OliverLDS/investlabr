@@ -16,7 +16,8 @@ It sits **on top of data packages** such as `investdatar` and provides reusable 
 In simple terms:
 
 - `investdatar` gets and stores the data
-- `investlabr` thinks with the data
+- `strategyr` turns strategy logic into executable actions
+- `investlabr` thinks with the data and communicates the idea
 
 ## Core Positioning
 
@@ -36,6 +37,8 @@ The package should be optimized for workflows such as:
 - factor sensitivity analysis
 - structural scenario comparison
 - meeting brief / market note preparation
+
+`investlabr` should be thought of as a lab or research notebook layer rather than a decisive execution engine. It can include exploratory and simplified backtesting when that helps explain a market pattern or investment idea to a human audience, but it does not need to produce a final trading instruction.
 
 ## In-Scope Areas
 
@@ -199,6 +202,8 @@ Out of scope:
 - stateful trade simulation
 - production trading automation
 
+A lightweight and simplified backtesting helper may still belong in `investlabr` when its purpose is explanatory, visual, or exploratory. The more realistic and dynamically adaptive backtesting and decision logic should live in `strategyr`.
+
 ### 4. Portfolio Accounting / Holdings Administration
 
 Out of scope:
@@ -231,6 +236,15 @@ Owns:
 - sensitivity estimation
 - simulation and scenario comparison
 - charting and briefing outputs
+
+### `strategyr`
+
+Owns:
+
+- dynamic strategy logic
+- realistic and execution-oriented backtesting
+- position or order generation
+- timely investment decision support
 
 ### LLM-related or orchestration tools
 
@@ -289,7 +303,8 @@ Possible examples:
 5. Avoid hard-coding file paths, agent objects, or personal local directories.
 6. Avoid mixing package code with narrative-generation code.
 7. Make functions composable for dashboards and research notes.
-8. Prefer names that reflect workflow purpose clearly:
+8. Keep simplified backtesting only when it supports exploratory research or human-facing communication; execution-grade strategy logic belongs in `strategyr`.
+9. Prefer names that reflect workflow purpose clearly:
    - `prep_*`
    - `factor_*`
    - `event_*`

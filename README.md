@@ -16,7 +16,8 @@ It sits on top of data packages such as [`investdatar`](https://github.com/Olive
 In simple terms:
 
 - `investdatar` gets and stores the data
-- `investlabr` thinks with the data
+- `strategyr` turns strategy logic into executable actions
+- `investlabr` thinks with the data and communicates the idea
 
 ## Package Boundary
 
@@ -29,6 +30,8 @@ Its role is the layer between:
 3. presentation-ready output
 
 This package is being expanded from a narrower strategy-evaluation toolkit into a broader research workflow package. Some current functions still reflect the earlier scope and will be migrated into a clearer module structure over time.
+
+`investlabr` is not the package that should decide live strategy actions. That role belongs more naturally to `strategyr`, where dynamic strategy logic and execution-oriented backtesting live. `investlabr` is the looser and more exploratory layer for visualizing market patterns, stress-testing ideas, and communicating investment thinking to a human audience.
 
 ## In Scope
 
@@ -58,6 +61,16 @@ Examples of likely function families:
 - Portfolio accounting, holdings administration, and reconciliation
 
 Those concerns belong in adjacent packages such as `investdatar`, dedicated orchestration wrappers, or trading-specific packages.
+
+## Relationship to `strategyr`
+
+`strategyr` and `investlabr` are related, but they solve different problems.
+
+- `strategyr` is for timely investment decision-making
+- `strategyr` owns realistic, path-dependent, execution-oriented backtesting
+- `strategyr` should be able to support executable orders or action selection
+- `investlabr` is for exploratory research, brainstorming, visualization, and human-facing idea sharing
+- `investlabr` may keep lightweight or simplified backtesting when it helps explain a market pattern, but that is not its core identity
 
 ## Relationship to `investdatar`
 
@@ -136,6 +149,29 @@ evt <- eval_event_performance(DT, "event_policy", H = 1L:10L)
 gen_plot_event_tsline_cum_ret(evt)
 ```
 
+### Event comparison workflow
+
+```r
+library(data.table)
+library(investlabr)
+
+DT <- data.table(
+  datetime = seq.POSIXt(as.POSIXct("2024-01-01", tz = "UTC"), by = "day", length.out = 150),
+  close = cumprod(1 + rnorm(150, mean = 0.0005, sd = 0.01)),
+  event_a = as.integer(seq_len(150) %% 25 == 0),
+  event_b = as.integer(seq_len(150) %% 40 == 0)
+)
+
+evt_a <- eval_event_performance(DT, "event_a", H = 1L:15L)
+evt_b <- eval_event_performance(DT, "event_b", H = 1L:15L)
+
+gen_plot_comparing_events(
+  evt_a, evt_b,
+  first_event_label = "Event A",
+  second_event_label = "Event B"
+)
+```
+
 ### Yield-curve workflow
 
 ```r
@@ -167,6 +203,115 @@ curve_dt <- get_yield_data_DT(
 gen_yield_curve_plot(curve_dt)
 ```
 
+### Exploratory backtesting workflow
+
+This is the lightweight and communication-oriented backtesting layer that remains in `investlabr`. More realistic and execution-grade strategy logic should live in `strategyr`.
+
+```r
+library(data.table)
+library(investlabr)
+
+DT <- data.table(
+  datetime = seq.POSIXt(as.POSIXct("2024-01-01", tz = "UTC"), by = "day", length.out = 120),
+  open = 100 + cumsum(rnorm(120, 0.1, 1)),
+  close = 100 + cumsum(rnorm(120, 0.1, 1)),
+  pos_demo = rep(c(0, 1, 1, 0, -1, -1), length.out = 120)
+)
+
+attr(DT, "inst_id") <- "DEMO-ASSET"
+attr(DT$pos_demo, "strat_name") <- "demo_strategy"
+attr(DT$pos_demo, "strat_par") <- list(window = 20)
+
+bt_res <- eval_strat_performance(DT, "pos_demo")
+
+eval_strat_plot_tsline_eq(bt_res)
+eval_strat_plot_scatter_maxdd_annret(bt_res)
+```
+
+If you want multiple rows for the scatter plot, bind several backtest results first:
+
+```r
+bt_res_list <- data.table::rbindlist(list(bt_res, bt_res))
+eval_strat_plot_scatter_maxdd_annret(bt_res_list)
+```
+
+### Portfolio mix workflow
+
+```r
+library(data.table)
+library(investlabr)
+
+mk_bt_res <- function(asset_name, seed) {
+  set.seed(seed)
+  DT <- data.table(
+    datetime = seq.POSIXt(as.POSIXct("2024-01-01", tz = "UTC"), by = "day", length.out = 120),
+    open = 100 + cumsum(rnorm(120, 0.1, 1)),
+    close = 100 + cumsum(rnorm(120, 0.1, 1)),
+    pos_demo = rep(c(0, 1, 1, 0, -1, -1), length.out = 120)
+  )
+  attr(DT, "inst_id") <- asset_name
+  attr(DT$pos_demo, "strat_name") <- "demo_strategy"
+  attr(DT$pos_demo, "strat_par") <- list(window = 20)
+  eval_strat_performance(DT, "pos_demo")
+}
+
+bt_a <- mk_bt_res("DEMO-ASSET-A", seed = 1)
+bt_b <- mk_bt_res("DEMO-ASSET-B", seed = 2)
+bt_res_list <- data.table::rbindlist(list(bt_a, bt_b), fill = TRUE)
+
+weight_res <- get_optimal_weights(bt_res_list, target_return = 0.05)
+port_res <- eval_portfolio_performance(bt_res_list, target_return = 0.05)
+
+weight_res$optimal_weights_table
+eval_strat_plot_tsline_eq(port_res)
+```
+
+### Market chart workflow
+
+```r
+library(data.table)
+library(investlabr)
+
+DT <- data.table(
+  datetime = seq.POSIXt(as.POSIXct("2024-01-01", tz = "UTC"), by = "day", length.out = 40),
+  open = 100 + cumsum(rnorm(40, 0.1, 1)),
+  high = 102 + cumsum(rnorm(40, 0.1, 1)),
+  low = 98 + cumsum(rnorm(40, 0.1, 1)),
+  close = 100 + cumsum(rnorm(40, 0.1, 1))
+)
+
+gen_candle_plots_with_sr_lines(
+  DT,
+  support_pts = c(95, 97.5),
+  resistance_pts = c(108, 112)
+)
+```
+
+### Multi-panel layout workflow
+
+```r
+library(data.table)
+library(investlabr)
+
+DT <- data.table(
+  datetime = seq.POSIXt(as.POSIXct("2024-01-01", tz = "UTC"), by = "day", length.out = 150),
+  close = cumprod(1 + rnorm(150, mean = 0.0005, sd = 0.01)),
+  event_a = as.integer(seq_len(150) %% 25 == 0),
+  event_b = as.integer(seq_len(150) %% 40 == 0)
+)
+
+p1 <- gen_plot_event_tsline_cum_ret(eval_event_performance(DT, "event_a", H = 1L:15L))
+p2 <- gen_plot_event_tsline_cum_ret(eval_event_performance(DT, "event_b", H = 1L:15L))
+
+gen_grid_of_plots_with_labels(
+  plots = list(p1, p2),
+  n_rows = 1,
+  n_cols = 2,
+  col_labs = c("Event A", "Event B"),
+  title = "Event Comparison"
+)
+```
+
 ### Working with `investdatar`
 
 `investlabr` assumes data has already been retrieved or synchronized elsewhere. A typical workflow is:
@@ -180,6 +325,45 @@ gen_yield_curve_plot(curve_dt)
 # research_tbl <- investlabr::get_yield_data_DT(curve_inputs, yield_dates = ...)
 ```
 
+## End-To-End With `investdatar`
+
+The example below shows the intended workflow boundary directly: `investdatar` reads the local FRED yield series, and `investlabr` converts those series into a research-ready yield-curve comparison chart.
+
+```r
+library(investdatar)
+library(investlabr)
+
+series_ids <- c(
+  "DGS1MO", "DGS3MO", "DGS6MO", "DGS1", "DGS2", "DGS3",
+  "DGS5", "DGS7", "DGS10", "DGS20", "DGS30"
+)
+
+# Optional if you have not synced these series locally yet:
+invisible(lapply(series_ids, investdatar::sync_local_fred_data))
+
+yield_dt_list <- lapply(series_ids, investdatar::get_local_FRED_data)
+
+curve_dt <- investlabr::get_yield_data_DT(
+  yield_dt_list = yield_dt_list,
+  yield_dates = list(
+    Now = Sys.Date(),
+    `One month ago` = Sys.Date() - 30,
+    `One year ago` = Sys.Date() - 365
+  )
+)
+
+investlabr::gen_yield_curve_plot(
+  curve_dt,
+  selected_windows = c("Now", "One month ago", "One year ago")
+)
+```
+
+This is the intended package boundary:
+
+- `investdatar` handles data syncing and local access
+- `investlabr` turns those series into a reusable research object and chart
+- `strategyr` is where dynamically adaptive, execution-grade strategy logic should live
+
 ## Design Principles
 
 - Keep the package focused on research workflows, not data acquisition.
@@ -188,6 +372,7 @@ gen_yield_curve_plot(curve_dt)
 - Separate data preparation, analytic logic, and visualization.
 - Avoid hard-coded file paths, agent objects, or personal local directories.
 - Make functions composable for dashboards and research notes.
+- Keep exploratory backtesting lightweight and communication-oriented; execution-grade strategy logic belongs in `strategyr`.
 
 ## Testing
 
