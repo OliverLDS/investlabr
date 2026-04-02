@@ -1,5 +1,11 @@
 # investlabr news
 
+## 0.0.4.2
+
+- Refined the real-data Yahoo cross-asset event-board gallery example.
+- Added interpolation-based NA handling after Yahoo OHLC load in the gallery script.
+- Improved end-label spacing, datetime handling, and event callout styling in the gallery script.
+
 ## 0.0.4.1
 
 - Added a real-data example gallery under `inst/gallery` to keep richer workflows outside the main README.
