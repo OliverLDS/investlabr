@@ -115,6 +115,7 @@ remotes::install_github("OliverLDS/investlabr")
 - Package scope: [`PACKAGE_SCOPE.md`](./PACKAGE_SCOPE.md)
 - Package architecture: [`ARCHITECTURE.md`](./ARCHITECTURE.md)
 - Release notes: [`NEWS.md`](./NEWS.md)
+- Real-data gallery: [`inst/gallery/README.md`](./inst/gallery/README.md)
 
 ## Current Module Layout
 
@@ -168,6 +169,8 @@ eval_strat_plot_tsline_eq(bt_res, style = "terminal_risk", context = "dashboard"
 ```
 
 ## Basic Usage
+
+For larger real-data workflows, see the gallery in [`inst/gallery/README.md`](./inst/gallery/README.md). The README examples below stay relatively compact on purpose.
 
 ### Event workflow
 
@@ -340,9 +343,10 @@ gen_candle_plots_with_sr_lines(
 library(data.table)
 library(investlabr)
 
+set.seed(1)
 DT <- data.table(
-  datetime = seq.POSIXt(as.POSIXct("2024-01-01", tz = "UTC"), by = "day", length.out = 150),
-  close = cumprod(1 + rnorm(150, mean = 0.0005, sd = 0.01)),
+  date = seq.Date(as.Date("2024-01-01"), by = "day", length.out = 150),
+  close = 100 + cumsum(rnorm(150, 0.05, 1)),
   event_a = as.integer(seq_len(150) %% 25 == 0),
   event_b = as.integer(seq_len(150) %% 40 == 0)
 )
@@ -356,6 +360,104 @@ gen_grid_of_plots_with_labels(
   n_cols = 2,
   col_labs = c("Event A", "Event B"),
   title = "Event Comparison"
+)
+```
+
+### Multi-panel layout workflow with real data
+
+This example uses `investdatar` and Yahoo Finance data to build a 2 by 2 cross-asset event board. Equity, bond, FX, and commodity each get one subplot, and the symbols within each asset class are overlaid with different colors. Each series is indexed to 100 on the last trading day on or before the event date so the post-event paths are directly comparable inside each panel.
+
+```r
+library(data.table)
+library(ggplot2)
+library(investdatar)
+library(investlabr)
+
+event_date <- as.Date("2026-02-28")
+event_label <- "Feb 28, 2026 (Iran War)"
+from_date <- "2026-01-15"
+to_date <- "2026-04-01"
+
+groups <- list(
+  Equity = c("^GSPC", "^STOXX50E", "^N225", "^HSI"),
+  Bond = c("ZT=F", "HYG", "LQD"),
+  FX = c("DX-Y.NYB", "EURUSD=X", "GBPUSD=X"),
+  Commodity = c("GC=F", "HG=F", "CL=F")
+)
+
+all_symbols <- unlist(groups, use.names = FALSE)
+invisible(lapply(
+  all_symbols,
+  function(sym) investdatar::sync_local_quantmod_OHLC(
+    ticker = sym,
+    label = sym,
+    from = from_date,
+    to = to_date,
+    src = "yahoo"
+  )
+))
+
+make_asset_panel <- function(symbols, panel_title) {
+  dt_list <- lapply(symbols, function(symbol) {
+    dt <- investdatar::get_local_quantmod_OHLC(symbol, src = "yahoo")
+    dt <- data.table::as.data.table(dt)[date >= as.Date(from_date) & date <= as.Date(to_date)]
+    event_ref_date <- max(dt$date[dt$date <= event_date])
+    event_ref_close <- dt[date == event_ref_date, close][1]
+    dt[, `:=`(
+      symbol = symbol,
+      event_ref_date = event_ref_date,
+      index100 = close / event_ref_close * 100
+    )]
+    dt
+  })
+
+  panel_dt <- data.table::rbindlist(dt_list, fill = TRUE)
+  subtitle_date <- panel_dt[, min(event_ref_date)]
+  last_labels <- panel_dt[!is.na(index100), .SD[.N], by = symbol]
+
+  p <- ggplot(panel_dt, aes(x = datetime, y = index100, color = symbol)) +
+    geom_line(linewidth = 0.9) +
+    geom_text(
+      data = last_labels,
+      aes(label = symbol),
+      hjust = -0.1,
+      vjust = 0.5,
+      show.legend = FALSE,
+      size = 3.2
+    ) +
+    labs(
+      title = panel_title,
+      subtitle = paste0("Indexed to 100 on ", format(subtitle_date, "%Y-%m-%d")),
+      x = "",
+      y = ""
+    )
+
+  p <- viz_theme_apply(p, style = "macro_classic", context = "report", legend_position = "bottom")
+  p <- viz_annotate_event_lines(
+    p,
+    data.table::data.table(datetime = as.POSIXct(event_date), label = event_label),
+    x_col = "datetime",
+    label_col = "label",
+    style = "macro_classic",
+    context = "report"
+  )
+  p
+}
+
+equity_plot <- make_asset_panel(groups$Equity, "Equity")
+bond_plot <- make_asset_panel(groups$Bond, "Bond")
+fx_plot <- make_asset_panel(groups$FX, "FX")
+commodity_plot <- make_asset_panel(groups$Commodity, "Commodity")
+
+gen_grid_of_plots_with_labels(
+  plots = list(
+    equity_plot, bond_plot,
+    fx_plot, commodity_plot
+  ),
+  n_rows = 2,
+  n_cols = 2,
+  title = "Cross-Asset Performance After Feb 28, 2026",
+  bottom = "Each series is indexed to 100 at the last trading date on or before the event date."
 )
 ```
 

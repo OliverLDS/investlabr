@@ -1,5 +1,11 @@
 # investlabr news
 
+## 0.0.4.1
+
+- Added a real-data example gallery under `inst/gallery` to keep richer workflows outside the main README.
+- Added executable gallery examples for FRED yield curves, Yahoo Finance candles, and a cross-asset event board.
+- Updated `README.md` to point readers to the new gallery.
+
 ## 0.0.4
 
 - Added a shared visualization style system with named styles and output contexts.
