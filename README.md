@@ -115,7 +115,7 @@ remotes::install_github("OliverLDS/investlabr")
 - Package scope: [`PACKAGE_SCOPE.md`](./PACKAGE_SCOPE.md)
 - Package architecture: [`ARCHITECTURE.md`](./ARCHITECTURE.md)
 - Release notes: [`NEWS.md`](./NEWS.md)
-- Real-data gallery: [`inst/gallery/README.md`](./inst/gallery/README.md)
+- Gallery: [`inst/gallery/README.md`](./inst/gallery/README.md)
 
 ## Current Module Layout
 
@@ -170,7 +170,7 @@ eval_strat_plot_tsline_eq(bt_res, style = "terminal_risk", context = "dashboard"
 
 ## Basic Usage
 
-For larger real-data workflows, see the gallery in [`inst/gallery/README.md`](./inst/gallery/README.md). The README examples below stay relatively compact on purpose.
+For larger real-data workflows and style/context showcases, see the gallery in [`inst/gallery/README.md`](./inst/gallery/README.md). The README examples below stay relatively compact on purpose.
 
 ### Event workflow
 

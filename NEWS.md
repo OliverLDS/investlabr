@@ -1,5 +1,11 @@
 # investlabr news
 
+## 0.0.4.3
+
+- Added static style and context sample images under `inst/gallery/output`.
+- Added executable style and context showcase scripts under `inst/gallery`.
+- Updated gallery docs so users can inspect visualization styles without running the examples first.
+
 ## 0.0.4.2
 
 - Refined the real-data Yahoo cross-asset event-board gallery example.
