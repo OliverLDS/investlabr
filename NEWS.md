@@ -1,5 +1,11 @@
 # investlabr news
 
+## 0.0.4.5
+
+- Clarified README guidance for quoting `plot_compiler_name` values that contain special YAML characters.
+- Updated grid-based examples so subplot-level compiler captions are suppressed when the final output is assembled into a shared grid footer.
+- Aligned the real-data cross-asset event-board gallery example with the same `show_compiler = FALSE` subplot behavior.
+
 ## 0.0.4.4
 
 - Added six new visualization styles: `briefing_serif`, `institutional_blue`, `policy_memo`, `desk_monitor`, `client_slide`, and `newswire_print`.

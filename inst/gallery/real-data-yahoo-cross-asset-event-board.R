@@ -138,7 +138,8 @@ make_asset_panel <- function(symbols, panel_title) {
     p,
     style = "macro_classic",
     context = "report",
-    legend_position = "none"
+    legend_position = "none",
+    show_compiler = FALSE
   )
   p + coord_cartesian(ylim = c(y_range[1], event_label_y + 0.04 * y_span))
 }

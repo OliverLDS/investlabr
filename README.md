@@ -176,8 +176,11 @@ eval_strat_plot_tsline_eq(bt_res, style = "terminal_risk", context = "dashboard"
 
 If `INVESTLABR_CONFIG` points to a YAML file with `plot_compiler_name`, `viz_theme_apply()` will append `Compiled by: ...` to plot captions by default. Higher-level wrappers such as `gen_grid_of_plots_with_labels()` and the patchwork-based market dashboard path also use the same compiler footer logic. You can suppress that per plot with `show_compiler = FALSE`.
 
+If the compiler name contains special YAML characters such as `@`, `:`, `#`, or leading/trailing spaces, wrap the string in quotes.
+
 ```yaml
 plot_compiler_name: Oliver Zhou
+plot_compiler_name: "@user_name"
 ```
 
 ## Basic Usage
@@ -363,8 +366,14 @@ DT <- data.table(
   event_b = as.integer(seq_len(150) %% 40 == 0)
 )
 
-p1 <- gen_plot_event_tsline_cum_ret(eval_event_performance(DT, "event_a", H = 1L:15L))
-p2 <- gen_plot_event_tsline_cum_ret(eval_event_performance(DT, "event_b", H = 1L:15L))
+p1 <- gen_plot_event_tsline_cum_ret(
+  eval_event_performance(DT, "event_a", H = 1L:15L),
+  show_compiler = FALSE
+)
+p2 <- gen_plot_event_tsline_cum_ret(
+  eval_event_performance(DT, "event_b", H = 1L:15L),
+  show_compiler = FALSE
+)
 
 gen_grid_of_plots_with_labels(
   plots = list(p1, p2),
@@ -444,7 +453,13 @@ make_asset_panel <- function(symbols, panel_title) {
       y = ""
     )
 
-  p <- viz_theme_apply(p, style = "macro_classic", context = "report", legend_position = "bottom")
+  p <- viz_theme_apply(
+    p,
+    style = "macro_classic",
+    context = "report",
+    legend_position = "bottom",
+    show_compiler = FALSE
+  )
   p <- viz_annotate_event_lines(
     p,
     data.table::data.table(datetime = as.POSIXct(event_date), label = event_label),
