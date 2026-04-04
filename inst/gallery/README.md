@@ -22,65 +22,65 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
 
 `research_note`
 
-![research_note](./output/style-research_note.png)
+![research_note](./output/style-research_note.svg)
 
 `macro_classic`
 
-![macro_classic](./output/style-macro_classic.png)
+![macro_classic](./output/style-macro_classic.svg)
 
 `terminal_risk`
 
-![terminal_risk](./output/style-terminal_risk.png)
+![terminal_risk](./output/style-terminal_risk.svg)
 
 `cross_asset_color`
 
-![cross_asset_color](./output/style-cross_asset_color.png)
+![cross_asset_color](./output/style-cross_asset_color.svg)
 
 `minimal_print`
 
-![minimal_print](./output/style-minimal_print.png)
+![minimal_print](./output/style-minimal_print.svg)
 
 `presentation_bold`
 
-![presentation_bold](./output/style-presentation_bold.png)
+![presentation_bold](./output/style-presentation_bold.svg)
 
 `briefing_serif`
 
-![briefing_serif](./output/style-briefing_serif.png)
+![briefing_serif](./output/style-briefing_serif.svg)
 
 `institutional_blue`
 
-![institutional_blue](./output/style-institutional_blue.png)
+![institutional_blue](./output/style-institutional_blue.svg)
 
 `policy_memo`
 
-![policy_memo](./output/style-policy_memo.png)
+![policy_memo](./output/style-policy_memo.svg)
 
 `desk_monitor`
 
-![desk_monitor](./output/style-desk_monitor.png)
+![desk_monitor](./output/style-desk_monitor.svg)
 
 `client_slide`
 
-![client_slide](./output/style-client_slide.png)
+![client_slide](./output/style-client_slide.svg)
 
 `newswire_print`
 
-![newswire_print](./output/style-newswire_print.png)
+![newswire_print](./output/style-newswire_print.svg)
 
 ### Context samples
 
 `report`
 
-![report](./output/context-report.png)
+![report](./output/context-report.svg)
 
 `slide`
 
-![slide](./output/context-slide.png)
+![slide](./output/context-slide.svg)
 
 `dashboard`
 
-![dashboard](./output/context-dashboard.png)
+![dashboard](./output/context-dashboard.svg)
 
 ## Real-data workflows
 
