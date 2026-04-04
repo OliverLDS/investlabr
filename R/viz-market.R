@@ -194,7 +194,8 @@ gen_candle_plots_with_sr_dts <- function(
   label_digits = 2,
   show_ema_lines = FALSE,
   style = NULL,
-  context = NULL
+  context = NULL,
+  show_compiler = TRUE
 ) {
   resolved <- .viz_resolve_style(style = style, context = context)
   stopifnot(!is.null(support_dt) && !is.null(resistance_dt))
@@ -384,7 +385,9 @@ gen_candle_plots_with_sr_dts <- function(
     show.legend = FALSE
   )
 
+  compiler_caption <- if (isTRUE(show_compiler)) .investlabr_compiler_caption(NULL) else NULL
   p <- patchwork::wrap_plots(p_main, p_atr, ncol = 1, heights = c(4, 1)) +
+    patchwork::plot_annotation(caption = compiler_caption) +
     ggplot2::theme(
       legend.position = "none",
       plot.margin = ggplot2::margin(5.5, 40, 5.5, 5.5)

@@ -89,6 +89,96 @@
       resistance = "#E76F51",
       discrete = c("#C1121F", "#003049", "#2A9D8F", "#F77F00", "#6A4C93", "#588157"),
       sequential = c("#FDE2E4", "#F9BEC7", "#F497A9", "#E85D75", "#C1121F")
+    ),
+    briefing_serif = list(
+      name = "briefing_serif",
+      ink = "#2B2620",
+      paper = "#FBF8F1",
+      grid = "#DDD3C3",
+      muted = "#756B5B",
+      accent = "#7D3C2E",
+      accent2 = "#355C7D",
+      up = "#4E7A60",
+      down = "#A64B3C",
+      support = "#4F6D8A",
+      resistance = "#9A5B2F",
+      discrete = c("#7D3C2E", "#355C7D", "#6B7A3F", "#A46C5A", "#6E5A7B", "#8C8C5A"),
+      sequential = c("#F5EBDD", "#E6D1B3", "#CFA27D", "#A86C45", "#7D3C2E")
+    ),
+    institutional_blue = list(
+      name = "institutional_blue",
+      ink = "#1E2A36",
+      paper = "#F8FAFC",
+      grid = "#D5DEE8",
+      muted = "#627286",
+      accent = "#163A5F",
+      accent2 = "#6E8CA6",
+      up = "#2F6B5F",
+      down = "#B24A4A",
+      support = "#3D6D99",
+      resistance = "#8C5A3C",
+      discrete = c("#163A5F", "#4F6D8C", "#6E8CA6", "#8FA8BC", "#3B5B7A", "#8097AA"),
+      sequential = c("#E8EFF5", "#C6D4E1", "#99AFC4", "#5E7D9A", "#163A5F")
+    ),
+    policy_memo = list(
+      name = "policy_memo",
+      ink = "#2C2F2B",
+      paper = "#F7F6F2",
+      grid = "#D9DED4",
+      muted = "#687166",
+      accent = "#567A6E",
+      accent2 = "#B07D4F",
+      up = "#5D8A72",
+      down = "#B45D4F",
+      support = "#78909C",
+      resistance = "#B07D4F",
+      discrete = c("#567A6E", "#B07D4F", "#7C8C62", "#8E6C88", "#5E81AC", "#A3A380"),
+      sequential = c("#EBF1EE", "#CDDCD5", "#A8BEB3", "#789B8D", "#567A6E")
+    ),
+    desk_monitor = list(
+      name = "desk_monitor",
+      ink = "#E8EEF2",
+      paper = "#0D141A",
+      grid = "#253540",
+      muted = "#93A4B3",
+      accent = "#4CC9F0",
+      accent2 = "#F4A261",
+      up = "#6DD3A0",
+      down = "#F28482",
+      support = "#4895EF",
+      resistance = "#FFB703",
+      discrete = c("#4CC9F0", "#F4A261", "#90BE6D", "#B388EB", "#E76F51", "#A8DADC"),
+      sequential = c("#18242D", "#244150", "#2E6175", "#4A8FB0", "#8BC7E0")
+    ),
+    client_slide = list(
+      name = "client_slide",
+      ink = "#1C1C1C",
+      paper = "#FFFDF8",
+      grid = "#E7E0D3",
+      muted = "#6E6A61",
+      accent = "#C44536",
+      accent2 = "#1F4E79",
+      up = "#2A9D8F",
+      down = "#D1495B",
+      support = "#1F4E79",
+      resistance = "#F4A261",
+      discrete = c("#C44536", "#1F4E79", "#2A9D8F", "#F4A261", "#6A4C93", "#7A9E7E"),
+      sequential = c("#FDE9E4", "#F8C9BC", "#EE9B88", "#E06B56", "#C44536")
+    ),
+    newswire_print = list(
+      name = "newswire_print",
+      ink = "#202020",
+      paper = "#FFFFFF",
+      grid = "#CFCFCF",
+      muted = "#666666",
+      accent = "#2B2B2B",
+      accent2 = "#5C5C5C",
+      up = "#2B2B2B",
+      down = "#7A7A7A",
+      support = "#4D4D4D",
+      resistance = "#1F1F1F",
+      discrete = c("#202020", "#4A4A4A", "#6B6B6B", "#8A8A8A", "#A6A6A6", "#5A5A5A"),
+      sequential = c("#F4F4F4", "#D9D9D9", "#BEBEBE", "#7F7F7F", "#333333")
     )
   )
 }
@@ -234,13 +324,20 @@ viz_palette_get <- function(style = NULL, context = NULL, palette = c("discrete"
 #' @param context Output context or `NULL` to use the package default.
 #' @param legend_position Optional legend position override.
 #' @param base_family Optional font family override.
+#' @param show_compiler Whether to append the configured plot compiler name to the caption.
 #'
 #' @return A styled `ggplot` object.
 #' @export
-viz_theme_apply <- function(plot, style = NULL, context = NULL, legend_position = NULL, base_family = NULL) {
+viz_theme_apply <- function(plot, style = NULL, context = NULL, legend_position = NULL, base_family = NULL, show_compiler = TRUE) {
   resolved <- .viz_resolve_style(style = style, context = context)
   if (!is.null(base_family)) resolved$base_family <- base_family
   if (!is.null(legend_position)) resolved$legend_position <- legend_position
+  if (isTRUE(show_compiler)) {
+    caption <- .investlabr_compiler_caption(plot$labels$caption)
+    if (!identical(caption, plot$labels$caption)) {
+      plot <- plot + ggplot2::labs(caption = caption)
+    }
+  }
 
   theme_base <- ggplot2::theme_minimal(
     base_size = resolved$base_size,

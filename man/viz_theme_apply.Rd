@@ -9,7 +9,8 @@ viz_theme_apply(
   style = NULL,
   context = NULL,
   legend_position = NULL,
-  base_family = NULL
+  base_family = NULL,
+  show_compiler = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ viz_theme_apply(
 \item{legend_position}{Optional legend position override.}
 
 \item{base_family}{Optional font family override.}
+
+\item{show_compiler}{Whether to append the configured plot compiler name to the caption.}
 }
 \value{
 A styled `ggplot` object.

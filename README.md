@@ -144,6 +144,12 @@ Current named styles include:
 - `cross_asset_color`
 - `minimal_print`
 - `presentation_bold`
+- `briefing_serif`
+- `institutional_blue`
+- `policy_memo`
+- `desk_monitor`
+- `client_slide`
+- `newswire_print`
 
 Current contexts include:
 
@@ -166,6 +172,12 @@ Most plotting functions now accept `style` and `context`, for example:
 gen_yield_curve_plot(curve_dt, style = "macro_classic", context = "slide")
 gen_plot_event_tsline_cum_ret(evt, style = "presentation_bold", context = "report")
 eval_strat_plot_tsline_eq(bt_res, style = "terminal_risk", context = "dashboard")
+```
+
+If `INVESTLABR_CONFIG` points to a YAML file with `plot_compiler_name`, `viz_theme_apply()` will append `Compiled by: ...` to plot captions by default. Higher-level wrappers such as `gen_grid_of_plots_with_labels()` and the patchwork-based market dashboard path also use the same compiler footer logic. You can suppress that per plot with `show_compiler = FALSE`.
+
+```yaml
+plot_compiler_name: Oliver Zhou
 ```
 
 ## Basic Usage

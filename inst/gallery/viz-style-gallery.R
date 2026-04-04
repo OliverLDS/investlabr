@@ -9,7 +9,13 @@ styles <- c(
   "terminal_risk",
   "cross_asset_color",
   "minimal_print",
-  "presentation_bold"
+  "presentation_bold",
+  "briefing_serif",
+  "institutional_blue",
+  "policy_memo",
+  "desk_monitor",
+  "client_slide",
+  "newswire_print"
 )
 
 context_name <- "report"

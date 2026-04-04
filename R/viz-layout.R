@@ -1,4 +1,22 @@
+#' Arrange plots in a labeled grid layout
+#'
+#' @param plots List of ggplot objects or grobs.
+#' @param n_rows Number of plot rows.
+#' @param n_cols Number of plot columns.
+#' @param row_labs Optional row labels.
+#' @param col_labs Optional column labels.
+#' @param title Optional overall title.
+#' @param bottom Optional overall footer text.
+#' @param row_label_width_cm Width allocated to row labels.
+#' @param col_header_height_cm Height allocated to column headers.
+#' @param row_label_gp Optional `grid::gpar()` for row labels.
+#' @param col_label_gp Optional `grid::gpar()` for column labels.
+#' @param title_gp Optional `grid::gpar()` for the title.
+#' @param bottom_gp Optional `grid::gpar()` for the footer.
 #' @inheritParams viz_style_get
+#' @param show_compiler Whether to append the configured plot compiler name to the footer.
+#'
+#' @return A `gtable` object returned by `gridExtra::grid.arrange()`.
 #' @export
 gen_grid_of_plots_with_labels <- function(
   plots,
@@ -14,7 +32,8 @@ gen_grid_of_plots_with_labels <- function(
   title_gp = NULL,
   bottom_gp = NULL,
   style = NULL,
-  context = NULL
+  context = NULL,
+  show_compiler = TRUE
 ) {
   resolved <- .viz_resolve_style(style = style, context = context)
   if (is.null(row_label_gp)) row_label_gp <- grid::gpar(fontface = "bold", cex = resolved$base_size / 11, col = resolved$ink)
@@ -93,7 +112,8 @@ gen_grid_of_plots_with_labels <- function(
   }
 
   top_grob <- if (!is.null(title)) grid::textGrob(title, gp = title_gp) else NULL
-  bottom_grob <- if (!is.null(bottom)) grid::textGrob(bottom, gp = bottom_gp) else NULL
+  bottom_text <- if (isTRUE(show_compiler)) .investlabr_compiler_caption(bottom) else bottom
+  bottom_grob <- if (!is.null(bottom_text) && nzchar(bottom_text)) grid::textGrob(bottom_text, gp = bottom_gp) else NULL
 
   gridExtra::grid.arrange(
     grobs = grobs,
@@ -107,7 +127,7 @@ gen_grid_of_plots_with_labels <- function(
 
 #' @inheritParams viz_style_get
 #' @export
-gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_labels, style = NULL, context = NULL) {
+gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_labels, style = NULL, context = NULL, show_compiler = TRUE) {
   resolved <- .viz_resolve_style(style = style, context = context)
   DT_long <- data.table::melt(
     DT,
@@ -128,5 +148,5 @@ gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_l
     ggplot2::geom_point(color = resolved$accent2, size = resolved$point_size) +
     ggplot2::facet_grid(metric ~ ., scales = "free_y") +
     ggplot2::labs(x = NULL, y = NULL)
-  viz_theme_apply(p, style = resolved)
+  viz_theme_apply(p, style = resolved, show_compiler = show_compiler)
 }

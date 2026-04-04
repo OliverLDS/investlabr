@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.4.4
+
+- Added six new visualization styles: `briefing_serif`, `institutional_blue`, `policy_memo`, `desk_monitor`, `client_slide`, and `newswire_print`.
+- Added config-driven plot compiler caption support via `INVESTLABR_CONFIG` and `plot_compiler_name`.
+- Extended compiler footer handling to higher-level grid and dashboard wrappers.
+- Refreshed the style gallery scripts and static gallery images to cover the expanded style catalog.
+
 ## 0.0.4.3
 
 - Added static style and context sample images under `inst/gallery/output`.

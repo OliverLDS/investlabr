@@ -44,6 +44,30 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
 
 ![presentation_bold](./output/style-presentation_bold.png)
 
+`briefing_serif`
+
+![briefing_serif](./output/style-briefing_serif.png)
+
+`institutional_blue`
+
+![institutional_blue](./output/style-institutional_blue.png)
+
+`policy_memo`
+
+![policy_memo](./output/style-policy_memo.png)
+
+`desk_monitor`
+
+![desk_monitor](./output/style-desk_monitor.png)
+
+`client_slide`
+
+![client_slide](./output/style-client_slide.png)
+
+`newswire_print`
+
+![newswire_print](./output/style-newswire_print.png)
+
 ### Context samples
 
 `report`
