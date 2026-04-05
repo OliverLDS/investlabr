@@ -1,5 +1,11 @@
 # investlabr news
 
+## 0.0.4.6
+
+- Expanded the gallery substantially with new real-data and simulation workflows covering iShares opportunity-set mapping, Fed plumbing and balance-sheet views, trade-conflict overlays, macro-factor sensitivity heatmaps, payoff mismatch scenarios, and regime simulations.
+- Added a Treasury-source curve decomposition gallery board for nominal, real, and breakeven curves, and documented that Treasury XML curve ingestion should ultimately move into `investdatar` as a first-class source adapter.
+- Updated architecture and gallery docs to reflect the broader gallery surface and the temporary boundary for direct-source Treasury examples.
+
 ## 0.0.4.5
 
 - Clarified README guidance for quoting `plot_compiler_name` values that contain special YAML characters.

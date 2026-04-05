@@ -90,6 +90,37 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
   Yahoo Finance OHLC data synced through `investdatar`, then rendered as a market chart in `investlabr`.
 - `real-data-yahoo-cross-asset-event-board.R`
   Cross-asset Yahoo Finance event study with four panels: equity, bond, FX, and commodity.
+- `real-data-ishare-portfolio-mix.R`
+  Four-panel portfolio-mix workflow using iShares ETF NAV history and FRED `DGS10` for a tangency line against the efficient frontier.
+- `real-data-ishare-opportunity-set-board.R`
+  Cross-sectional iShares opportunity-set board with a broader ETF universe, an annualized risk/return scatter, and an embedded summary table.
+- `real-data-fred-risk-dashboard.R`
+  Multi-panel risk dashboard using FRED series for VIX, EPU, and EMU, plus a daily VIX versus EPU comparison.
+- `real-data-fred-policy-liquidity-dashboard.R`
+  Policy rates, target band, Fed balance sheet, and reserve balances from FRED.
+- `real-data-fred-curve-real-yield-dashboard.R`
+  Curve spreads and real-yield comparisons from FRED.
+- `real-data-fred-risk-appetite-dashboard.R`
+  Equities, VIX, and credit spread dashboard from FRED.
+- `real-data-fred-inflation-labor-dashboard.R`
+  Inflation expectations and labor-market dashboard from FRED.
+- `real-data-fred-liquidity-tightness-dashboard.R`
+  Corridor-spread dashboard focused on reserve tightness, floor binding, bill scarcity, and a simple liquidity regime map.
+- `real-data-fred-trade-conflict-overlay.R`
+  Event-overlay chart for EFFR with shaded US trade-conflict episodes and callout labels.
+- `real-data-fred-fomc-plumbing-board.R`
+  FOMC implementation-plumbing board focused on IORB spreads, reserve mechanics, TGA swings, repo and ON RRP usage, and balance-sheet footprint.
+- `real-data-fred-balance-sheet-mirror-board.R`
+  Federal Reserve balance-sheet mirror board focused on weekly asset and liability stocks plus cumulative recent changes.
+- `real-data-macro-factor-heatmap.R`
+  Cross-sectional stock heatmap of full-sample macro-factor sensitivities using local Yahoo prices and FRED factors.
+- `real-data-treasury-curve-decomposition-board.R`
+  Treasury-source nominal, real, and breakeven curve board with a simple change decomposition across two dates.
+  Maintainer note: this currently reads Treasury XML directly because `investdatar` does not yet expose Treasury curve data as a local source. The preferred long-term design is to add that source to `investdatar` first, then refactor this gallery script to consume the synchronized local data.
+- `sim-forward-guidance-vs-warsh-regime.R`
+  Stylized structural-break simulation comparing a slow forward-guidance regime with a faster repricing regime.
+- `sim-digital-option-settlement-mismatch-board.R`
+  Stylized payoff board for a digital-plus-option structure, emphasizing settlement mismatch, conditional tail payoff, and loss-valley compression.
 
 ## Usage
 
@@ -101,6 +132,21 @@ source("inst/gallery/viz-context-gallery.R")
 source("inst/gallery/real-data-fred-yield-curve.R")
 source("inst/gallery/real-data-yahoo-candles.R")
 source("inst/gallery/real-data-yahoo-cross-asset-event-board.R")
+source("inst/gallery/real-data-ishare-portfolio-mix.R")
+source("inst/gallery/real-data-ishare-opportunity-set-board.R")
+source("inst/gallery/real-data-fred-risk-dashboard.R")
+source("inst/gallery/real-data-fred-policy-liquidity-dashboard.R")
+source("inst/gallery/real-data-fred-curve-real-yield-dashboard.R")
+source("inst/gallery/real-data-fred-risk-appetite-dashboard.R")
+source("inst/gallery/real-data-fred-inflation-labor-dashboard.R")
+source("inst/gallery/real-data-fred-liquidity-tightness-dashboard.R")
+source("inst/gallery/real-data-fred-trade-conflict-overlay.R")
+source("inst/gallery/real-data-fred-fomc-plumbing-board.R")
+source("inst/gallery/real-data-fred-balance-sheet-mirror-board.R")
+source("inst/gallery/real-data-macro-factor-heatmap.R")
+source("inst/gallery/real-data-treasury-curve-decomposition-board.R")
+source("inst/gallery/sim-forward-guidance-vs-warsh-regime.R")
+source("inst/gallery/sim-digital-option-settlement-mismatch-board.R")
 ```
 
 These scripts are intended to be edited for your own dates, tickers, and event labels.
