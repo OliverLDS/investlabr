@@ -1,5 +1,11 @@
 # investlabr news
 
+## 0.0.4.7
+
+- Fixed the export state for `gen_grid_of_plots_with_labels()` after the footer-wrap helper refactor so the function is available again from the package namespace.
+- Added automatic wrapping for long `bottom` footer text in `gen_grid_of_plots_with_labels()`.
+- Added regression coverage for wrapped grid-footer text.
+
 ## 0.0.4.6
 
 - Expanded the gallery substantially with new real-data and simulation workflows covering iShares opportunity-set mapping, Fed plumbing and balance-sheet views, trade-conflict overlays, macro-factor sensitivity heatmaps, payoff mismatch scenarios, and regime simulations.

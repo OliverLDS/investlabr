@@ -118,3 +118,24 @@ test_that("grid wrapper appends configured compiler caption to footer", {
   testthat::expect_true(any(grepl("Source: Demo", grob_labels, fixed = TRUE)))
   testthat::expect_true(any(grepl("Compiled by: Oliver Zhou", grob_labels, fixed = TRUE)))
 })
+
+test_that("grid wrapper wraps long footer text", {
+  p <- ggplot2::ggplot(data.frame(x = 1:3, y = 1:3), ggplot2::aes(x, y)) + ggplot2::geom_line()
+  long_footer <- paste(rep("This footer should wrap automatically when it gets too long for a single line.", 4), collapse = " ")
+
+  arranged <- gen_grid_of_plots_with_labels(
+    plots = list(p),
+    n_rows = 1,
+    n_cols = 1,
+    bottom = long_footer,
+    style = "macro_classic",
+    context = "report",
+    show_compiler = FALSE
+  )
+
+  grob_names <- vapply(arranged$grobs, function(g) paste(class(g), collapse = "/"), character(1))
+  text_idx <- which(grob_names == "text/grob/gDesc")
+  grob_labels <- vapply(arranged$grobs[text_idx], function(g) as.character(g$label), character(1))
+
+  testthat::expect_true(any(grepl("\n", grob_labels, fixed = TRUE)))
+})

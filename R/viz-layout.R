@@ -1,3 +1,15 @@
+.viz_wrap_footer_text <- function(text, n_cols, show_row_labs = FALSE) {
+  if (is.null(text) || !nzchar(text)) return(text)
+
+  wrap_width <- max(55L, as.integer(72L * n_cols - if (show_row_labs) 10L else 0L))
+  paragraphs <- strsplit(text, "\n", fixed = TRUE)[[1]]
+  wrapped <- vapply(paragraphs, function(line) {
+    if (!nzchar(line)) return("")
+    paste(strwrap(line, width = wrap_width), collapse = "\n")
+  }, character(1))
+  paste(wrapped, collapse = "\n")
+}
+
 #' Arrange plots in a labeled grid layout
 #'
 #' @param plots List of ggplot objects or grobs.
@@ -113,6 +125,7 @@ gen_grid_of_plots_with_labels <- function(
 
   top_grob <- if (!is.null(title)) grid::textGrob(title, gp = title_gp) else NULL
   bottom_text <- if (isTRUE(show_compiler)) .investlabr_compiler_caption(bottom) else bottom
+  bottom_text <- .viz_wrap_footer_text(bottom_text, n_cols = n_cols, show_row_labs = show_row_labs)
   bottom_grob <- if (!is.null(bottom_text) && nzchar(bottom_text)) grid::textGrob(bottom_text, gp = bottom_gp) else NULL
 
   gridExtra::grid.arrange(
