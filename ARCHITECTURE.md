@@ -85,6 +85,7 @@ Sensitivity and exposure analysis. Typical responsibilities:
 Scenario and structural simulation. Current status:
 
 - includes legacy backtesting and portfolio-simulation helpers from the older package scope
+- now also includes reusable stylized data-generating-process helpers for synthetic time-series research workflows
 - should gradually broaden toward scenario and structural comparison tools
 - should keep any retained backtesting helpers clearly framed as exploratory rather than execution-grade
 

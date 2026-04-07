@@ -1,5 +1,11 @@
 # investlabr news
 
+## 0.0.4.8
+
+- Added research-facing `sim_*` time-series generators for AR, MA, ARCH, and GARCH-style data-generating processes.
+- Standardized those simulation helpers around explicit validation, reproducible seeding, and `data.table` outputs suitable for downstream research workflows.
+- Added package tests and generated documentation for the new simulation module.
+
 ## 0.0.4.7
 
 - Fixed the export state for `gen_grid_of_plots_with_labels()` after the footer-wrap helper refactor so the function is available again from the package namespace.
