@@ -86,8 +86,16 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
 
 - `real-data-fred-yield-curve.R`
   FRED Treasury series synced through `investdatar`, then plotted as a yield-curve comparison in `investlabr`.
+- `real-data-fred-rate-shock-persistence-board.R`
+  FRED 10-year Treasury data used to compare recent rate shocks, AR-style persistence envelopes, and realized post-shock paths.
+- `real-data-treasury-nominal-real-weekly-board.R`
+  Treasury local curve data from `investdatar::get_local_treasury_rates()` rendered as a two-panel board: nominal curve on the left and real curve on the right, each comparing the latest available date with the recent three-month high and low in the real 10-year yield.
 - `real-data-yahoo-candles.R`
   Yahoo Finance OHLC data synced through `investdatar`, then rendered as a market chart in `investlabr`.
+- `real-data-yahoo-volatility-clustering-board.R`
+  Yahoo Finance price history used as the real-data anchor for a four-panel board comparing actual returns with iid and GARCH-style benchmark behavior.
+- `real-data-yahoo-forward-fan-from-recent-regime.R`
+  Yahoo Finance index history used to calibrate a recent-regime forward fan with percentile bands, sample paths, and a terminal return distribution.
 - `real-data-yahoo-cross-asset-event-board.R`
   Cross-asset Yahoo Finance event study with four panels: equity, bond, FX, and commodity.
 - `real-data-ishare-portfolio-mix.R`
@@ -116,7 +124,7 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
   Cross-sectional stock heatmap of full-sample macro-factor sensitivities using local Yahoo prices and FRED factors.
 - `real-data-treasury-curve-decomposition-board.R`
   Treasury-source nominal, real, and breakeven curve board with a simple change decomposition across two dates.
-  Maintainer note: this currently reads Treasury XML directly because `investdatar` does not yet expose Treasury curve data as a local source. The preferred long-term design is to add that source to `investdatar` first, then refactor this gallery script to consume the synchronized local data.
+  This remains a direct Treasury XML example because it focuses on a source-specific decomposition board; for a local-data Treasury workflow through `investdatar`, use `real-data-treasury-nominal-real-weekly-board.R`.
 - `sim-forward-guidance-vs-warsh-regime.R`
   Stylized structural-break simulation comparing a slow forward-guidance regime with a faster repricing regime.
 - `sim-digital-option-settlement-mismatch-board.R`
@@ -130,7 +138,11 @@ Run an example interactively from the package root:
 source("inst/gallery/viz-style-gallery.R")
 source("inst/gallery/viz-context-gallery.R")
 source("inst/gallery/real-data-fred-yield-curve.R")
+source("inst/gallery/real-data-fred-rate-shock-persistence-board.R")
+source("inst/gallery/real-data-treasury-nominal-real-weekly-board.R")
 source("inst/gallery/real-data-yahoo-candles.R")
+source("inst/gallery/real-data-yahoo-volatility-clustering-board.R")
+source("inst/gallery/real-data-yahoo-forward-fan-from-recent-regime.R")
 source("inst/gallery/real-data-yahoo-cross-asset-event-board.R")
 source("inst/gallery/real-data-ishare-portfolio-mix.R")
 source("inst/gallery/real-data-ishare-opportunity-set-board.R")

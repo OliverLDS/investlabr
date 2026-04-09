@@ -1,5 +1,11 @@
 # investlabr news
 
+## 0.0.4.9
+
+- Added four new real-data gallery workflows: a Treasury nominal-versus-real curve board keyed to recent real-rate extremes, a Yahoo volatility-clustering board, a FRED rate-shock persistence board, and a Yahoo forward-fan board.
+- Updated the gallery index and architecture notes to reflect the newer Treasury local-data workflow through `investdatar`.
+- Refined the Treasury local-data gallery script with clearer reader-facing framing, denser guide lines, shorter date legends, and guarded tenor-level backfilling with warnings.
+
 ## 0.0.4.8
 
 - Added research-facing `sim_*` time-series generators for AR, MA, ARCH, and GARCH-style data-generating processes.

@@ -113,7 +113,7 @@ The repository is in a transition state.
 - The directory structure already follows the target module families.
 - Some exported functions still use older names such as `eval_*` and `gen_*`.
 - The current `sim-*` files still contain legacy strategy-evaluation helpers. They remain temporarily for compatibility and should be refactored or wrapped into broader research workflows over time.
-- A few gallery examples still read niche upstream sources directly when `investdatar` does not yet expose them as first-class local source adapters. Those cases should be treated as temporary. Treasury XML yield-curve data is one concrete example that should eventually move into `investdatar`, with `investlabr` consuming the synchronized local output rather than parsing the source directly.
+- A few gallery examples still read niche upstream sources directly when `investdatar` does not yet expose them as first-class local source adapters. Those cases should be treated as temporary. Treasury local curve data is now available through `investdatar::get_local_treasury_rates()`, while the XML-based Treasury decomposition example remains as a source-specific gallery workflow rather than the default local-data path.
 
 ## Implementation Principles
 
