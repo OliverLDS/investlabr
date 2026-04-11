@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.4.11
+
+- Extended `eval_strat_plot_tsline_eq()` to compare up to two evaluated strategy equity curves against one benchmark, with clearer title labels, semantic color names, and added volatility, Sharpe, and Sortino metrics.
+- Added reusable `prep_backtest_result_from_equity()` and `prep_ratio_ohlc()` helpers so external `strategyr` backtest outputs and ratio proxies can be adapted into investlabr research plots.
+- Expanded the real-data `strategyr` gallery with additional strategy examples, shared gallery utilities, absolute-path-safe sourcing, and explanatory narratives before plot output.
+- Updated the curve-steepener gallery to use a one-trading-row-lagged Treasury 10Y-2Y signal and to compare the direct and contrarian versions against a buy-and-hold SHY/TLT ratio proxy.
+
 ## 0.0.4.10
 
 - Removed deprecated `ggplot2::aes_string()` usage from visualization helpers.

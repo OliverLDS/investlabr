@@ -106,6 +106,24 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
   Local Yahoo index data run through `strategyr`'s Bollinger mean-reversion strategy backtest, then visualized in `investlabr`.
 - `real-data-strategyr-vol-target-backtest.R`
   Local Yahoo index data run through `strategyr`'s volatility-targeted strategy backtest, then visualized in `investlabr`.
+- `real-data-strategyr-ema-cross-backtest.R`
+  Local Yahoo index data run through `strategyr`'s EMA-cross strategy backtest, then visualized in `investlabr`.
+- `real-data-strategyr-atr-breakout-backtest.R`
+  Local Yahoo index data run through `strategyr`'s ATR-breakout strategy backtest, then visualized in `investlabr`.
+- `real-data-strategyr-trend-pullback-backtest.R`
+  Local Yahoo index data run through `strategyr`'s trend-pullback strategy backtest, then visualized in `investlabr`.
+- `real-data-strategyr-ladder-bounce-backtest.R`
+  Local Yahoo index data run through `strategyr`'s ladder-bounce strategy backtest, then visualized in `investlabr`.
+- `real-data-strategyr-ladder-breakout-backtest.R`
+  Local Yahoo index data run through `strategyr`'s ladder-breakout strategy backtest, then visualized in `investlabr`.
+- `real-data-strategyr-relative-strength-backtest.R`
+  Local Yahoo ETF data run through `strategyr`'s relative-strength strategy using IEFA versus IVV, then visualized in `investlabr`.
+- `real-data-strategyr-ratio-revert-backtest.R`
+  Local Yahoo ETF data run through `strategyr`'s ratio-reversion strategy using SPY versus IVV, then visualized in `investlabr`.
+- `real-data-strategyr-pair-spread-revert-backtest.R`
+  Local Yahoo ETF data run through `strategyr`'s pair-spread reversion strategy using HYG versus LQD, then visualized in `investlabr`.
+- `real-data-strategyr-curve-steepener-backtest.R`
+  Local Treasury curve data from `investdatar` drives lagged direct and contrarian `strategyr` curve-steepener signals, then a synthetic SHY/TLT Yahoo ETF ratio proxy is backtested and visualized in `investlabr`.
 - `real-data-yahoo-cross-asset-event-board.R`
   Cross-asset Yahoo Finance event study with four panels: equity, bond, FX, and commodity.
 - `real-data-ishare-portfolio-mix.R`
@@ -158,6 +176,15 @@ source("inst/gallery/real-data-strategyr-macd-backtest.R")
 source("inst/gallery/real-data-strategyr-rsi-backtest.R")
 source("inst/gallery/real-data-strategyr-bollinger-backtest.R")
 source("inst/gallery/real-data-strategyr-vol-target-backtest.R")
+source("inst/gallery/real-data-strategyr-ema-cross-backtest.R")
+source("inst/gallery/real-data-strategyr-atr-breakout-backtest.R")
+source("inst/gallery/real-data-strategyr-trend-pullback-backtest.R")
+source("inst/gallery/real-data-strategyr-ladder-bounce-backtest.R")
+source("inst/gallery/real-data-strategyr-ladder-breakout-backtest.R")
+source("inst/gallery/real-data-strategyr-relative-strength-backtest.R")
+source("inst/gallery/real-data-strategyr-ratio-revert-backtest.R")
+source("inst/gallery/real-data-strategyr-pair-spread-revert-backtest.R")
+source("inst/gallery/real-data-strategyr-curve-steepener-backtest.R")
 source("inst/gallery/real-data-yahoo-cross-asset-event-board.R")
 source("inst/gallery/real-data-ishare-portfolio-mix.R")
 source("inst/gallery/real-data-ishare-opportunity-set-board.R")

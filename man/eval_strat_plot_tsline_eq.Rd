@@ -7,16 +7,23 @@
 eval_strat_plot_tsline_eq(
   bt_res,
   benchmark_bt_res = NULL,
+  bt_res_2 = NULL,
   style = NULL,
-  context = NULL
+  context = NULL,
+  caption = NULL
 )
 }
 \arguments{
 \item{bt_res}{single-row data.table from \code{eval_strat_performance()}.}
 
+\item{bt_res_2}{Optional second evaluated strategy result. Use sparingly; the
+chart is designed for at most two evaluated strategies plus one benchmark.}
+
 \item{style}{Named style family or `NULL` to use the package default.}
 
 \item{context}{Output context or `NULL` to use the package default.}
+
+\item{caption}{Optional chart caption placed above the configured compiler footer.}
 }
 \value{
 ggplot object.
