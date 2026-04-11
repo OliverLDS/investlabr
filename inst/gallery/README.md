@@ -96,6 +96,16 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
   Yahoo Finance price history used as the real-data anchor for a four-panel board comparing actual returns with iid and GARCH-style benchmark behavior.
 - `real-data-yahoo-forward-fan-from-recent-regime.R`
   Yahoo Finance index history used to calibrate a recent-regime forward fan with percentile bands, sample paths, and a terminal return distribution.
+- `real-data-strategyr-donchian-backtest.R`
+  Local Yahoo index data run through `strategyr`'s path-dependent Donchian breakout backtest, then visualized in `investlabr` with `eval_strat_plot_tsline_eq()`.
+- `real-data-strategyr-macd-backtest.R`
+  Local Yahoo index data run through `strategyr`'s MACD-cross strategy backtest, then visualized in `investlabr`.
+- `real-data-strategyr-rsi-backtest.R`
+  Local Yahoo index data run through `strategyr`'s RSI mean-reversion strategy backtest, then visualized in `investlabr`.
+- `real-data-strategyr-bollinger-backtest.R`
+  Local Yahoo index data run through `strategyr`'s Bollinger mean-reversion strategy backtest, then visualized in `investlabr`.
+- `real-data-strategyr-vol-target-backtest.R`
+  Local Yahoo index data run through `strategyr`'s volatility-targeted strategy backtest, then visualized in `investlabr`.
 - `real-data-yahoo-cross-asset-event-board.R`
   Cross-asset Yahoo Finance event study with four panels: equity, bond, FX, and commodity.
 - `real-data-ishare-portfolio-mix.R`
@@ -128,7 +138,7 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
 - `sim-forward-guidance-vs-warsh-regime.R`
   Stylized structural-break simulation comparing a slow forward-guidance regime with a faster repricing regime.
 - `sim-digital-option-settlement-mismatch-board.R`
-  Stylized payoff board for a digital-plus-option structure, emphasizing settlement mismatch, conditional tail payoff, and loss-valley compression.
+  Stylized payoff board for a prediction-market breakout leg plus short-straddle option leg, emphasizing same-settlement pricing assumptions, settlement mismatch, and bridge risk.
 
 ## Usage
 
@@ -143,6 +153,11 @@ source("inst/gallery/real-data-treasury-nominal-real-weekly-board.R")
 source("inst/gallery/real-data-yahoo-candles.R")
 source("inst/gallery/real-data-yahoo-volatility-clustering-board.R")
 source("inst/gallery/real-data-yahoo-forward-fan-from-recent-regime.R")
+source("inst/gallery/real-data-strategyr-donchian-backtest.R")
+source("inst/gallery/real-data-strategyr-macd-backtest.R")
+source("inst/gallery/real-data-strategyr-rsi-backtest.R")
+source("inst/gallery/real-data-strategyr-bollinger-backtest.R")
+source("inst/gallery/real-data-strategyr-vol-target-backtest.R")
 source("inst/gallery/real-data-yahoo-cross-asset-event-board.R")
 source("inst/gallery/real-data-ishare-portfolio-mix.R")
 source("inst/gallery/real-data-ishare-opportunity-set-board.R")

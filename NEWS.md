@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.4.10
+
+- Removed deprecated `ggplot2::aes_string()` usage from visualization helpers.
+- Added color-keyed metric annotations to `eval_strat_plot_tsline_eq()` so evaluated and benchmark lines are easier to connect with their summary metrics.
+- Added five real-data `strategyr` backtest gallery examples using local Yahoo data, `strategyr::backtest_rcpp()`, and `investlabr::eval_strat_plot_tsline_eq()`.
+- Reworked the settlement-mismatch simulation gallery around a breakout prediction-market leg plus short-straddle option leg, with clearer numerical assumptions and narrative framing.
+
 ## 0.0.4.9
 
 - Added four new real-data gallery workflows: a Treasury nominal-versus-real curve board keyed to recent real-rate extremes, a Yahoo volatility-clustering board, a FRED rate-shock persistence board, and a Yahoo forward-fan board.

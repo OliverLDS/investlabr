@@ -396,7 +396,7 @@ viz_annotate_last_value <- function(plot, data, x, y, label = NULL, prefix = "",
   plot +
     ggplot2::geom_text(
       data = last_row,
-      ggplot2::aes_string(x = x, y = y, label = "label_value"),
+      ggplot2::aes(x = .data[[x]], y = .data[[y]], label = .data[["label_value"]]),
       inherit.aes = FALSE,
       color = if (is.null(color)) resolved$ink else color,
       hjust = -0.1,
@@ -425,7 +425,7 @@ viz_annotate_event_lines <- function(plot, event_dt, x_col = "datetime", label_c
   p <- plot +
     ggplot2::geom_vline(
       data = event_dt,
-      ggplot2::aes_string(xintercept = x_col),
+      ggplot2::aes(xintercept = .data[[x_col]]),
       inherit.aes = FALSE,
       color = event_color,
       linetype = linetype,
@@ -436,7 +436,7 @@ viz_annotate_event_lines <- function(plot, event_dt, x_col = "datetime", label_c
     p <- p +
       ggplot2::geom_text(
         data = event_dt,
-        ggplot2::aes_string(x = x_col, label = label_col),
+        ggplot2::aes(x = .data[[x_col]], label = .data[[label_col]]),
         inherit.aes = FALSE,
         y = Inf,
         color = event_color,
@@ -468,7 +468,7 @@ viz_annotate_regime_bands <- function(plot, regime_dt, xmin_col = "start", xmax_
   plot +
     ggplot2::geom_rect(
       data = regime_dt,
-      ggplot2::aes_string(xmin = xmin_col, xmax = xmax_col),
+      ggplot2::aes(xmin = .data[[xmin_col]], xmax = .data[[xmax_col]]),
       inherit.aes = FALSE,
       ymin = -Inf,
       ymax = Inf,

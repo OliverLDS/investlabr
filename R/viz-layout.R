@@ -156,7 +156,7 @@ gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_l
     labels = measure_labels
   )]
 
-  p <- ggplot2::ggplot(DT_long, ggplot2::aes_string(x = id_vars, y = "value")) +
+  p <- ggplot2::ggplot(DT_long, ggplot2::aes(x = .data[[id_vars]], y = .data[["value"]])) +
     ggplot2::geom_line(color = resolved$accent, linewidth = resolved$line_width) +
     ggplot2::geom_point(color = resolved$accent2, size = resolved$point_size) +
     ggplot2::facet_grid(metric ~ ., scales = "free_y") +
