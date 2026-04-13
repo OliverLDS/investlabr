@@ -48,6 +48,10 @@ For navigation and maintenance, see:
 
 ![minimal_print](./output/style-minimal_print.svg)
 
+`strategy_explain`
+
+![strategy_explain](./output/style-strategy_explain.svg)
+
 `presentation_bold`
 
 ![presentation_bold](./output/style-presentation_bold.svg)
@@ -108,34 +112,60 @@ For navigation and maintenance, see:
   Yahoo Finance index history used to calibrate a recent-regime forward fan with percentile bands, sample paths, and a terminal return distribution.
 - `real-data-strategyr-donchian-backtest.R`
   Local Yahoo `DBC` data for 2014 run through `strategyr`'s 55-day Donchian breakout backtest with pre-window signal warmup, then visualized in `investlabr` with `eval_strat_plot_tsline_eq()`.
+- `sim-strategy-explain-donchian-breakout.R`
+  Simulated OHLC path explaining the Donchian breakout rule, prior-channel lines, breakout markers, and stateful long/short target exposure.
 - `real-data-strategyr-macd-backtest.R`
   Local Yahoo ETF data run through two `strategyr` MACD examples: MACD cross on `XLU` in 2003 and MACD contrarian on `XLY` in 2012, each compared with its own buy-and-hold benchmark.
+- `sim-strategy-explain-macd-cross-contrarian.R`
+  Simulated OHLC path explaining how MACD cross and MACD contrarian convert MACD-spread signs into long/short target exposure.
 - `real-data-strategyr-rsi-backtest.R`
   Local Yahoo `XLP` data for 2018 run through `strategyr`'s RSI mean-reversion strategy using `n = 21`, 25/75 thresholds, and a 45 exit level with pre-window signal warmup.
+- `sim-strategy-explain-rsi-reversion.R`
+  Simulated OHLC path explaining how classic RSI reversion converts oversold, overbought, and exit thresholds into target exposure.
 - `real-data-strategyr-rsi-logr-backtest.R`
   Local Yahoo `SOXX` data for 2024 run through `strategyr`'s log-return RSI mean-reversion strategy using `h = 18`, 40/65 thresholds, and a 47.5 exit level with pre-window signal warmup.
+- `sim-strategy-explain-rsi-logr-reversion.R`
+  Simulated OHLC path explaining how log-return RSI reversion uses smoothed return momentum thresholds to set and exit target exposure.
 - `real-data-strategyr-bollinger-backtest.R`
   Local Yahoo `CL=F` data for 2020 run through `strategyr`'s Bollinger mean-reversion strategy using `n = 15` and `k = 3.0`, with invalid oil futures OHLC bars filtered before signal construction.
+- `sim-strategy-explain-bollinger-reversion.R`
+  Simulated OHLC path explaining how Bollinger reversion converts lower-band, upper-band, and mid-band conditions into target exposure.
 - `real-data-strategyr-vol-target-backtest.R`
   Local Yahoo index data run through `strategyr`'s volatility-targeted strategy backtest, then visualized in `investlabr`.
+- `sim-strategy-explain-vol-target.R`
+  Simulated close path explaining how volatility targeting separates trend direction from realized-volatility-based position sizing.
 - `real-data-strategyr-ema-cross-backtest.R`
   Local Yahoo index data run through `strategyr`'s EMA-cross strategy backtest, then visualized in `investlabr`.
+- `sim-strategy-explain-ema-cross.R`
+  Simulated OHLC path explaining how EMA cross direction, low-ATR gating, freshness, and guard conditions create target exposure.
 - `real-data-strategyr-atr-breakout-backtest.R`
   Local Yahoo index data run through `strategyr`'s ATR-breakout strategy backtest, then visualized in `investlabr`.
+- `sim-strategy-explain-atr-breakout.R`
+  Simulated OHLC path explaining how prior-ATR upside/downside breakouts change target exposure.
 - `real-data-strategyr-trend-pullback-backtest.R`
   Local Yahoo index data run through `strategyr`'s trend-pullback strategy backtest, then visualized in `investlabr`.
+- `sim-strategy-explain-trend-pullback.R`
+  Simulated OHLC path explaining how EMA trend direction and RSI pullback thresholds combine into target exposure.
 - `real-data-strategyr-ladder-bounce-backtest.R`
   Local Yahoo index data run through `strategyr`'s ladder-bounce strategy backtest, then visualized in `investlabr`.
 - `real-data-strategyr-ladder-breakout-backtest.R`
   Local Yahoo index data run through `strategyr`'s ladder-breakout strategy backtest, then visualized in `investlabr`.
+- `sim-strategy-explain-ladder-bounce-breakout.R`
+  Simulated ladder-index path explaining the difference between mean-reversion ladder bounce and continuation ladder breakout.
 - `real-data-strategyr-relative-strength-backtest.R`
   Local Yahoo ETF data run through `strategyr`'s relative-strength strategy using IEFA versus IVV, then visualized in `investlabr`.
+- `sim-strategy-explain-relative-strength.R`
+  Simulated traded-versus-benchmark path explaining how rolling relative strength sets long/short exposure.
 - `real-data-strategyr-ratio-revert-backtest.R`
   Local Yahoo ETF data run through `strategyr`'s ratio-reversion strategy using SPY versus IVV, then visualized in `investlabr`.
 - `real-data-strategyr-pair-spread-revert-backtest.R`
   Local Yahoo ETF data run through `strategyr`'s pair-spread reversion strategy using HYG versus LQD, then visualized in `investlabr`.
+- `sim-strategy-explain-pair-ratio-reversion.R`
+  Simulated pair path explaining how pair-spread and price-ratio z-score extremes create mean-reversion exposure.
 - `real-data-strategyr-curve-steepener-backtest.R`
   Local Treasury curve data from `investdatar` drives lagged direct and contrarian `strategyr` curve-steepener signals, then a synthetic SHY/TLT Yahoo ETF ratio proxy is backtested and visualized in `investlabr`.
+- `sim-strategy-explain-curve-steepener.R`
+  Simulated yield-curve slope path explaining direct and contrarian curve-steepener target exposure.
 - `real-data-yahoo-cross-asset-event-board.R`
   Cross-asset Yahoo Finance event study with four panels: equity, bond, FX, and commodity.
 - `real-data-ishare-portfolio-mix.R`
@@ -185,20 +215,33 @@ source("inst/gallery/real-data-yahoo-candles.R")
 source("inst/gallery/real-data-yahoo-volatility-clustering-board.R")
 source("inst/gallery/real-data-yahoo-forward-fan-from-recent-regime.R")
 source("inst/gallery/real-data-strategyr-donchian-backtest.R")
+source("inst/gallery/sim-strategy-explain-donchian-breakout.R")
 source("inst/gallery/real-data-strategyr-macd-backtest.R")
+source("inst/gallery/sim-strategy-explain-macd-cross-contrarian.R")
 source("inst/gallery/real-data-strategyr-rsi-backtest.R")
+source("inst/gallery/sim-strategy-explain-rsi-reversion.R")
 source("inst/gallery/real-data-strategyr-rsi-logr-backtest.R")
+source("inst/gallery/sim-strategy-explain-rsi-logr-reversion.R")
 source("inst/gallery/real-data-strategyr-bollinger-backtest.R")
+source("inst/gallery/sim-strategy-explain-bollinger-reversion.R")
 source("inst/gallery/real-data-strategyr-vol-target-backtest.R")
+source("inst/gallery/sim-strategy-explain-vol-target.R")
 source("inst/gallery/real-data-strategyr-ema-cross-backtest.R")
+source("inst/gallery/sim-strategy-explain-ema-cross.R")
 source("inst/gallery/real-data-strategyr-atr-breakout-backtest.R")
+source("inst/gallery/sim-strategy-explain-atr-breakout.R")
 source("inst/gallery/real-data-strategyr-trend-pullback-backtest.R")
+source("inst/gallery/sim-strategy-explain-trend-pullback.R")
 source("inst/gallery/real-data-strategyr-ladder-bounce-backtest.R")
 source("inst/gallery/real-data-strategyr-ladder-breakout-backtest.R")
+source("inst/gallery/sim-strategy-explain-ladder-bounce-breakout.R")
 source("inst/gallery/real-data-strategyr-relative-strength-backtest.R")
+source("inst/gallery/sim-strategy-explain-relative-strength.R")
 source("inst/gallery/real-data-strategyr-ratio-revert-backtest.R")
 source("inst/gallery/real-data-strategyr-pair-spread-revert-backtest.R")
+source("inst/gallery/sim-strategy-explain-pair-ratio-reversion.R")
 source("inst/gallery/real-data-strategyr-curve-steepener-backtest.R")
+source("inst/gallery/sim-strategy-explain-curve-steepener.R")
 source("inst/gallery/real-data-yahoo-cross-asset-event-board.R")
 source("inst/gallery/real-data-ishare-portfolio-mix.R")
 source("inst/gallery/real-data-ishare-opportunity-set-board.R")

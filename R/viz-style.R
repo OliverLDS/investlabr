@@ -75,6 +75,21 @@
       discrete = c("#202020", "#4D4D4D", "#777777", "#9D9D9D", "#BBBBBB", "#606060"),
       sequential = c("#F2F2F2", "#D9D9D9", "#BFBFBF", "#808080", "#404040")
     ),
+    strategy_explain = list(
+      name = "strategy_explain",
+      ink = "#1F2933",
+      paper = "#FFFFFF",
+      grid = "#E5E7EB",
+      muted = "#6B7280",
+      accent = "#2563EB",
+      accent2 = "#EA580C",
+      up = "#16A34A",
+      down = "#DC2626",
+      support = "#2563EB",
+      resistance = "#EA580C",
+      discrete = c("#2563EB", "#EA580C", "#16A34A", "#DC2626", "#7C3AED", "#0F766E"),
+      sequential = c("#EFF6FF", "#BFDBFE", "#60A5FA", "#2563EB", "#1E3A8A")
+    ),
     presentation_bold = list(
       name = "presentation_bold",
       ink = "#1A1A1A",

@@ -143,6 +143,7 @@ Current named styles include:
 - `terminal_risk`
 - `cross_asset_color`
 - `minimal_print`
+- `strategy_explain`
 - `presentation_bold`
 - `briefing_serif`
 - `institutional_blue`

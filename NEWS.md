@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.4.14
+
+- Added a reusable candle-base plotting helper for strategy-explanation and support/resistance workflows.
+- Added the `strategy_explain` visualization style for cleaner simulated rule-explanation boards.
+- Expanded the gallery with simulated strategy-explanation scripts for Donchian, MACD, RSI, RSI-log-return, Bollinger, ATR breakout, ladder bounce/breakout, pair/ratio reversion, relative strength, curve steepener, trend pullback, EMA cross, and volatility-targeting examples.
+- Updated gallery docs, the gallery index, the promotion backlog, and style-gallery assets to include the new strategy-explanation surface.
+
 ## 0.0.4.13
 
 - Added a real-data FRED C&I lending monitor gallery script using local `investdatar` FRED cache data for TOTCI and selected SLOOS lending-condition series.

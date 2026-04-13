@@ -1,3 +1,58 @@
+#' Generate a base candlestick plot
+#'
+#' @param DT A data.table containing OHLC data with columns \code{datetime},
+#'   \code{open}, \code{high}, \code{low}, and \code{close}.
+#' @inheritParams viz_style_get
+#'
+#' @return A ggplot2 object showing an OHLC candlestick chart.
+#' @export
+viz_candle_base <- function(DT, style = NULL, context = NULL, show_compiler = TRUE) {
+  resolved <- .viz_resolve_style(style = style, context = context)
+  p <- .viz_candle_core_plot(DT, style = resolved) +
+    ggplot2::labs(x = "", y = "")
+  viz_theme_apply(p, style = resolved, legend_position = "none", show_compiler = show_compiler)
+}
+
+.viz_candle_core_plot <- function(DT, style) {
+  stopifnot(data.table::is.data.table(DT))
+  stopifnot(all(c("datetime", "open", "high", "low", "close") %in% names(DT)))
+
+  plot_dt <- data.table::copy(DT)
+  plot_dt[, candle_color := ifelse(open < close, style$up, style$down)]
+  step <- if (nrow(plot_dt) > 1L) {
+    stats::median(diff(as.numeric(plot_dt$datetime)), na.rm = TRUE)
+  } else {
+    1
+  }
+  if (!is.finite(step) || step <= 0) {
+    step <- 1
+  }
+  body_half <- 0.45 * step
+  wick_half <- body_half * 0.15
+
+  ggplot2::ggplot(plot_dt, ggplot2::aes(x = datetime)) +
+    ggplot2::geom_rect(
+      ggplot2::aes(
+        xmin = datetime - wick_half,
+        xmax = datetime + wick_half,
+        ymin = low,
+        ymax = high
+      ),
+      fill = plot_dt$candle_color,
+      color = NA
+    ) +
+    ggplot2::geom_rect(
+      ggplot2::aes(
+        xmin = datetime - body_half,
+        xmax = datetime + body_half,
+        ymin = pmin(open, close),
+        ymax = pmax(open, close)
+      ),
+      fill = plot_dt$candle_color,
+      color = NA
+    )
+}
+
 #' Generate candlestick plot with support and resistance lines
 #'
 #' @param DT A data.table containing OHLC data with columns \code{datetime}, \code{open}, \code{high}, \code{low}, and \code{close}.
@@ -9,9 +64,6 @@
 #' @export
 gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near_frac = 0.01, label_digits = 2, show_ema_lines = FALSE, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)
-  DT[, candle_color := ifelse(open < close, resolved$up, resolved$down)]
-  body_half <- 0.45 * median(diff(as.numeric(DT$datetime)))
-  wick_half <- body_half * 0.15
 
   line_dt <- data.table::data.table(
     y = c(support_pts, resistance_pts),
@@ -52,28 +104,7 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
   x_max <- max(DT$datetime)
   x_lab <- x_max
 
-  p <- DT |>
-    ggplot2::ggplot(ggplot2::aes(x = datetime)) +
-    ggplot2::geom_rect(
-      ggplot2::aes(
-        xmin = datetime - wick_half,
-        xmax = datetime + wick_half,
-        ymin = low,
-        ymax = high,
-        fill = candle_color
-      ),
-      color = NA
-    ) +
-    ggplot2::geom_rect(
-      ggplot2::aes(
-        xmin = datetime - body_half,
-        xmax = datetime + body_half,
-        ymin = pmin(open, close),
-        ymax = pmax(open, close),
-        fill = candle_color
-      ),
-      color = NA
-    )
+  p <- .viz_candle_core_plot(DT, style = resolved)
 
   if (show_ema_lines) {
     stopifnot(all(c("ema_20", "ema_50", "ema_100", "ema_200") %in% names(DT)))
@@ -154,32 +185,7 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
 
 .gen_candle_plot <- function(DT) {
   resolved <- .viz_resolve_style()
-  DT[, candle_color := ifelse(open < close, resolved$up, resolved$down)]
-  body_half <- 0.45 * median(diff(as.numeric(DT$datetime)))
-  wick_half <- body_half * 0.15
-
-  DT |>
-    ggplot2::ggplot(ggplot2::aes(x = datetime)) +
-    ggplot2::geom_rect(
-      ggplot2::aes(
-        xmin = datetime - wick_half,
-        xmax = datetime + wick_half,
-        ymin = low,
-        ymax = high,
-        fill = candle_color
-      ),
-      color = NA
-    ) +
-    ggplot2::geom_rect(
-      ggplot2::aes(
-        xmin = datetime - body_half,
-        xmax = datetime + body_half,
-        ymin = pmin(open, close),
-        ymax = pmax(open, close),
-        fill = candle_color
-      ),
-      color = NA
-    )
+  .viz_candle_core_plot(DT, style = resolved)
 }
 
 #' @inheritParams viz_style_get
@@ -200,10 +206,6 @@ gen_candle_plots_with_sr_dts <- function(
   resolved <- .viz_resolve_style(style = style, context = context)
   stopifnot(!is.null(support_dt) && !is.null(resistance_dt))
   stopifnot(nrow(support_dt) > 0L && nrow(resistance_dt) > 0L)
-
-  DT[, candle_color := ifelse(open < close, resolved$up, resolved$down)]
-  body_half <- 0.45 * median(diff(as.numeric(DT$datetime)))
-  wick_half <- body_half * 0.15
 
   line_dt <- rbind(support_dt[, kind := "support"], resistance_dt[, kind := "resistance"])
   line_dt[, color := ifelse(kind == "support", resolved$support, resolved$resistance)]
@@ -230,28 +232,7 @@ gen_candle_plots_with_sr_dts <- function(
   x_max <- max(DT$datetime)
   x_lab <- x_max
 
-  p_main <- DT |>
-    ggplot2::ggplot(ggplot2::aes(x = datetime)) +
-    ggplot2::geom_rect(
-      ggplot2::aes(
-        xmin = datetime - wick_half,
-        xmax = datetime + wick_half,
-        ymin = low,
-        ymax = high,
-        fill = candle_color
-      ),
-      color = NA
-    ) +
-    ggplot2::geom_rect(
-      ggplot2::aes(
-        xmin = datetime - body_half,
-        xmax = datetime + body_half,
-        ymin = pmin(open, close),
-        ymax = pmax(open, close),
-        fill = candle_color
-      ),
-      color = NA
-    )
+  p_main <- .viz_candle_core_plot(DT, style = resolved)
 
   if (show_ema_lines) {
     stopifnot(all(c("ema_20", "ema_50", "ema_100", "ema_200") %in% names(DT)))

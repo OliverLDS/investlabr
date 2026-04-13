@@ -10,6 +10,7 @@ test_that("viz_style_get resolves named styles and contexts", {
 test_that("new visualization styles resolve", {
   style_names <- c(
     "briefing_serif",
+    "strategy_explain",
     "institutional_blue",
     "policy_memo",
     "desk_monitor",
