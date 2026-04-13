@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.4.13
+
+- Added a real-data FRED C&I lending monitor gallery script using local `investdatar` FRED cache data for TOTCI and selected SLOOS lending-condition series.
+- Refined the C&I lending monitor board with long-history and recent weekly stock/growth panels, borrower-size facets for SLOOS standards/demand and loan-terms views, and annual guide lines on long-history panels.
+- Added gallery maintenance docs: `GALLERY_INDEX.md`, `PROMOTION_BACKLOG.md`, and `_template-gallery-script.R` to organize future daily-analysis gallery additions and package-promotion candidates.
+- Updated the gallery README to link the new maintenance docs and document the promotion convention for reusable gallery patterns.
+
 ## 0.0.4.12
 
 - Refined several real-data `strategyr` gallery scripts around mined single-year cases for Bollinger, RSI, MACD, Donchian, and log-return RSI strategy examples.

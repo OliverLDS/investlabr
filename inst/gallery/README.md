@@ -4,12 +4,20 @@ This gallery collects both end-to-end real-data workflows and style-system showc
 
 The goal is to keep [README.md](../../README.md) concise while maintaining a growing library of reproducible research workflows.
 
+For navigation and maintenance, see:
+
+- [GALLERY_INDEX.md](GALLERY_INDEX.md) for category mapping and package-boundary notes.
+- [PROMOTION_BACKLOG.md](PROMOTION_BACKLOG.md) for reusable patterns that may later move into `investlabr`, `investdatar`, or `strategyr`.
+- [_template-gallery-script.R](_template-gallery-script.R) for a starter structure for new daily-analysis examples.
+
 ## Conventions
 
 - `investdatar` handles syncing and local access.
 - `investlabr` handles transformation, comparison, and visualization.
 - Examples are written as executable scripts for interactive use.
 - Examples assume you already have the required data source credentials and local storage configured for `investdatar`.
+- Keep local paths, one-off ticker choices, and narrative-specific labels inside gallery scripts rather than package functions.
+- Promote repeated transformation, diagnostics, or visualization patterns into the appropriate package once the API is stable.
 
 ## Style and context showcases
 
@@ -88,6 +96,8 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
   FRED Treasury series synced through `investdatar`, then plotted as a yield-curve comparison in `investlabr`.
 - `real-data-fred-rate-shock-persistence-board.R`
   FRED 10-year Treasury data used to compare recent rate shocks, AR-style persistence envelopes, and realized post-shock paths.
+- `real-data-fred-ci-lending-monitor.R`
+  FRED C&I loan balances and selected SLOOS lending-condition series from the local `investdatar` cache rendered as a four-panel lending monitor.
 - `real-data-treasury-nominal-real-weekly-board.R`
   Treasury local curve data from `investdatar::get_local_treasury_rates()` rendered as a two-panel board: nominal curve on the left and real curve on the right, each comparing the latest available date with the recent three-month high and low in the real 10-year yield.
 - `real-data-yahoo-candles.R`
@@ -169,6 +179,7 @@ source("inst/gallery/viz-style-gallery.R")
 source("inst/gallery/viz-context-gallery.R")
 source("inst/gallery/real-data-fred-yield-curve.R")
 source("inst/gallery/real-data-fred-rate-shock-persistence-board.R")
+source("inst/gallery/real-data-fred-ci-lending-monitor.R")
 source("inst/gallery/real-data-treasury-nominal-real-weekly-board.R")
 source("inst/gallery/real-data-yahoo-candles.R")
 source("inst/gallery/real-data-yahoo-volatility-clustering-board.R")

@@ -1,0 +1,37 @@
+# Gallery Index
+
+This index categorizes gallery scripts without moving files. Keep script paths stable for now; use this document as the navigational layer while the gallery grows.
+
+## Category Map
+
+| Category | Scripts | Primary Packages | Promotion Target |
+| --- | --- | --- | --- |
+| Visualization styles | `viz-style-gallery.R`, `viz-context-gallery.R` | `investlabr` | Keep as gallery showcase |
+| Macro data monitor | `real-data-fred-ci-lending-monitor.R`, `real-data-fred-risk-dashboard.R`, `real-data-fred-policy-liquidity-dashboard.R`, `real-data-fred-curve-real-yield-dashboard.R`, `real-data-fred-risk-appetite-dashboard.R`, `real-data-fred-inflation-labor-dashboard.R`, `real-data-fred-liquidity-tightness-dashboard.R`, `real-data-fred-fomc-plumbing-board.R`, `real-data-fred-balance-sheet-mirror-board.R` | `investdatar`, `investlabr` | Reusable `prep_*`, `factor_*`, `brief_*`, and `viz_*` helpers in `investlabr`; source access in `investdatar` |
+| Macro data forecast | `real-data-fred-rate-shock-persistence-board.R`, `real-data-yahoo-forward-fan-from-recent-regime.R` | `investdatar`, `investlabr` | Forecast-prep and fan-chart helpers in `investlabr` if patterns repeat |
+| Cross-asset and event/regime analysis | `real-data-yahoo-cross-asset-event-board.R`, `real-data-fred-trade-conflict-overlay.R`, `real-data-macro-factor-heatmap.R` | `investdatar`, `investlabr` | `event_*`, `regime_*`, `factor_*`, and `sense_*` helpers in `investlabr` |
+| Rates and yield-curve analysis | `real-data-fred-yield-curve.R`, `real-data-treasury-nominal-real-weekly-board.R`, `real-data-treasury-curve-decomposition-board.R` | `investdatar`, `investlabr` | Treasury data access in `investdatar`; curve construction and decomposition helpers in `investlabr` |
+| Market chart and technical context | `real-data-yahoo-candles.R` | `investdatar`, `strategyr`, `investlabr` | Support/resistance signal logic in `strategyr`; candle/chart rendering in `investlabr` |
+| Portfolio and opportunity-set analysis | `real-data-ishare-portfolio-mix.R`, `real-data-ishare-opportunity-set-board.R` | `investdatar`, `investlabr` | Opportunity-set prep, efficient-frontier summaries, and table-in-plot helpers in `investlabr` |
+| Strategy evaluation | `real-data-strategyr-atr-breakout-backtest.R`, `real-data-strategyr-bollinger-backtest.R`, `real-data-strategyr-curve-steepener-backtest.R`, `real-data-strategyr-donchian-backtest.R`, `real-data-strategyr-ema-cross-backtest.R`, `real-data-strategyr-ladder-bounce-backtest.R`, `real-data-strategyr-ladder-breakout-backtest.R`, `real-data-strategyr-macd-backtest.R`, `real-data-strategyr-pair-spread-revert-backtest.R`, `real-data-strategyr-ratio-revert-backtest.R`, `real-data-strategyr-relative-strength-backtest.R`, `real-data-strategyr-rsi-backtest.R`, `real-data-strategyr-rsi-logr-backtest.R`, `real-data-strategyr-trend-pullback-backtest.R`, `real-data-strategyr-vol-target-backtest.R` | `investdatar`, `strategyr`, `investlabr` | Strategy logic and path-dependent diagnostics in `strategyr`; result adapters and explanatory plots in `investlabr` |
+| Strategy explanation | Not yet represented as a distinct family | `strategyr`, `investlabr` | Add examples that explain signal triggers, feature states, position changes, and PnL attribution |
+| Simulation showcase | `sim-digital-option-settlement-mismatch-board.R`, `sim-forward-guidance-vs-warsh-regime.R` | `investlabr` | Reusable `sim_*`, payoff, and scenario-board helpers in `investlabr` |
+
+## Promotion Rule
+
+Promote gallery code when a pattern appears in at least two scripts or when it is clearly a reusable research primitive:
+
+- Data access or source-specific parsing belongs in `investdatar`.
+- Strategy signal logic, strategy diagnostics, and path-dependent backtest primitives belong in `strategyr`.
+- Research transformations, factor construction, event/regime preparation, scenario summaries, and plot/briefing helpers belong in `investlabr`.
+- One-off narrative framing, ticker choices, date windows, and visual examples should stay in `inst/gallery`.
+
+## Script Metadata Convention
+
+Future gallery scripts should make the following easy to identify near the top of the file:
+
+- Purpose: one sentence explaining the research question.
+- Data source: local cache provider and required series or symbols.
+- Optional sync: commented-out sync lines only.
+- Main package functions demonstrated.
+- Promotion candidate: whether any helper should later move into `investlabr`, `investdatar`, or `strategyr`.
