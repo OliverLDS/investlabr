@@ -91,19 +91,21 @@ The goal is to keep [README.md](../../README.md) concise while maintaining a gro
 - `real-data-treasury-nominal-real-weekly-board.R`
   Treasury local curve data from `investdatar::get_local_treasury_rates()` rendered as a two-panel board: nominal curve on the left and real curve on the right, each comparing the latest available date with the recent three-month high and low in the real 10-year yield.
 - `real-data-yahoo-candles.R`
-  Yahoo Finance OHLC data synced through `investdatar`, then rendered as a market chart in `investlabr`.
+  Yahoo Finance S&P 500 OHLC data rendered as a candle chart with `strategyr`-derived pivot, cycle, Fibonacci, and EMA-confluence support/resistance levels, quarterly x-axis labels, and monthly guide lines.
 - `real-data-yahoo-volatility-clustering-board.R`
   Yahoo Finance price history used as the real-data anchor for a four-panel board comparing actual returns with iid and GARCH-style benchmark behavior.
 - `real-data-yahoo-forward-fan-from-recent-regime.R`
   Yahoo Finance index history used to calibrate a recent-regime forward fan with percentile bands, sample paths, and a terminal return distribution.
 - `real-data-strategyr-donchian-backtest.R`
-  Local Yahoo index data run through `strategyr`'s path-dependent Donchian breakout backtest, then visualized in `investlabr` with `eval_strat_plot_tsline_eq()`.
+  Local Yahoo `DBC` data for 2014 run through `strategyr`'s 55-day Donchian breakout backtest with pre-window signal warmup, then visualized in `investlabr` with `eval_strat_plot_tsline_eq()`.
 - `real-data-strategyr-macd-backtest.R`
-  Local Yahoo index data run through `strategyr`'s MACD-cross strategy backtest, then visualized in `investlabr`.
+  Local Yahoo ETF data run through two `strategyr` MACD examples: MACD cross on `XLU` in 2003 and MACD contrarian on `XLY` in 2012, each compared with its own buy-and-hold benchmark.
 - `real-data-strategyr-rsi-backtest.R`
-  Local Yahoo index data run through `strategyr`'s RSI mean-reversion strategy backtest, then visualized in `investlabr`.
+  Local Yahoo `XLP` data for 2018 run through `strategyr`'s RSI mean-reversion strategy using `n = 21`, 25/75 thresholds, and a 45 exit level with pre-window signal warmup.
+- `real-data-strategyr-rsi-logr-backtest.R`
+  Local Yahoo `SOXX` data for 2024 run through `strategyr`'s log-return RSI mean-reversion strategy using `h = 18`, 40/65 thresholds, and a 47.5 exit level with pre-window signal warmup.
 - `real-data-strategyr-bollinger-backtest.R`
-  Local Yahoo index data run through `strategyr`'s Bollinger mean-reversion strategy backtest, then visualized in `investlabr`.
+  Local Yahoo `CL=F` data for 2020 run through `strategyr`'s Bollinger mean-reversion strategy using `n = 15` and `k = 3.0`, with invalid oil futures OHLC bars filtered before signal construction.
 - `real-data-strategyr-vol-target-backtest.R`
   Local Yahoo index data run through `strategyr`'s volatility-targeted strategy backtest, then visualized in `investlabr`.
 - `real-data-strategyr-ema-cross-backtest.R`
@@ -174,6 +176,7 @@ source("inst/gallery/real-data-yahoo-forward-fan-from-recent-regime.R")
 source("inst/gallery/real-data-strategyr-donchian-backtest.R")
 source("inst/gallery/real-data-strategyr-macd-backtest.R")
 source("inst/gallery/real-data-strategyr-rsi-backtest.R")
+source("inst/gallery/real-data-strategyr-rsi-logr-backtest.R")
 source("inst/gallery/real-data-strategyr-bollinger-backtest.R")
 source("inst/gallery/real-data-strategyr-vol-target-backtest.R")
 source("inst/gallery/real-data-strategyr-ema-cross-backtest.R")

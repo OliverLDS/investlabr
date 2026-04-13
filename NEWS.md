@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.4.12
+
+- Refined several real-data `strategyr` gallery scripts around mined single-year cases for Bollinger, RSI, MACD, Donchian, and log-return RSI strategy examples.
+- Added warmup-aware signal construction before trade-window backtesting in those gallery examples to reduce cold-start artifacts at the beginning of the displayed test period.
+- Added `real-data-strategyr-rsi-logr-backtest.R` as a gallery example for `strategyr`'s log-return RSI mean-reversion strategy.
+- Updated the Yahoo candle gallery to derive support and resistance from `strategyr` pivot, cycle, Fibonacci, and EMA-confluence logic, with quarterly x-axis labels, monthly guides, reader-facing title text, and compiler-aware captions.
+
 ## 0.0.4.11
 
 - Extended `eval_strat_plot_tsline_eq()` to compare up to two evaluated strategy equity curves against one benchmark, with clearer title labels, semantic color names, and added volatility, Sharpe, and Sortino metrics.
