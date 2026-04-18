@@ -24,11 +24,30 @@ t10y2y <- get_fred_local("T10Y2Y", "10Y-2Y")
 t10y3m <- get_fred_local("T10Y3M", "10Y-3M")
 curve_spreads <- rbindlist(list(t10y2y, t10y3m), use.names = TRUE)
 curve_spreads <- cut_since(curve_spreads)
+year_guides <- data.table(
+  date = seq(
+    as.Date(format(min(curve_spreads$date, na.rm = TRUE), "%Y-01-01")),
+    as.Date(format(max(curve_spreads$date, na.rm = TRUE), "%Y-01-01")),
+    by = "1 year"
+  )
+)
+curve_colors <- c(
+  "10Y-2Y" = "#12355B",
+  "10Y-3M" = "#D1495B"
+)
 
 p_curve_spread <- ggplot(curve_spreads, aes(x = date, y = value, color = series)) +
+  geom_vline(
+    data = year_guides,
+    aes(xintercept = date),
+    inherit.aes = FALSE,
+    color = investlabr::viz_style_get("institutional_blue", "report")$grid,
+    linewidth = 0.25,
+    alpha = 0.65
+  ) +
   geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, color = investlabr::viz_style_get("institutional_blue", "report")$muted) +
-  geom_line(linewidth = 0.6) +
-  scale_color_manual(values = investlabr::viz_palette_get("institutional_blue", "report", "discrete")[1:2]) +
+  geom_line(linewidth = 0.75) +
+  scale_color_manual(values = curve_colors) +
   labs(
     title = "Yield Curve Spreads",
     subtitle = "10Y-2Y and 10Y-3M",
@@ -44,21 +63,29 @@ p_curve_spread <- investlabr::viz_theme_apply(
 )
 
 real_yields <- rbindlist(list(
-  get_fred_local("DFII5", "5Y TIPS"),
-  get_fred_local("DFII7", "7Y TIPS"),
   get_fred_local("DFII10", "10Y TIPS"),
-  get_fred_local("DFII20", "20Y TIPS"),
-  get_fred_local("DFII30", "30Y TIPS"),
   get_fred_local("DLTIIT", "Long-term avg real")
 ), use.names = TRUE)
 real_yields <- cut_since(real_yields)
+real_colors <- c(
+  "10Y TIPS" = "#0B6E69",
+  "Long-term avg real" = "#C16622"
+)
 
 p_real <- ggplot(real_yields, aes(x = date, y = value, color = series)) +
-  geom_line(linewidth = 0.5) +
-  scale_color_manual(values = investlabr::viz_palette_get("institutional_blue", "report", "discrete")[1:6]) +
+  geom_vline(
+    data = year_guides,
+    aes(xintercept = date),
+    inherit.aes = FALSE,
+    color = investlabr::viz_style_get("institutional_blue", "report")$grid,
+    linewidth = 0.25,
+    alpha = 0.65
+  ) +
+  geom_line(linewidth = 0.75) +
+  scale_color_manual(values = real_colors) +
   labs(
-    title = "Real Treasury Yields",
-    subtitle = "TIPS yields and long-term average",
+    title = "Real Treasury Yield Anchor",
+    subtitle = "10Y TIPS versus the long-term average real rate",
     x = NULL,
     y = "Real yield (%)"
   )
@@ -75,7 +102,7 @@ investlabr::gen_grid_of_plots_with_labels(
   n_rows = 1,
   n_cols = 2,
   title = "Curve and Real-Yield Dashboard",
-  bottom = "FRED inputs: T10Y2Y, T10Y3M, DFII5, DFII7, DFII10, DFII20, DFII30, DLTIIT.",
+  bottom = "FRED inputs: T10Y2Y, T10Y3M, DFII10, DLTIIT.",
   style = "institutional_blue",
   context = "report"
 )

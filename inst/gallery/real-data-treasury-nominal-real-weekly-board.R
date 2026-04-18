@@ -134,25 +134,21 @@ prep_curve_dt <- function(dt, tenor_map, curve_dates) {
 }
 
 build_curve_plot <- function(curve_dt, title, subtitle, y_label) {
-  y_min <- floor(min(curve_dt$value, na.rm = TRUE) * 10) / 10
-  y_max <- ceiling(max(curve_dt$value, na.rm = TRUE) * 10) / 10
-  y_breaks <- seq(y_min, y_max, by = 0.1)
-  y_minor_breaks <- seq(y_min, y_max, by = 0.01)
-  y_minor_breaks <- setdiff(round(y_minor_breaks, 8), round(y_breaks, 8))
+  y_guide_min <- floor(min(curve_dt$value, na.rm = TRUE) * 10) / 10
+  y_guide_max <- ceiling(max(curve_dt$value, na.rm = TRUE) * 10) / 10
+  y_tick_min <- floor(min(curve_dt$value, na.rm = TRUE) * 5) / 5
+  y_tick_max <- ceiling(max(curve_dt$value, na.rm = TRUE) * 5) / 5
+  y_breaks <- seq(y_tick_min, y_tick_max, by = 0.2)
+  y_guides <- seq(y_guide_min, y_guide_max, by = 0.1)
 
   p <- ggplot(
     curve_dt,
     aes(x = maturity_label, y = value, color = curve_label, group = curve_label)
   ) +
     geom_hline(
-      yintercept = y_minor_breaks,
+      yintercept = y_guides,
       color = "#D9DEE5",
       linewidth = 0.28
-    ) +
-    geom_hline(
-      yintercept = y_breaks,
-      color = "#D7DCE2",
-      linewidth = 0.3
     ) +
     geom_line(linewidth = 1) +
     geom_point(size = 2.1) +
@@ -161,6 +157,73 @@ build_curve_plot <- function(curve_dt, title, subtitle, y_label) {
       title = title,
       subtitle = subtitle,
       x = "Maturity",
+      y = y_label,
+      color = NULL
+    )
+
+  investlabr::viz_theme_apply(
+    p,
+    style = "macro_classic",
+    context = "report",
+    legend_position = "bottom",
+    show_compiler = FALSE
+  )
+}
+
+build_forward_dt_from_curve <- function(curve_dt) {
+  dt <- data.table::copy(curve_dt)
+  data.table::setorder(dt, curve_label, maturity_years)
+
+  dt[, rate_dec := value / 100]
+  dt[, `:=`(
+    prev_maturity_years = data.table::shift(maturity_years),
+    prev_maturity_label = data.table::shift(as.character(maturity_label)),
+    prev_rate_dec = data.table::shift(rate_dec)
+  ), by = curve_label]
+  dt <- dt[!is.na(prev_maturity_years)]
+
+  # Adjacent forwards are practical approximations because Treasury par yields
+  # are not bootstrapped zero-coupon spot rates.
+  dt[, forward_dec := (
+    ((1 + rate_dec)^maturity_years) /
+      ((1 + prev_rate_dec)^prev_maturity_years)
+  )^(1 / (maturity_years - prev_maturity_years)) - 1]
+
+  dt[, forward_value := forward_dec * 100]
+  dt[, segment_label := paste0(prev_maturity_label, "→\n", as.character(maturity_label))]
+  dt[]
+}
+
+build_forward_plot <- function(forward_dt, title, subtitle, y_label) {
+  y_guide_min <- floor(min(forward_dt$forward_value, na.rm = TRUE) * 10) / 10
+  y_guide_max <- ceiling(max(forward_dt$forward_value, na.rm = TRUE) * 10) / 10
+  y_tick_min <- floor(min(forward_dt$forward_value, na.rm = TRUE) * 5) / 5
+  y_tick_max <- ceiling(max(forward_dt$forward_value, na.rm = TRUE) * 5) / 5
+  y_breaks <- seq(y_tick_min, y_tick_max, by = 0.2)
+  y_guides <- seq(y_guide_min, y_guide_max, by = 0.1)
+  segment_levels <- unique(forward_dt$segment_label)
+
+  p <- ggplot(
+    forward_dt,
+    aes(
+      x = factor(segment_label, levels = segment_levels),
+      y = forward_value,
+      color = curve_label,
+      group = curve_label
+    )
+  ) +
+    geom_hline(
+      yintercept = y_guides,
+      color = "#D9DEE5",
+      linewidth = 0.28
+    ) +
+    geom_line(linewidth = 1) +
+    geom_point(size = 2.1) +
+    scale_y_continuous(breaks = y_breaks) +
+    labs(
+      title = title,
+      subtitle = subtitle,
+      x = "Forward segment",
       y = y_label,
       color = NULL
     )
@@ -192,18 +255,39 @@ p_real <- build_curve_plot(
   y_label = "Real yield (%)"
 )
 
+nominal_forward_dt <- build_forward_dt_from_curve(nominal_curve$data)
+real_forward_dt <- build_forward_dt_from_curve(real_curve$data)
+
+p_nominal_forward <- build_forward_plot(
+  nominal_forward_dt,
+  title = "Nominal implied forward curve",
+  subtitle = "Adjacent forward segments derived approximately from par yields.",
+  y_label = "Implied forward yield (%)"
+)
+
+p_real_forward <- build_forward_plot(
+  real_forward_dt,
+  title = "Real implied forward curve",
+  subtitle = "Adjacent forward segments derived approximately from real yields.",
+  y_label = "Implied forward real yield (%)"
+)
+
 comparison_dates <- unique(c(nominal_curve$curve_dates, real_curve$curve_dates))
 comparison_dates <- sort(as.Date(comparison_dates))
 
-investlabr::gen_grid_of_plots_with_labels(
-  plots = list(p_nominal, p_real),
-  n_rows = 1,
+plot <- investlabr::gen_grid_of_plots_with_labels(
+  plots = list(
+    p_nominal, p_real,
+    p_nominal_forward, p_real_forward
+  ),
+  n_rows = 2,
   n_cols = 2,
-  title = "Nominal and Real Treasury Curves at Recent Real-Rate Extremes",
+  title = "Nominal, Real, and Implied Forward Treasury Curves",
   bottom = paste(
     "Source: U.S. Department of the Treasury.",
     paste0(
       "The three comparison dates are the latest available curve date, the date with the highest real 10-year yield in the last three months, and the date with the lowest real 10-year yield in the last three months.",
+      " Forward panels show adjacent implied forward segments computed approximately from reported yields rather than exact bootstrapped zero-coupon forwards.",
       " In this run those dates are ",
       paste(format(comparison_dates, "%Y-%m-%d"), collapse = " and "),
       "."
@@ -213,3 +297,5 @@ investlabr::gen_grid_of_plots_with_labels(
   context = "report",
   show_compiler = TRUE
 )
+
+print(plot)

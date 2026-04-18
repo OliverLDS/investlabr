@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.4.15
+
+- Expanded and documented the macro data forecast gallery family with implemented versus planned/proposed forward-looking research scripts.
+- Added and refined Yahoo event-board examples for cross-asset and US sector views, including multiple event markers, command-line arguments, annual/daily guides, and improved end-label handling.
+- Refined several FRED macro monitor boards for cleaner storytelling: inflation/labor, FOMC plumbing, balance-sheet mirror, curve/real-yield, and macro-factor heatmap views.
+- Expanded the Treasury nominal/real curve board with approximate implied forward-curve panels and clearer axis guides.
+
 ## 0.0.4.14
 
 - Added a reusable candle-base plotting helper for strategy-explanation and support/resistance workflows.

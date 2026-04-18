@@ -110,6 +110,34 @@ For navigation and maintenance, see:
   Yahoo Finance price history used as the real-data anchor for a four-panel board comparing actual returns with iid and GARCH-style benchmark behavior.
 - `real-data-yahoo-forward-fan-from-recent-regime.R`
   Yahoo Finance index history used to calibrate a recent-regime forward fan with percentile bands, sample paths, and a terminal return distribution.
+
+### Planned macro data forecast examples
+
+The macro data forecast family is intended to grow into forward-looking research workflows, not execution logic. `investdatar` should own data access and syncing; `investlabr` should own forecast preparation, scenario comparison, fan charts, probability/regime summaries, and briefing visuals; `strategyr` remains reserved for execution-oriented strategy logic.
+
+Implemented scripts:
+
+- `real-data-fred-rate-shock-persistence-board.R`
+- `real-data-yahoo-forward-fan-from-recent-regime.R`
+
+Planned/proposed scripts:
+
+- `real-data-fred-yield-curve-forward-fan.R`
+- `real-data-fred-policy-rate-path-board.R`
+- `real-data-fred-real-yield-persistence-board.R`
+- `real-data-fred-inflation-nowcast-band-board.R`
+- `real-data-fred-labor-softening-probability-board.R`
+- `real-data-fred-disinflation-vs-reacceleration-scenarios.R`
+- `real-data-fred-liquidity-drain-forward-board.R`
+- `real-data-fred-balance-sheet-runoff-scenarios.R`
+- `real-data-fred-liquidity-tightness-risk-meter.R`
+- `real-data-yahoo-macro-regime-conditional-fan-board.R`
+- `real-data-yahoo-rate-shock-conditional-forward-returns.R`
+- `real-data-yahoo-dollar-liquidity-spillover-board.R`
+- `real-data-fred-recession-probability-dashboard.R`
+- `real-data-fred-soft-landing-vs-hard-landing-board.R`
+- `real-data-fred-regime-transition-matrix-board.R`
+
 - `real-data-strategyr-donchian-backtest.R`
   Local Yahoo `DBC` data for 2014 run through `strategyr`'s 55-day Donchian breakout backtest with pre-window signal warmup, then visualized in `investlabr` with `eval_strat_plot_tsline_eq()`.
 - `sim-strategy-explain-donchian-breakout.R`
@@ -168,6 +196,8 @@ For navigation and maintenance, see:
   Simulated yield-curve slope path explaining direct and contrarian curve-steepener target exposure.
 - `real-data-yahoo-cross-asset-event-board.R`
   Cross-asset Yahoo Finance event study with four panels: equity, bond, FX, and commodity.
+- `real-data-yahoo-us-sector-11-event-board.R`
+  US sector ETF event board using local Yahoo data, indexed performance, multiple event markers, annual guide lines, and short end labels.
 - `real-data-ishare-portfolio-mix.R`
   Four-panel portfolio-mix workflow using iShares ETF NAV history and FRED `DGS10` for a tangency line against the efficient frontier.
 - `real-data-ishare-opportunity-set-board.R`
@@ -243,6 +273,7 @@ source("inst/gallery/sim-strategy-explain-pair-ratio-reversion.R")
 source("inst/gallery/real-data-strategyr-curve-steepener-backtest.R")
 source("inst/gallery/sim-strategy-explain-curve-steepener.R")
 source("inst/gallery/real-data-yahoo-cross-asset-event-board.R")
+source("inst/gallery/real-data-yahoo-us-sector-11-event-board.R")
 source("inst/gallery/real-data-ishare-portfolio-mix.R")
 source("inst/gallery/real-data-ishare-opportunity-set-board.R")
 source("inst/gallery/real-data-fred-risk-dashboard.R")

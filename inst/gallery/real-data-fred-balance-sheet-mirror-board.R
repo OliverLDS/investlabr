@@ -4,9 +4,9 @@ library(scales)
 library(investdatar)
 library(investlabr)
 
-START_DATE <- as.Date("2019-01-01")
-RECENT_BG <- as.Date("2025-12-01")
 RECENT_ED <- Sys.Date()
+RECENT_BG <- seq(RECENT_ED, by = "-6 months", length.out = 2L)[2L]
+START_DATE <- RECENT_BG
 
 # Optional if you have not synced locally yet:
 # invisible(lapply(
@@ -56,11 +56,12 @@ liab_recent <- liab_dt[date >= RECENT_BG & date <= RECENT_ED]
 assets_delta <- rbindlist(lapply(split(assets_dt, by = "series"), to_recent_delta, recent_bg = RECENT_BG), fill = TRUE)
 liab_delta <- rbindlist(lapply(split(liab_dt, by = "series"), to_recent_delta, recent_bg = RECENT_BG), fill = TRUE)
 
-p1 <- ggplot(assets_recent, aes(date, value_trn, color = series)) +
-  geom_line(linewidth = 0.85, na.rm = TRUE) +
+p1 <- ggplot(assets_recent, aes(date, value_trn)) +
+  geom_line(color = investlabr::viz_style_get("policy_memo", "report")$accent, linewidth = 0.85, na.rm = TRUE) +
+  facet_wrap(~series, ncol = 1, scales = "free_y") +
   scale_y_continuous(labels = label_number(accuracy = 0.1)) +
   labs(
-    title = "Assets: recent weekly stock levels",
+    title = "Assets: component stock levels",
     subtitle = paste0(format(RECENT_BG, "%Y-%m-%d"), " to ", format(RECENT_ED, "%Y-%m-%d")),
     x = NULL,
     y = "USD trillions",
@@ -70,15 +71,16 @@ p1 <- investlabr::viz_theme_apply(
   p1,
   style = "policy_memo",
   context = "report",
-  legend_position = "bottom",
+  legend_position = "none",
   show_compiler = FALSE
 )
 
-p2 <- ggplot(liab_recent, aes(date, value_trn, color = series)) +
-  geom_line(linewidth = 0.85, na.rm = TRUE) +
+p2 <- ggplot(liab_recent, aes(date, value_trn)) +
+  geom_line(color = investlabr::viz_style_get("policy_memo", "report")$accent2, linewidth = 0.85, na.rm = TRUE) +
+  facet_wrap(~series, ncol = 1, scales = "free_y") +
   scale_y_continuous(labels = label_number(accuracy = 0.1)) +
   labs(
-    title = "Liabilities and absorption factors: recent weekly stock levels",
+    title = "Liabilities and absorption factors: component stock levels",
     subtitle = paste0(format(RECENT_BG, "%Y-%m-%d"), " to ", format(RECENT_ED, "%Y-%m-%d")),
     x = NULL,
     y = "USD trillions",
@@ -88,7 +90,7 @@ p2 <- investlabr::viz_theme_apply(
   p2,
   style = "policy_memo",
   context = "report",
-  legend_position = "bottom",
+  legend_position = "none",
   show_compiler = FALSE
 )
 
