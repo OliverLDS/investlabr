@@ -28,9 +28,19 @@ eval_strat_performance(
 
 \item{fee_rate}{numeric fee per unit abs(position change).}
 
+\item{funding_rate}{Legacy funding-rate input retained for compatibility.}
+
+\item{interest_rate}{Legacy interest-rate input retained for compatibility.}
+
+\item{leverage}{Legacy leverage input retained for compatibility.}
+
 \item{rf_rate}{numeric annual risk-free rate.}
 
 \item{mode}{one of \code{"new_open"}, \code{"last_close"}; execution pricing basis.}
+
+\item{fee_sides}{Number of sides used when applying the simplified fee model.}
+
+\item{tz}{Time zone used when coercing input timestamps.}
 }
 \value{
 Invisibly: data.table (one row) with metrics and list-col \code{log_ret_dt}.

@@ -1,4 +1,11 @@
+#' Plot cumulative event-study return paths
+#'
+#' @param res Event-performance result returned by
+#'   \code{eval_event_performance()}.
+#' @param threshold Positive and negative horizontal reference threshold.
 #' @inheritParams viz_style_get
+#'
+#' @return A ggplot object.
 #' @export
 gen_plot_event_tsline_cum_ret <- function(res, threshold = 0.02, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -18,7 +25,16 @@ gen_plot_event_tsline_cum_ret <- function(res, threshold = 0.02, style = NULL, c
   viz_theme_apply(p, style = resolved)
 }
 
+#' Compare two event-study average paths
+#'
+#' @param first_event_res,second_event_res Event-performance results returned by
+#'   \code{eval_event_performance()}.
+#' @param first_event_label,second_event_label Labels used in the comparison
+#'   legend.
+#' @param first_event_color,second_event_color Optional line colors.
 #' @inheritParams viz_style_get
+#'
+#' @return A ggplot object.
 #' @export
 gen_plot_comparing_events <- function(first_event_res, second_event_res, first_event_label, second_event_label, first_event_color = NULL, second_event_color = NULL, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)

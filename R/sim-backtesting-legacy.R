@@ -198,6 +198,13 @@
   out[]
 }
 
+#' Generate rolling monthly strategy statistics
+#'
+#' @param transaction_dt data.table of strategy transactions or per-bar returns.
+#' @param N_rolling Number of months in the rolling window.
+#' @param debug_mode Whether to retain additional diagnostic columns.
+#'
+#' @return A data.table of rolling monthly performance statistics.
 #' @export
 gen_rolling_monthly_stats <- function(transaction_dt, N_rolling = 6L, debug_mode = FALSE) {
   trades <- transaction_dt[action == "close", .(datetime, pre_fee_log_ret, is_win)]
@@ -348,8 +355,13 @@ gen_rolling_monthly_stats <- function(transaction_dt, N_rolling = 6L, debug_mode
 #' @param pos_col_name string; name of the position column in \code{DT}.
 #' @param bg_time,ed_time POSIXct; inclusive start, exclusive end; may be \code{NA}.
 #' @param fee_rate numeric fee per unit abs(position change).
+#' @param funding_rate Legacy funding-rate input retained for compatibility.
+#' @param interest_rate Legacy interest-rate input retained for compatibility.
+#' @param leverage Legacy leverage input retained for compatibility.
 #' @param rf_rate numeric annual risk-free rate.
 #' @param mode one of \code{"new_open"}, \code{"last_close"}; execution pricing basis.
+#' @param fee_sides Number of sides used when applying the simplified fee model.
+#' @param tz Time zone used when coercing input timestamps.
 #' @return Invisibly: data.table (one row) with metrics and list-col \code{log_ret_dt}.
 #' @export
 eval_strat_performance <- function(DT, pos_col_name, bg_time = as.POSIXct(NA), ed_time = as.POSIXct(NA), fee_rate = 0.0007, funding_rate = 0.00004, interest_rate = 0.00005, leverage = 1, rf_rate = 0, mode = c("new_open", "last_close"), fee_sides = 1L, tz = Sys.timezone()) {

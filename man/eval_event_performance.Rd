@@ -22,7 +22,9 @@ eval_event_performance(
 
 \item{H}{integer horizons (default \code{1L:42L}).}
 
-\item{threshold}{numeric hit threshold (absolute return).}
+\item{pos_hit_threshold}{Positive return threshold used to count upside hits.}
+
+\item{neg_hit_threshold}{Negative return threshold used to count downside hits.}
 }
 \value{
 Invisibly: data.table (one row) with summary stats and list-cols \code{performance_by_cases}, \code{performance_by_horizons}.

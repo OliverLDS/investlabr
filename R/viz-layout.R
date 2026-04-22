@@ -138,7 +138,19 @@ gen_grid_of_plots_with_labels <- function(
   )
 }
 
+#' Plot multiple time-series columns as facets
+#'
+#' @param DT A data.table or data.frame containing id and measure columns.
+#' @param id_vars Character vector of identifier columns preserved during
+#'   reshaping.
+#' @param measure_vars Character vector of numeric measure columns to plot.
+#' @param measure_labels Optional named character vector used to relabel
+#'   \code{measure_vars} in the facet headers.
+#' @param show_compiler Whether to append the configured plot compiler name to
+#'   the plot caption.
 #' @inheritParams viz_style_get
+#'
+#' @return A faceted ggplot object.
 #' @export
 gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_labels, style = NULL, context = NULL, show_compiler = TRUE) {
   resolved <- .viz_resolve_style(style = style, context = context)

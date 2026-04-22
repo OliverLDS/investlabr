@@ -111,32 +111,55 @@ For navigation and maintenance, see:
 - `real-data-yahoo-forward-fan-from-recent-regime.R`
   Yahoo Finance index history used to calibrate a recent-regime forward fan with percentile bands, sample paths, and a terminal return distribution.
 
-### Planned macro data forecast examples
+### Macro data forecast workflows
 
-The macro data forecast family is intended to grow into forward-looking research workflows, not execution logic. `investdatar` should own data access and syncing; `investlabr` should own forecast preparation, scenario comparison, fan charts, probability/regime summaries, and briefing visuals; `strategyr` remains reserved for execution-oriented strategy logic.
+The macro data forecast family is forward-looking research workflow code, not execution logic. `investdatar` owns data access and syncing; `investlabr` owns forecast preparation, scenario comparison, fan charts, probability/regime summaries, and briefing visuals; `strategyr` remains reserved for execution-oriented strategy logic.
 
-Implemented scripts:
+Rates-path and policy-rate scripts:
 
 - `real-data-fred-rate-shock-persistence-board.R`
-- `real-data-yahoo-forward-fan-from-recent-regime.R`
-
-Planned/proposed scripts:
-
+  Nominal-rate shock persistence board using local FRED Treasury yields.
 - `real-data-fred-yield-curve-forward-fan.R`
+  Recent-regime percentile fans for 2Y, 10Y, and 10Y-2Y curve paths.
 - `real-data-fred-policy-rate-path-board.R`
+  EFFR, SOFR, IORB, and target-rate scenario paths for policy-rate discussion.
 - `real-data-fred-real-yield-persistence-board.R`
+  Real-yield and breakeven shock persistence paths after large changes.
+
+Inflation, labor, and recession-risk scripts:
+
 - `real-data-fred-inflation-nowcast-band-board.R`
+  Simple CPI nowcast bands from recent monthly inflation distributions.
 - `real-data-fred-labor-softening-probability-board.R`
+  Bounded labor-softening risk score from unemployment, claims, and payroll momentum.
 - `real-data-fred-disinflation-vs-reacceleration-scenarios.R`
-- `real-data-fred-liquidity-drain-forward-board.R`
-- `real-data-fred-balance-sheet-runoff-scenarios.R`
-- `real-data-fred-liquidity-tightness-risk-meter.R`
-- `real-data-yahoo-macro-regime-conditional-fan-board.R`
-- `real-data-yahoo-rate-shock-conditional-forward-returns.R`
-- `real-data-yahoo-dollar-liquidity-spillover-board.R`
+  Explicit CPI/core/wage scenario paths for disinflation versus reacceleration.
 - `real-data-fred-recession-probability-dashboard.R`
+  Heuristic recession-risk dashboard from curve, labor, credit, and manufacturing indicators.
 - `real-data-fred-soft-landing-vs-hard-landing-board.R`
+  Current macro state compared with soft-landing and hard-landing templates.
 - `real-data-fred-regime-transition-matrix-board.R`
+  Simple macro-regime labels, transition matrix, and current-regime next-step probabilities.
+
+Liquidity and balance-sheet scenario scripts:
+
+- `real-data-fred-liquidity-drain-forward-board.R`
+  Accounting-style reserve-drain paths under TGA and ON RRP flow assumptions.
+- `real-data-fred-balance-sheet-runoff-scenarios.R`
+  Fed balance-sheet runoff scenarios for total assets and selected components.
+- `real-data-fred-liquidity-tightness-risk-meter.R`
+  Compact liquidity-tightness meter combining corridor spreads and reserve proxies.
+
+Macro-conditional cross-asset scripts:
+
+- `real-data-yahoo-forward-fan-from-recent-regime.R`
+  Recent-regime Yahoo price fan with percentile paths and terminal distribution.
+- `real-data-yahoo-macro-regime-conditional-fan-board.R`
+  Cross-asset forward fans conditional on simple FRED macro-regime labels.
+- `real-data-yahoo-rate-shock-conditional-forward-returns.R`
+  Cross-asset forward-return paths after large rate-shock events.
+- `real-data-yahoo-dollar-liquidity-spillover-board.R`
+  Forward paths after dollar/liquidity tightening episodes.
 
 - `real-data-strategyr-donchian-backtest.R`
   Local Yahoo `DBC` data for 2014 run through `strategyr`'s 55-day Donchian breakout backtest with pre-window signal warmup, then visualized in `investlabr` with `eval_strat_plot_tsline_eq()`.
@@ -244,6 +267,21 @@ source("inst/gallery/real-data-treasury-nominal-real-weekly-board.R")
 source("inst/gallery/real-data-yahoo-candles.R")
 source("inst/gallery/real-data-yahoo-volatility-clustering-board.R")
 source("inst/gallery/real-data-yahoo-forward-fan-from-recent-regime.R")
+source("inst/gallery/real-data-fred-yield-curve-forward-fan.R")
+source("inst/gallery/real-data-fred-policy-rate-path-board.R")
+source("inst/gallery/real-data-fred-real-yield-persistence-board.R")
+source("inst/gallery/real-data-fred-inflation-nowcast-band-board.R")
+source("inst/gallery/real-data-fred-labor-softening-probability-board.R")
+source("inst/gallery/real-data-fred-disinflation-vs-reacceleration-scenarios.R")
+source("inst/gallery/real-data-fred-liquidity-drain-forward-board.R")
+source("inst/gallery/real-data-fred-balance-sheet-runoff-scenarios.R")
+source("inst/gallery/real-data-fred-liquidity-tightness-risk-meter.R")
+source("inst/gallery/real-data-yahoo-macro-regime-conditional-fan-board.R")
+source("inst/gallery/real-data-yahoo-rate-shock-conditional-forward-returns.R")
+source("inst/gallery/real-data-yahoo-dollar-liquidity-spillover-board.R")
+source("inst/gallery/real-data-fred-recession-probability-dashboard.R")
+source("inst/gallery/real-data-fred-soft-landing-vs-hard-landing-board.R")
+source("inst/gallery/real-data-fred-regime-transition-matrix-board.R")
 source("inst/gallery/real-data-strategyr-donchian-backtest.R")
 source("inst/gallery/sim-strategy-explain-donchian-breakout.R")
 source("inst/gallery/real-data-strategyr-macd-backtest.R")

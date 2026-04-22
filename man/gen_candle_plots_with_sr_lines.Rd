@@ -22,6 +22,14 @@ gen_candle_plots_with_sr_lines(
 
 \item{resistance_pts}{Numeric vector of resistance price levels.}
 
+\item{near_frac}{Fraction of the displayed price range used to detect nearby
+support/resistance labels that should be vertically separated.}
+
+\item{label_digits}{Number of decimals used in support/resistance labels.}
+
+\item{show_ema_lines}{Whether to draw EMA columns when \code{ema_20},
+\code{ema_50}, \code{ema_100}, and \code{ema_200} exist in \code{DT}.}
+
 \item{style}{Named style family or `NULL` to use the package default.}
 
 \item{context}{Output context or `NULL` to use the package default.}

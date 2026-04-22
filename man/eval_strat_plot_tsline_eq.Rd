@@ -16,6 +16,9 @@ eval_strat_plot_tsline_eq(
 \arguments{
 \item{bt_res}{single-row data.table from \code{eval_strat_performance()}.}
 
+\item{benchmark_bt_res}{Optional benchmark strategy result to compare against
+the evaluated strategy.}
+
 \item{bt_res_2}{Optional second evaluated strategy result. Use sparingly; the
 chart is designed for at most two evaluated strategies plus one benchmark.}
 

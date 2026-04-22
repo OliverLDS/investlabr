@@ -3,6 +3,8 @@
 #' @param DT A data.table containing OHLC data with columns \code{datetime},
 #'   \code{open}, \code{high}, \code{low}, and \code{close}.
 #' @inheritParams viz_style_get
+#' @param show_compiler Whether to append the configured plot compiler name to
+#'   the plot caption.
 #'
 #' @return A ggplot2 object showing an OHLC candlestick chart.
 #' @export
@@ -58,6 +60,11 @@ viz_candle_base <- function(DT, style = NULL, context = NULL, show_compiler = TR
 #' @param DT A data.table containing OHLC data with columns \code{datetime}, \code{open}, \code{high}, \code{low}, and \code{close}.
 #' @param support_pts Numeric vector of support price levels.
 #' @param resistance_pts Numeric vector of resistance price levels.
+#' @param near_frac Fraction of the displayed price range used to detect nearby
+#'   support/resistance labels that should be vertically separated.
+#' @param label_digits Number of decimals used in support/resistance labels.
+#' @param show_ema_lines Whether to draw EMA columns when \code{ema_20},
+#'   \code{ema_50}, \code{ema_100}, and \code{ema_200} exist in \code{DT}.
 #' @inheritParams viz_style_get
 #'
 #' @return A ggplot2 object showing candlestick chart with support and resistance lines.
@@ -188,7 +195,26 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
   .viz_candle_core_plot(DT, style = resolved)
 }
 
+#' Generate candlestick plot with support and resistance zones
+#'
+#' @param DT A data.table containing OHLC data with columns \code{datetime},
+#'   \code{open}, \code{high}, \code{low}, and \code{close}.
+#' @param inst_id Instrument label used in the chart title.
+#' @param bar Bar interval label used in the chart title.
+#' @param support_dt data.table of support zones with \code{zone_center},
+#'   \code{zone_low}, and \code{zone_high}.
+#' @param resistance_dt data.table of resistance zones with \code{zone_center},
+#'   \code{zone_low}, and \code{zone_high}.
+#' @param near_frac Fraction of the displayed price range used to detect nearby
+#'   support/resistance labels that should be vertically separated.
+#' @param label_digits Number of decimals used in support/resistance labels.
+#' @param show_ema_lines Whether to draw EMA columns when \code{ema_20},
+#'   \code{ema_50}, \code{ema_100}, and \code{ema_200} exist in \code{DT}.
+#' @param show_compiler Whether to append the configured plot compiler name to
+#'   the plot caption.
 #' @inheritParams viz_style_get
+#'
+#' @return A ggplot2 object showing candlesticks with support/resistance zones.
 #' @export
 gen_candle_plots_with_sr_dts <- function(
   DT,

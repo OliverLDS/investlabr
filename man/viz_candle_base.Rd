@@ -13,6 +13,9 @@ viz_candle_base(DT, style = NULL, context = NULL, show_compiler = TRUE)
 \item{style}{Named style family or `NULL` to use the package default.}
 
 \item{context}{Output context or `NULL` to use the package default.}
+
+\item{show_compiler}{Whether to append the configured plot compiler name to
+the plot caption.}
 }
 \value{
 A ggplot2 object showing an OHLC candlestick chart.

@@ -1,8 +1,15 @@
 # investlabr news
 
+## 0.0.4.16
+
+- Added a full macro data forecast gallery family with executable FRED and Yahoo scripts for yield-curve fans, policy-rate paths, real-yield persistence, inflation/labor risk, liquidity and balance-sheet scenarios, cross-asset conditional fans, recession risk, landing scenarios, and regime transitions.
+- Added shared gallery utilities for local macro forecast examples, including FRED/Yahoo loaders, forward-fan construction, scenario paths, bounded scores, and lightweight carry-forward helpers.
+- Updated gallery documentation, the gallery index, and the promotion backlog so macro data forecast is documented as an implemented forward-looking research category.
+- Refined the short-term FRED liquidity-tightness dashboard around reserve mechanics, rate-floor pressure, collateral/cash transmission, and an integrated tightness score.
+
 ## 0.0.4.15
 
-- Expanded and documented the macro data forecast gallery family with implemented versus planned/proposed forward-looking research scripts.
+- Expanded the macro data forecast gallery planning surface for forward-looking research scripts.
 - Added and refined Yahoo event-board examples for cross-asset and US sector views, including multiple event markers, command-line arguments, annual/daily guides, and improved end-label handling.
 - Refined several FRED macro monitor boards for cleaner storytelling: inflation/labor, FOMC plumbing, balance-sheet mirror, curve/real-yield, and macro-factor heatmap views.
 - Expanded the Treasury nominal/real curve board with approximate implied forward-curve panels and clearer axis guides.

@@ -1,8 +1,10 @@
 Package: investlabr
 Title: Research Workflows for Macro and Cross-Asset Analysis
-Version: 0.0.4.15
+Version: 0.0.4.16
 Authors@R: person("Oliver", "Zhou", email = "oliver.yxzhou@gmail.com",
                  role = c("aut", "cre"))
+Author: Oliver Zhou [aut, cre]
+Maintainer: Oliver Zhou <oliver.yxzhou@gmail.com>
 Description: Reusable research workflows for macro-financial and
     cross-asset analysis. The package sits on top of data packages such
     as 'investdatar' and focuses on transforming existing market and

@@ -28,6 +28,8 @@ eval_strat_plot_scatter_maxdd_annret <- function(bt_res_list, plot_title = "", o
 #' Plot equity curve (time series)
 #'
 #' @param bt_res single-row data.table from \code{eval_strat_performance()}.
+#' @param benchmark_bt_res Optional benchmark strategy result to compare against
+#'   the evaluated strategy.
 #' @param bt_res_2 Optional second evaluated strategy result. Use sparingly; the
 #'   chart is designed for at most two evaluated strategies plus one benchmark.
 #' @param caption Optional chart caption placed above the configured compiler footer.
