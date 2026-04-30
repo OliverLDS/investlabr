@@ -1,0 +1,54 @@
+id: fred-fomc-plumbing-board
+title: FOMC Plumbing Board
+subtitle: Overnight pricing symptoms, reserve mechanics, facility usage, and balance-sheet backdrop
+summary: >
+  A FRED-based implementation-plumbing board linking money-market spreads,
+  reserve-side mechanics, facility footprints, and long-run balance-sheet scale.
+description_md: >
+  This board is built for Fed-watching workflows. It starts from pricing
+  symptoms in overnight rates, moves to reserve and liability mechanics, then
+  to repo and ON RRP footprints, and finally situates those readings in the
+  broader balance-sheet regime.
+dashboard: macro
+section: liquidity
+asset_class: Liquidity
+indicator_family: FOMC Plumbing
+region: United States
+frequency: Daily
+source: FRED
+source_detail:
+  - EFFR
+  - SOFR
+  - IORB
+  - WRBWFRBL
+  - WDTGAL
+  - RRPONTSYD
+  - WALCL
+  - WSHOTSL
+tags:
+  - fed
+  - liquidity
+  - sofr
+  - reserves
+  - on rrp
+  - balance sheet
+last_updated: "2026-04-30"
+published: true
+featured: true
+sort_priority: 88
+plot_image: plots/macro/fred-fomc-plumbing-board.svg
+thumbnail: thumbnails/macro/fred-fomc-plumbing-board.png
+plot_html: ""
+canonical_slug: fred-fomc-plumbing-board
+related_ids:
+  - fred-liquidity-tightness-dashboard
+  - fred-balance-sheet-mirror-board
+podcast_topics:
+  - Fed implementation
+  - Liquidity plumbing
+report_topics:
+  - Fed Watch
+  - Daily Macro Brief
+compliance:
+  educational_only: true
+  not_investment_advice: true

@@ -1,5 +1,12 @@
 # investlabr news
 
+## 0.0.5
+
+- Added an AlphaSync-oriented publishing layer for gallery outputs, including reusable plot-registry helpers, JSON manifest emission, YAML sidecars, and structured `plots/` and `thumbnails/` output folders under `inst/gallery/output/`.
+- Added build scripts to render selected real-data gallery boards into publishing assets and to emit an AlphaSync-compatible `alphasync-plot-registry.json` manifest with controlled metadata and relative asset paths.
+- Seeded the publishing registry with real macro and market boards plus style/context demo entries, and documented the sidecar and output-directory conventions in the gallery docs.
+- Refined the Yahoo cross-asset event board so it behaves as a reusable renderable gallery script instead of opening a local image viewer.
+
 ## 0.0.4.16
 
 - Added a full macro data forecast gallery family with executable FRED and Yahoo scripts for yield-curve fans, policy-rate paths, real-yield persistence, inflation/labor risk, liquidity and balance-sheet scenarios, cross-asset conditional fans, recession risk, landing scenarios, and regime transitions.

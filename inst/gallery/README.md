@@ -9,6 +9,7 @@ For navigation and maintenance, see:
 - [GALLERY_INDEX.md](GALLERY_INDEX.md) for category mapping and package-boundary notes.
 - [PROMOTION_BACKLOG.md](PROMOTION_BACKLOG.md) for reusable patterns that may later move into `investlabr`, `investdatar`, or `strategyr`.
 - [_template-gallery-script.R](_template-gallery-script.R) for a starter structure for new daily-analysis examples.
+- [output/README.md](output/README.md) for AlphaSync-oriented manifest and asset-output conventions.
 
 ## Conventions
 
@@ -18,6 +19,7 @@ For navigation and maintenance, see:
 - Examples assume you already have the required data source credentials and local storage configured for `investdatar`.
 - Keep local paths, one-off ticker choices, and narrative-specific labels inside gallery scripts rather than package functions.
 - Promote repeated transformation, diagnostics, or visualization patterns into the appropriate package once the API is stable.
+- For publishing workflows, keep rendered assets in `inst/gallery/output/`, render selected boards with `build-alphasync-real-assets.R`, and emit `alphasync-plot-registry.json` from YAML sidecars in `inst/gallery/output/meta/`.
 
 ## Style and context showcases
 
@@ -258,6 +260,8 @@ Macro-conditional cross-asset scripts:
 Run an example interactively from the package root:
 
 ```r
+source("inst/gallery/build-alphasync-real-assets.R")
+source("inst/gallery/build-alphasync-plot-registry.R")
 source("inst/gallery/viz-style-gallery.R")
 source("inst/gallery/viz-context-gallery.R")
 source("inst/gallery/real-data-fred-yield-curve.R")

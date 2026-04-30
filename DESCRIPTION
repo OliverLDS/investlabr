@@ -1,6 +1,6 @@
 Package: investlabr
 Title: Research Workflows for Macro and Cross-Asset Analysis
-Version: 0.0.4.16
+Version: 0.0.5
 Authors@R: person("Oliver", "Zhou", email = "oliver.yxzhou@gmail.com",
                  role = c("aut", "cre"))
 Author: Oliver Zhou [aut, cre]
@@ -22,6 +22,7 @@ Imports:
     ggrepel,
     grid,
     gridExtra,
+    jsonlite,
     patchwork,
     quadprog,
     scales,

@@ -1,0 +1,42 @@
+id: context-slide
+title: investlabr Slide Context Sample
+subtitle: Base chart rendered with the slide-sized context
+summary: >
+  Demonstration asset for the `slide` context, useful for validating larger
+  typography and presentation-oriented spacing.
+description_md: >
+  This context sample uses the `slide` context in `investlabr` to demonstrate
+  presentation-sized typography and spacing. It is a design system example
+  rather than a production market chart.
+dashboard: markets
+section: style-system
+asset_class: Equities
+indicator_family: Visualization Context
+region: Global
+frequency: Event
+source: investlabr
+source_detail:
+  - viz-context-gallery.R
+  - slide
+tags:
+  - visualization
+  - context
+  - slide
+  - gallery
+last_updated: "2026-04-30"
+published: false
+featured: false
+sort_priority: 0
+plot_image: plots/markets/context-slide.svg
+thumbnail: thumbnails/markets/context-slide.png
+plot_html: ""
+canonical_slug: context-slide
+related_ids:
+  - context-report
+  - context-dashboard
+  - viz-style-gallery
+podcast_topics: []
+report_topics: []
+compliance:
+  educational_only: true
+  not_investment_advice: true

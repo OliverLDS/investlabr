@@ -1,0 +1,53 @@
+id: fred-inflation-labor-dashboard
+title: Inflation and Labor Dashboard
+subtitle: Realized inflation, market expectations, labor slack, and wage pressure
+summary: >
+  A four-panel FRED board linking realized inflation, market inflation
+  expectations, labor-market slack, and wage pressure in one macro briefing
+  view.
+description_md: >
+  This dashboard is designed for macro briefing use. It compares CPI and PCE
+  inflation with market-based inflation expectations, pairs unemployment with
+  payroll momentum as a labor-cooling lens, and tracks wage growth as a check
+  on disinflation durability.
+dashboard: macro
+section: inflation
+asset_class: Inflation
+indicator_family: Inflation and Labor
+region: United States
+frequency: Monthly
+source: FRED
+source_detail:
+  - CPIAUCSL
+  - PCEPI
+  - T5YIE
+  - T5YIFR
+  - UNRATE
+  - PAYEMS
+  - AHETPI
+tags:
+  - inflation
+  - labor
+  - wages
+  - breakeven
+  - unemployment
+last_updated: "2026-04-30"
+published: true
+featured: true
+sort_priority: 85
+plot_image: plots/macro/fred-inflation-labor-dashboard.svg
+thumbnail: thumbnails/macro/fred-inflation-labor-dashboard.png
+plot_html: ""
+canonical_slug: fred-inflation-labor-dashboard
+related_ids:
+  - fred-liquidity-tightness-dashboard
+  - fred-rate-shock-persistence-board
+podcast_topics:
+  - Inflation pulse
+  - Labor market cooling
+report_topics:
+  - Daily Macro Brief
+  - Inflation Monitor
+compliance:
+  educational_only: true
+  not_investment_advice: true

@@ -1,0 +1,48 @@
+id: macro-factor-heatmap
+title: Macro Factor Exposure Heatmap
+subtitle: Market controls separated from non-market macro and thematic exposures
+summary: >
+  A cross-sectional heatmap of standardized factor sensitivities for a tech,
+  AI, and crypto-linked equity universe, with the economic story focused on
+  non-market factors.
+description_md: >
+  This board keeps broad equity market factors as model controls while
+  separating them from the main macro heatmap. The result is a cleaner view of
+  rates, liquidity, volatility, reserve, and thematic exposures across a
+  growth- and crypto-sensitive stock universe.
+dashboard: markets
+section: factor-exposures
+asset_class: Equities
+indicator_family: Macro Sensitivity
+region: United States
+frequency: Daily
+source: Yahoo Finance + FRED
+source_detail:
+  - Yahoo local OHLC universe
+  - FRED macro factor series
+tags:
+  - factors
+  - heatmap
+  - equities
+  - ai
+  - crypto
+  - macro
+last_updated: "2026-04-30"
+published: true
+featured: true
+sort_priority: 82
+plot_image: plots/markets/macro-factor-heatmap.svg
+thumbnail: thumbnails/markets/macro-factor-heatmap.png
+plot_html: ""
+canonical_slug: macro-factor-heatmap
+related_ids:
+  - yahoo-cross-asset-event-board
+  - fred-rate-shock-persistence-board
+podcast_topics:
+  - Equity macro exposures
+report_topics:
+  - Equity Factor Watch
+  - Daily Macro Brief
+compliance:
+  educational_only: true
+  not_investment_advice: true

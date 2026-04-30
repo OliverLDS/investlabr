@@ -225,12 +225,7 @@ board <- investlabr::gen_grid_of_plots_with_labels(
   context = "report"
 )
 
-# print(board)
-# print can't show image in terminal; below is for output in terminal
-
-dir.create("tmp", showWarnings = FALSE, recursive = TRUE)
-png("tmp/event-board.png", width = 1800, height = 1200, res = 150)
-grid::grid.newpage()
-grid::grid.draw(board)
-dev.off()
-system("open tmp/event-board.png")
+if (interactive()) {
+  grid::grid.newpage()
+  grid::grid.draw(board)
+}

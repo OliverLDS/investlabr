@@ -1,0 +1,59 @@
+id: fred-liquidity-tightness-dashboard
+title: Short-Term Liquidity Tightness Dashboard
+subtitle: Funding pressure, reserve drain, transmission, and an integrated tightness score
+summary: >
+  A short-horizon FRED board tracking whether US money-market rates are pressing
+  above the administered floor and whether reserve-side plumbing is tightening.
+description_md: >
+  This board focuses on the latest three months of US liquidity plumbing.
+  Reading clockwise, it tracks floor pressure in EFFR, SOFR, and OBFR versus
+  IORB; balance-sheet drain through reserves, TGA, and related plumbing
+  components; cross-market transmission through bill and secured funding
+  spreads; and a normalized integrated tightness score.
+dashboard: macro
+section: liquidity
+asset_class: Liquidity
+indicator_family: Fed Plumbing
+region: United States
+frequency: Daily
+source: FRED
+source_detail:
+  - IORB
+  - EFFR
+  - SOFR
+  - OBFR
+  - DTB4WK
+  - WRBWFRBL
+  - WSHOTSL
+  - WCICL
+  - WORAL
+  - WLRRAL
+  - WDTGAL
+tags:
+  - liquidity
+  - fed
+  - reserves
+  - sofr
+  - effr
+  - iorb
+  - tga
+last_updated: "2026-04-30"
+published: true
+featured: true
+sort_priority: 90
+plot_image: plots/macro/fred-liquidity-tightness-dashboard.svg
+thumbnail: thumbnails/macro/fred-liquidity-tightness-dashboard.png
+plot_html: ""
+canonical_slug: fred-liquidity-tightness-dashboard
+related_ids:
+  - fred-rate-shock-persistence-board
+  - fred-inflation-labor-dashboard
+podcast_topics:
+  - Fed plumbing
+  - Liquidity conditions
+report_topics:
+  - Daily Macro Brief
+  - Fed Watch
+compliance:
+  educational_only: true
+  not_investment_advice: true

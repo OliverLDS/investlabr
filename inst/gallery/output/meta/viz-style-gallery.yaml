@@ -1,0 +1,42 @@
+id: viz-style-gallery
+title: investlabr Style Gallery
+subtitle: Same multi-series chart rendered across named visual styles
+summary: >
+  Demonstration asset for publishing and design review. This is a style-system
+  showcase rather than a production macro or market chart.
+description_md: >
+  This gallery artifact shows how the same base chart is rendered under
+  multiple `investlabr` style families. It is useful for validating the visual
+  system and for testing AlphaSync ingestion, but it should not be treated as a
+  research insight chart.
+dashboard: markets
+section: style-system
+asset_class: Equities
+indicator_family: Visualization Style
+region: Global
+frequency: Event
+source: investlabr
+source_detail:
+  - viz-style-gallery.R
+tags:
+  - visualization
+  - style
+  - gallery
+  - demo
+last_updated: "2026-04-30"
+published: false
+featured: false
+sort_priority: 0
+plot_image: plots/markets/viz-style-gallery.png
+thumbnail: thumbnails/markets/viz-style-gallery.png
+plot_html: ""
+canonical_slug: viz-style-gallery
+related_ids:
+  - context-report
+  - context-slide
+  - context-dashboard
+podcast_topics: []
+report_topics: []
+compliance:
+  educational_only: true
+  not_investment_advice: true

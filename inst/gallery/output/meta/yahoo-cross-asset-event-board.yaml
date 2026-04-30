@@ -1,0 +1,58 @@
+id: yahoo-cross-asset-event-board
+title: Cross-Asset Performance Around Selected Events
+subtitle: Equity, bond, FX, and commodity responses indexed from a common start date
+summary: >
+  A Yahoo-based cross-asset event board showing how major market groups behave
+  around selected geopolitical or macro events when rebased to a common level.
+description_md: >
+  This board compares indexed performance across equities, bonds, FX, and
+  commodities around one or more selected event dates. It is designed for
+  briefing use, so the emphasis is on relative path comparison rather than raw
+  price levels.
+dashboard: markets
+section: cross-asset
+asset_class: Equities
+indicator_family: Cross-Asset Event Study
+region: Global
+frequency: Event
+source: Yahoo Finance
+source_detail:
+  - ^GSPC
+  - ^STOXX50E
+  - ^N225
+  - ^HSI
+  - ZT=F
+  - HYG
+  - LQD
+  - DX-Y.NYB
+  - EURUSD=X
+  - JPY=X
+  - GC=F
+  - HG=F
+  - CL=F
+tags:
+  - cross-asset
+  - event study
+  - equities
+  - bonds
+  - fx
+  - commodities
+last_updated: "2026-04-30"
+published: true
+featured: true
+sort_priority: 80
+plot_image: plots/markets/yahoo-cross-asset-event-board.svg
+thumbnail: thumbnails/markets/yahoo-cross-asset-event-board.png
+plot_html: ""
+canonical_slug: yahoo-cross-asset-event-board
+related_ids:
+  - fred-fomc-plumbing-board
+  - fred-rate-shock-persistence-board
+podcast_topics:
+  - Cross-asset reaction function
+report_topics:
+  - Market Event Brief
+  - Cross-Asset Watch
+compliance:
+  educational_only: true
+  not_investment_advice: true

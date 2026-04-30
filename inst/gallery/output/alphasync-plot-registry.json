@@ -1,0 +1,559 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-04-30T11:59:49Z",
+  "source_system": "investlabr",
+  "base_path_mode": "relative",
+  "plots": [
+    {
+      "id": "context-dashboard",
+      "title": "investlabr Dashboard Context Sample",
+      "subtitle": "Base chart rendered with the dashboard-sized context",
+      "summary": "Demonstration asset for the `dashboard` context, useful for validating dense screen layouts and dashboard-style spacing.",
+      "description_md": "This context sample uses the `dashboard` context in `investlabr` to demonstrate tighter spacing and dashboard-oriented annotation density. It is a design system example rather than a production market chart.",
+      "dashboard": "markets",
+      "section": "style-system",
+      "asset_class": "Equities",
+      "indicator_family": "Visualization Context",
+      "region": "Global",
+      "frequency": "Event",
+      "source": "investlabr",
+      "source_detail": [
+        "viz-context-gallery.R",
+        "dashboard"
+      ],
+      "tags": [
+        "visualization",
+        "context",
+        "dashboard",
+        "gallery"
+      ],
+      "last_updated": "2026-04-30",
+      "published": false,
+      "featured": false,
+      "sort_priority": 0,
+      "plot_image": "plots/markets/context-dashboard.svg",
+      "thumbnail": "thumbnails/markets/context-dashboard.png",
+      "plot_html": "",
+      "canonical_slug": "context-dashboard",
+      "related_ids": [
+        "context-report",
+        "context-slide",
+        "viz-style-gallery"
+      ],
+      "podcast_topics": [],
+      "report_topics": [],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "context-report",
+      "title": "investlabr Report Context Sample",
+      "subtitle": "Base chart rendered with the report-sized context",
+      "summary": "Demonstration asset for the `report` context, useful for validating spacing, typography, and legend treatment in publishing workflows.",
+      "description_md": "This context sample uses the `report` context in `investlabr` to demonstrate the default research-note sizing and annotation treatment. It is a design system example rather than a production market chart.",
+      "dashboard": "markets",
+      "section": "style-system",
+      "asset_class": "Equities",
+      "indicator_family": "Visualization Context",
+      "region": "Global",
+      "frequency": "Event",
+      "source": "investlabr",
+      "source_detail": [
+        "viz-context-gallery.R",
+        "report"
+      ],
+      "tags": [
+        "visualization",
+        "context",
+        "report",
+        "gallery"
+      ],
+      "last_updated": "2026-04-30",
+      "published": false,
+      "featured": false,
+      "sort_priority": 0,
+      "plot_image": "plots/markets/context-report.svg",
+      "thumbnail": "thumbnails/markets/context-report.png",
+      "plot_html": "",
+      "canonical_slug": "context-report",
+      "related_ids": [
+        "context-slide",
+        "context-dashboard",
+        "viz-style-gallery"
+      ],
+      "podcast_topics": [],
+      "report_topics": [],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "context-slide",
+      "title": "investlabr Slide Context Sample",
+      "subtitle": "Base chart rendered with the slide-sized context",
+      "summary": "Demonstration asset for the `slide` context, useful for validating larger typography and presentation-oriented spacing.",
+      "description_md": "This context sample uses the `slide` context in `investlabr` to demonstrate presentation-sized typography and spacing. It is a design system example rather than a production market chart.",
+      "dashboard": "markets",
+      "section": "style-system",
+      "asset_class": "Equities",
+      "indicator_family": "Visualization Context",
+      "region": "Global",
+      "frequency": "Event",
+      "source": "investlabr",
+      "source_detail": [
+        "viz-context-gallery.R",
+        "slide"
+      ],
+      "tags": [
+        "visualization",
+        "context",
+        "slide",
+        "gallery"
+      ],
+      "last_updated": "2026-04-30",
+      "published": false,
+      "featured": false,
+      "sort_priority": 0,
+      "plot_image": "plots/markets/context-slide.svg",
+      "thumbnail": "thumbnails/markets/context-slide.png",
+      "plot_html": "",
+      "canonical_slug": "context-slide",
+      "related_ids": [
+        "context-report",
+        "context-dashboard",
+        "viz-style-gallery"
+      ],
+      "podcast_topics": [],
+      "report_topics": [],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "fred-balance-sheet-mirror-board",
+      "title": "Federal Reserve Balance-Sheet Mirror Board",
+      "subtitle": "Asset and liability stocks alongside recent cumulative shifts",
+      "summary": "A FRED-based balance-sheet board that shows the asset side, the liability side, and the recent cumulative changes driving the latest moves.",
+      "description_md": "This board focuses on the composition and recent evolution of the Federal Reserve balance sheet. It shows both stock levels and rebased cumulative changes so the latest balance-sheet drivers can be compared more directly.",
+      "dashboard": "macro",
+      "section": "liquidity",
+      "asset_class": "Liquidity",
+      "indicator_family": "Fed Balance Sheet",
+      "region": "United States",
+      "frequency": "Weekly",
+      "source": "FRED",
+      "source_detail": [
+        "WALCL",
+        "WSHOTSL",
+        "WMBSEC",
+        "WRBWFRBL",
+        "WDTGAL",
+        "RRPONTSYD",
+        "WCICL"
+      ],
+      "tags": [
+        "fed",
+        "balance sheet",
+        "reserves",
+        "tga",
+        "on rrp"
+      ],
+      "last_updated": "2026-04-30",
+      "published": true,
+      "featured": false,
+      "sort_priority": 78,
+      "plot_image": "plots/macro/fred-balance-sheet-mirror-board.svg",
+      "thumbnail": "thumbnails/macro/fred-balance-sheet-mirror-board.png",
+      "plot_html": "",
+      "canonical_slug": "fred-balance-sheet-mirror-board",
+      "related_ids": [
+        "fred-fomc-plumbing-board",
+        "fred-liquidity-tightness-dashboard"
+      ],
+      "podcast_topics": [
+        "Fed balance sheet"
+      ],
+      "report_topics": [
+        "Fed Watch",
+        "Liquidity Monitor"
+      ],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "fred-fomc-plumbing-board",
+      "title": "FOMC Plumbing Board",
+      "subtitle": "Overnight pricing symptoms, reserve mechanics, facility usage, and balance-sheet backdrop",
+      "summary": "A FRED-based implementation-plumbing board linking money-market spreads, reserve-side mechanics, facility footprints, and long-run balance-sheet scale.",
+      "description_md": "This board is built for Fed-watching workflows. It starts from pricing symptoms in overnight rates, moves to reserve and liability mechanics, then to repo and ON RRP footprints, and finally situates those readings in the broader balance-sheet regime.",
+      "dashboard": "macro",
+      "section": "liquidity",
+      "asset_class": "Liquidity",
+      "indicator_family": "FOMC Plumbing",
+      "region": "United States",
+      "frequency": "Daily",
+      "source": "FRED",
+      "source_detail": [
+        "EFFR",
+        "SOFR",
+        "IORB",
+        "WRBWFRBL",
+        "WDTGAL",
+        "RRPONTSYD",
+        "WALCL",
+        "WSHOTSL"
+      ],
+      "tags": [
+        "fed",
+        "liquidity",
+        "sofr",
+        "reserves",
+        "on rrp",
+        "balance sheet"
+      ],
+      "last_updated": "2026-04-30",
+      "published": true,
+      "featured": true,
+      "sort_priority": 88,
+      "plot_image": "plots/macro/fred-fomc-plumbing-board.svg",
+      "thumbnail": "thumbnails/macro/fred-fomc-plumbing-board.png",
+      "plot_html": "",
+      "canonical_slug": "fred-fomc-plumbing-board",
+      "related_ids": [
+        "fred-liquidity-tightness-dashboard",
+        "fred-balance-sheet-mirror-board"
+      ],
+      "podcast_topics": [
+        "Fed implementation",
+        "Liquidity plumbing"
+      ],
+      "report_topics": [
+        "Fed Watch",
+        "Daily Macro Brief"
+      ],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "fred-inflation-labor-dashboard",
+      "title": "Inflation and Labor Dashboard",
+      "subtitle": "Realized inflation, market expectations, labor slack, and wage pressure",
+      "summary": "A four-panel FRED board linking realized inflation, market inflation expectations, labor-market slack, and wage pressure in one macro briefing view.",
+      "description_md": "This dashboard is designed for macro briefing use. It compares CPI and PCE inflation with market-based inflation expectations, pairs unemployment with payroll momentum as a labor-cooling lens, and tracks wage growth as a check on disinflation durability.",
+      "dashboard": "macro",
+      "section": "inflation",
+      "asset_class": "Inflation",
+      "indicator_family": "Inflation and Labor",
+      "region": "United States",
+      "frequency": "Monthly",
+      "source": "FRED",
+      "source_detail": [
+        "CPIAUCSL",
+        "PCEPI",
+        "T5YIE",
+        "T5YIFR",
+        "UNRATE",
+        "PAYEMS",
+        "AHETPI"
+      ],
+      "tags": [
+        "inflation",
+        "labor",
+        "wages",
+        "breakeven",
+        "unemployment"
+      ],
+      "last_updated": "2026-04-30",
+      "published": true,
+      "featured": true,
+      "sort_priority": 85,
+      "plot_image": "plots/macro/fred-inflation-labor-dashboard.svg",
+      "thumbnail": "thumbnails/macro/fred-inflation-labor-dashboard.png",
+      "plot_html": "",
+      "canonical_slug": "fred-inflation-labor-dashboard",
+      "related_ids": [
+        "fred-liquidity-tightness-dashboard",
+        "fred-rate-shock-persistence-board"
+      ],
+      "podcast_topics": [
+        "Inflation pulse",
+        "Labor market cooling"
+      ],
+      "report_topics": [
+        "Daily Macro Brief",
+        "Inflation Monitor"
+      ],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "fred-liquidity-tightness-dashboard",
+      "title": "Short-Term Liquidity Tightness Dashboard",
+      "subtitle": "Funding pressure, reserve drain, transmission, and an integrated tightness score",
+      "summary": "A short-horizon FRED board tracking whether US money-market rates are pressing above the administered floor and whether reserve-side plumbing is tightening.",
+      "description_md": "This board focuses on the latest three months of US liquidity plumbing. Reading clockwise, it tracks floor pressure in EFFR, SOFR, and OBFR versus IORB; balance-sheet drain through reserves, TGA, and related plumbing components; cross-market transmission through bill and secured funding spreads; and a normalized integrated tightness score.",
+      "dashboard": "macro",
+      "section": "liquidity",
+      "asset_class": "Liquidity",
+      "indicator_family": "Fed Plumbing",
+      "region": "United States",
+      "frequency": "Daily",
+      "source": "FRED",
+      "source_detail": [
+        "IORB",
+        "EFFR",
+        "SOFR",
+        "OBFR",
+        "DTB4WK",
+        "WRBWFRBL",
+        "WSHOTSL",
+        "WCICL",
+        "WORAL",
+        "WLRRAL",
+        "WDTGAL"
+      ],
+      "tags": [
+        "liquidity",
+        "fed",
+        "reserves",
+        "sofr",
+        "effr",
+        "iorb",
+        "tga"
+      ],
+      "last_updated": "2026-04-30",
+      "published": true,
+      "featured": true,
+      "sort_priority": 90,
+      "plot_image": "plots/macro/fred-liquidity-tightness-dashboard.svg",
+      "thumbnail": "thumbnails/macro/fred-liquidity-tightness-dashboard.png",
+      "plot_html": "",
+      "canonical_slug": "fred-liquidity-tightness-dashboard",
+      "related_ids": [
+        "fred-rate-shock-persistence-board",
+        "fred-inflation-labor-dashboard"
+      ],
+      "podcast_topics": [
+        "Fed plumbing",
+        "Liquidity conditions"
+      ],
+      "report_topics": [
+        "Daily Macro Brief",
+        "Fed Watch"
+      ],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "fred-rate-shock-persistence-board",
+      "title": "10-Year Treasury Shock Persistence",
+      "subtitle": "Recent nominal-rate shocks versus simulated and realized follow-through",
+      "summary": "A FRED-based rates board showing the recent 10-year Treasury yield, large daily shocks, an AR-style persistence envelope, and average realized paths after major moves.",
+      "description_md": "This board studies whether recent 10-year Treasury shocks tend to mean-revert or persist. It combines recent level history, daily changes, a simple AR-style persistence benchmark, and the average historical follow-through after large absolute shock days.",
+      "dashboard": "macro",
+      "section": "rates",
+      "asset_class": "Rates",
+      "indicator_family": "Rate Shock Persistence",
+      "region": "United States",
+      "frequency": "Daily",
+      "source": "FRED",
+      "source_detail": [
+        "DGS10"
+      ],
+      "tags": [
+        "rates",
+        "treasury",
+        "duration",
+        "fed",
+        "persistence"
+      ],
+      "last_updated": "2026-04-30",
+      "published": true,
+      "featured": false,
+      "sort_priority": 75,
+      "plot_image": "plots/macro/fred-rate-shock-persistence-board.svg",
+      "thumbnail": "thumbnails/macro/fred-rate-shock-persistence-board.png",
+      "plot_html": "",
+      "canonical_slug": "fred-rate-shock-persistence-board",
+      "related_ids": [
+        "fred-liquidity-tightness-dashboard",
+        "fred-inflation-labor-dashboard"
+      ],
+      "podcast_topics": [
+        "Treasury volatility",
+        "Rates shock transmission"
+      ],
+      "report_topics": [
+        "Rates Watch",
+        "Daily Macro Brief"
+      ],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "macro-factor-heatmap",
+      "title": "Macro Factor Exposure Heatmap",
+      "subtitle": "Market controls separated from non-market macro and thematic exposures",
+      "summary": "A cross-sectional heatmap of standardized factor sensitivities for a tech, AI, and crypto-linked equity universe, with the economic story focused on non-market factors.",
+      "description_md": "This board keeps broad equity market factors as model controls while separating them from the main macro heatmap. The result is a cleaner view of rates, liquidity, volatility, reserve, and thematic exposures across a growth- and crypto-sensitive stock universe.",
+      "dashboard": "markets",
+      "section": "factor-exposures",
+      "asset_class": "Equities",
+      "indicator_family": "Macro Sensitivity",
+      "region": "United States",
+      "frequency": "Daily",
+      "source": "Yahoo Finance + FRED",
+      "source_detail": [
+        "Yahoo local OHLC universe",
+        "FRED macro factor series"
+      ],
+      "tags": [
+        "factors",
+        "heatmap",
+        "equities",
+        "ai",
+        "crypto",
+        "macro"
+      ],
+      "last_updated": "2026-04-30",
+      "published": true,
+      "featured": true,
+      "sort_priority": 82,
+      "plot_image": "plots/markets/macro-factor-heatmap.svg",
+      "thumbnail": "thumbnails/markets/macro-factor-heatmap.png",
+      "plot_html": "",
+      "canonical_slug": "macro-factor-heatmap",
+      "related_ids": [
+        "yahoo-cross-asset-event-board",
+        "fred-rate-shock-persistence-board"
+      ],
+      "podcast_topics": [
+        "Equity macro exposures"
+      ],
+      "report_topics": [
+        "Equity Factor Watch",
+        "Daily Macro Brief"
+      ],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "viz-style-gallery",
+      "title": "investlabr Style Gallery",
+      "subtitle": "Same multi-series chart rendered across named visual styles",
+      "summary": "Demonstration asset for publishing and design review. This is a style-system showcase rather than a production macro or market chart.",
+      "description_md": "This gallery artifact shows how the same base chart is rendered under multiple `investlabr` style families. It is useful for validating the visual system and for testing AlphaSync ingestion, but it should not be treated as a research insight chart.",
+      "dashboard": "markets",
+      "section": "style-system",
+      "asset_class": "Equities",
+      "indicator_family": "Visualization Style",
+      "region": "Global",
+      "frequency": "Event",
+      "source": "investlabr",
+      "source_detail": [
+        "viz-style-gallery.R"
+      ],
+      "tags": [
+        "visualization",
+        "style",
+        "gallery",
+        "demo"
+      ],
+      "last_updated": "2026-04-30",
+      "published": false,
+      "featured": false,
+      "sort_priority": 0,
+      "plot_image": "plots/markets/viz-style-gallery.png",
+      "thumbnail": "thumbnails/markets/viz-style-gallery.png",
+      "plot_html": "",
+      "canonical_slug": "viz-style-gallery",
+      "related_ids": [
+        "context-report",
+        "context-slide",
+        "context-dashboard"
+      ],
+      "podcast_topics": [],
+      "report_topics": [],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    },
+    {
+      "id": "yahoo-cross-asset-event-board",
+      "title": "Cross-Asset Performance Around Selected Events",
+      "subtitle": "Equity, bond, FX, and commodity responses indexed from a common start date",
+      "summary": "A Yahoo-based cross-asset event board showing how major market groups behave around selected geopolitical or macro events when rebased to a common level.",
+      "description_md": "This board compares indexed performance across equities, bonds, FX, and commodities around one or more selected event dates. It is designed for briefing use, so the emphasis is on relative path comparison rather than raw price levels.",
+      "dashboard": "markets",
+      "section": "cross-asset",
+      "asset_class": "Equities",
+      "indicator_family": "Cross-Asset Event Study",
+      "region": "Global",
+      "frequency": "Event",
+      "source": "Yahoo Finance",
+      "source_detail": [
+        "^GSPC",
+        "^STOXX50E",
+        "^N225",
+        "^HSI",
+        "ZT=F",
+        "HYG",
+        "LQD",
+        "DX-Y.NYB",
+        "EURUSD=X",
+        "JPY=X",
+        "GC=F",
+        "HG=F",
+        "CL=F"
+      ],
+      "tags": [
+        "cross-asset",
+        "event study",
+        "equities",
+        "bonds",
+        "fx",
+        "commodities"
+      ],
+      "last_updated": "2026-04-30",
+      "published": true,
+      "featured": true,
+      "sort_priority": 80,
+      "plot_image": "plots/markets/yahoo-cross-asset-event-board.svg",
+      "thumbnail": "thumbnails/markets/yahoo-cross-asset-event-board.png",
+      "plot_html": "",
+      "canonical_slug": "yahoo-cross-asset-event-board",
+      "related_ids": [
+        "fred-fomc-plumbing-board",
+        "fred-rate-shock-persistence-board"
+      ],
+      "podcast_topics": [
+        "Cross-asset reaction function"
+      ],
+      "report_topics": [
+        "Market Event Brief",
+        "Cross-Asset Watch"
+      ],
+      "compliance": {
+        "educational_only": true,
+        "not_investment_advice": true
+      }
+    }
+  ]
+}

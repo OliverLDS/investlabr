@@ -1,0 +1,47 @@
+id: fred-rate-shock-persistence-board
+title: 10-Year Treasury Shock Persistence
+subtitle: Recent nominal-rate shocks versus simulated and realized follow-through
+summary: >
+  A FRED-based rates board showing the recent 10-year Treasury yield, large
+  daily shocks, an AR-style persistence envelope, and average realized paths
+  after major moves.
+description_md: >
+  This board studies whether recent 10-year Treasury shocks tend to mean-revert
+  or persist. It combines recent level history, daily changes, a simple
+  AR-style persistence benchmark, and the average historical follow-through
+  after large absolute shock days.
+dashboard: macro
+section: rates
+asset_class: Rates
+indicator_family: Rate Shock Persistence
+region: United States
+frequency: Daily
+source: FRED
+source_detail:
+  - DGS10
+tags:
+  - rates
+  - treasury
+  - duration
+  - fed
+  - persistence
+last_updated: "2026-04-30"
+published: true
+featured: false
+sort_priority: 75
+plot_image: plots/macro/fred-rate-shock-persistence-board.svg
+thumbnail: thumbnails/macro/fred-rate-shock-persistence-board.png
+plot_html: ""
+canonical_slug: fred-rate-shock-persistence-board
+related_ids:
+  - fred-liquidity-tightness-dashboard
+  - fred-inflation-labor-dashboard
+podcast_topics:
+  - Treasury volatility
+  - Rates shock transmission
+report_topics:
+  - Rates Watch
+  - Daily Macro Brief
+compliance:
+  educational_only: true
+  not_investment_advice: true
