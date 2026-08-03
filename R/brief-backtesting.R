@@ -33,13 +33,25 @@ eval_strat_plot_scatter_maxdd_annret <- function(bt_res_list, plot_title = "", o
 #' @param bt_res_2 Optional second evaluated strategy result. Use sparingly; the
 #'   chart is designed for at most two evaluated strategies plus one benchmark.
 #' @param caption Optional chart caption placed above the configured compiler footer.
+#' @param log_eq Logical; if `TRUE`, plot \code{log(eq)} on the y-axis instead of
+#'   raw equity.
 #' @inheritParams viz_style_get
 #' @return ggplot object.
 #' @export
-eval_strat_plot_tsline_eq <- function(bt_res, benchmark_bt_res = NULL, bt_res_2 = NULL, style = NULL, context = NULL, caption = NULL) {
+eval_strat_plot_tsline_eq <- function(bt_res, benchmark_bt_res = NULL, bt_res_2 = NULL, style = NULL, context = NULL, caption = NULL, log_eq = FALSE) {
   resolved <- .viz_resolve_style(style = style, context = context)
+  if (!is.logical(log_eq) || length(log_eq) != 1L || is.na(log_eq)) {
+    stop("`log_eq` must be a single TRUE/FALSE value.", call. = FALSE)
+  }
+  y_col <- if (isTRUE(log_eq)) "log_eq" else "eq"
   bt_dt <- bt_res$log_ret_dt[[1]]
   data.table::set(bt_dt, j = "eq", value = .log_ret_to_equity(bt_dt$log_ret))
+  if (isTRUE(log_eq)) {
+    if (any(bt_dt$eq <= 0, na.rm = TRUE)) {
+      stop("`log_eq = TRUE` requires strictly positive equity values.", call. = FALSE)
+    }
+    data.table::set(bt_dt, j = "log_eq", value = log(bt_dt$eq))
+  }
   bt_dt[, series := "Evaluated 1"]
   plot_dt <- data.table::copy(bt_dt)
   series_colors <- c("Evaluated 1" = resolved$accent, "Evaluated 2" = resolved$accent2, Benchmark = resolved$muted)
@@ -49,6 +61,12 @@ eval_strat_plot_tsline_eq <- function(bt_res, benchmark_bt_res = NULL, bt_res_2 
   if (!is.null(bt_res_2)) {
     bt_dt_2 <- bt_res_2$log_ret_dt[[1]]
     data.table::set(bt_dt_2, j = "eq", value = .log_ret_to_equity(bt_dt_2$log_ret))
+    if (isTRUE(log_eq)) {
+      if (any(bt_dt_2$eq <= 0, na.rm = TRUE)) {
+        stop("`log_eq = TRUE` requires strictly positive equity values.", call. = FALSE)
+      }
+      data.table::set(bt_dt_2, j = "log_eq", value = log(bt_dt_2$eq))
+    }
     bt_dt_2[, series := "Evaluated 2"]
     plot_dt <- data.table::rbindlist(list(plot_dt, bt_dt_2), use.names = TRUE, fill = TRUE)
     metric_labels <- c(
@@ -59,6 +77,12 @@ eval_strat_plot_tsline_eq <- function(bt_res, benchmark_bt_res = NULL, bt_res_2 
   if (!is.null(benchmark_bt_res)) {
     benchmark_bt_dt <- benchmark_bt_res$log_ret_dt[[1]]
     data.table::set(benchmark_bt_dt, j = "eq", value = .log_ret_to_equity(benchmark_bt_dt$log_ret))
+    if (isTRUE(log_eq)) {
+      if (any(benchmark_bt_dt$eq <= 0, na.rm = TRUE)) {
+        stop("`log_eq = TRUE` requires strictly positive equity values.", call. = FALSE)
+      }
+      data.table::set(benchmark_bt_dt, j = "log_eq", value = log(benchmark_bt_dt$eq))
+    }
     benchmark_bt_dt[, series := "Benchmark"]
     plot_dt <- data.table::rbindlist(list(plot_dt, benchmark_bt_dt), use.names = TRUE, fill = TRUE)
     metric_labels <- c(
@@ -68,10 +92,10 @@ eval_strat_plot_tsline_eq <- function(bt_res, benchmark_bt_res = NULL, bt_res_2 
   }
   series_levels <- names(metric_labels)
   plot_dt[, series := factor(series, levels = series_levels)]
-  key_dt <- .equity_metric_key_dt(plot_dt, metric_labels, series_colors)
+  key_dt <- .equity_metric_key_dt(plot_dt, metric_labels, series_colors, y_col = y_col)
 
   p <- plot_dt |>
-    ggplot2::ggplot(ggplot2::aes(x = datetime, y = eq, color = series)) +
+    ggplot2::ggplot(ggplot2::aes(x = datetime, y = .data[[y_col]], color = series)) +
     ggplot2::geom_line(linewidth = resolved$line_width) +
     ggplot2::geom_segment(
       data = key_dt,
@@ -91,24 +115,40 @@ eval_strat_plot_tsline_eq <- function(bt_res, benchmark_bt_res = NULL, bt_res_2 
     ) +
     ggplot2::scale_color_manual(values = series_colors[series_levels], breaks = series_levels)
   p <- p + ggplot2::labs(
-    x = "", y = "",
+    x = "", y = if (isTRUE(log_eq)) "log(eq)" else "",
     title = title, subtitle = subtitle,
     color = NULL,
-    caption = caption
+    caption = .equity_plot_caption(caption = caption, log_eq = log_eq)
   ) +
     ggplot2::scale_y_continuous(
-      labels = scales::label_number(accuracy = 0.01),
-      limits = c(min(key_dt$y, na.rm = TRUE) - diff(range(plot_dt$eq, na.rm = TRUE)) * 0.03, max(plot_dt$eq, na.rm = TRUE))
+      labels = scales::label_number(accuracy = if (isTRUE(log_eq)) 0.1 else 0.01),
+      limits = c(
+        min(key_dt$y, na.rm = TRUE) - diff(range(plot_dt[[y_col]], na.rm = TRUE)) * 0.03,
+        max(plot_dt[[y_col]], na.rm = TRUE)
+      )
     )
   p <- viz_theme_apply(p, style = resolved, legend_position = "none")
-  p <- viz_annotate_last_value(p, bt_dt, x = "datetime", y = "eq", style = resolved, digits = 2, color = resolved$accent)
+  p <- viz_annotate_last_value(p, bt_dt, x = "datetime", y = y_col, style = resolved, digits = 2, color = resolved$accent)
   if (!is.null(bt_res_2)) {
-    p <- viz_annotate_last_value(p, bt_dt_2, x = "datetime", y = "eq", style = resolved, digits = 2, color = resolved$accent2)
+    p <- viz_annotate_last_value(p, bt_dt_2, x = "datetime", y = y_col, style = resolved, digits = 2, color = resolved$accent2)
   }
   if (!is.null(benchmark_bt_res)) {
-    p <- viz_annotate_last_value(p, benchmark_bt_dt, x = "datetime", y = "eq", style = resolved, digits = 2, color = resolved$muted)
+    p <- viz_annotate_last_value(p, benchmark_bt_dt, x = "datetime", y = y_col, style = resolved, digits = 2, color = resolved$muted)
   }
   p
+}
+
+.equity_plot_caption <- function(caption = NULL, log_eq = FALSE) {
+  footnote <- if (isTRUE(log_eq)) {
+    "Footnote: starting equity is normalized to 1. In log_eq mode, the line shows log(eq_t / eq_0), so growth is not visually dominated by a rising equity level."
+  } else {
+    "Footnote: starting equity is normalized to 1, so the line shows how portfolio equity changes over time."
+  }
+
+  if (is.null(caption) || !nzchar(caption)) {
+    return(footnote)
+  }
+  paste(caption, footnote, sep = "\n")
 }
 
 .equity_plot_title <- function(bt_res, bt_res_2 = NULL, benchmark_bt_res = NULL, series_colors = NULL) {
@@ -231,13 +271,13 @@ eval_strat_plot_tsline_eq <- function(bt_res, benchmark_bt_res = NULL, bt_res_2 
   label
 }
 
-.equity_metric_key_dt <- function(plot_dt, metric_labels, series_colors) {
+.equity_metric_key_dt <- function(plot_dt, metric_labels, series_colors, y_col = "eq") {
   x_min <- min(plot_dt$datetime, na.rm = TRUE)
   x_max <- max(plot_dt$datetime, na.rm = TRUE)
   x_span <- as.numeric(difftime(x_max, x_min, units = "secs"))
   if (!is.finite(x_span) || x_span <= 0) x_span <- 1
 
-  y_range <- range(plot_dt$eq, na.rm = TRUE)
+  y_range <- range(plot_dt[[y_col]], na.rm = TRUE)
   y_span <- diff(y_range)
   if (!is.finite(y_span) || y_span <= 0) y_span <- max(abs(y_range), 1) * 0.05
 

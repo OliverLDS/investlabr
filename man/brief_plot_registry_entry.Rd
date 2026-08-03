@@ -2,19 +2,19 @@
 % Please edit documentation in R/brief-plot-registry.R
 \name{brief_plot_registry_entry}
 \alias{brief_plot_registry_entry}
-\title{Build one AlphaSync-compatible plot-registry entry}
+\title{Build one research-artifact plot-registry entry}
 \usage{
 brief_plot_registry_entry(
   id,
   title,
-  dashboard,
+  collection = NULL,
   asset_class,
   indicator_family,
   region,
   frequency,
   source,
   last_updated,
-  published,
+  status = NULL,
   plot_image,
   thumbnail,
   tags,
@@ -23,14 +23,17 @@ brief_plot_registry_entry(
   description_md = "",
   section = "",
   source_detail = character(),
-  featured = FALSE,
-  sort_priority = 0,
+  curation_priority = 0,
   plot_html = "",
-  canonical_slug = NULL,
   related_ids = character(),
-  podcast_topics = character(),
-  report_topics = character(),
-  compliance = list(educational_only = TRUE, not_investment_advice = TRUE)
+  compliance = list(educational_only = TRUE, not_investment_advice = TRUE),
+  dashboard = NULL,
+  published = NULL,
+  featured = NULL,
+  sort_priority = NULL,
+  canonical_slug = NULL,
+  podcast_topics = NULL,
+  report_topics = NULL
 )
 }
 \arguments{
@@ -38,15 +41,13 @@ brief_plot_registry_entry(
 
 \item{title}{Reader-facing plot title.}
 
-\item{dashboard}{High-level dashboard grouping. One of
-\code{"macro"}, \code{"markets"}, \code{"crypto"}, or
-\code{"strategies"}.}
+\item{collection}{High-level research collection. One of \code{"macro"},
+\code{"markets"}, \code{"crypto"}, or \code{"strategies"}.}
 
 \item{asset_class}{Asset-class label such as \code{"Rates"} or
 \code{"Liquidity"}.}
 
-\item{indicator_family}{Indicator family label such as
-\code{"Yield Curve"}.}
+\item{indicator_family}{Indicator family label such as \code{"Yield Curve"}.}
 
 \item{region}{Region label.}
 
@@ -56,7 +57,8 @@ brief_plot_registry_entry(
 
 \item{last_updated}{ISO date string or \code{Date}.}
 
-\item{published}{Logical flag for production-ready output.}
+\item{status}{Artifact readiness. One of \code{"draft"}, \code{"ready"}, or
+\code{"archived"}.}
 
 \item{plot_image}{Relative path to the rendered primary plot image.}
 
@@ -76,27 +78,22 @@ brief_plot_registry_entry(
 \item{source_detail}{Optional character vector of source-level details such as
 series ids.}
 
-\item{featured}{Logical flag used by downstream publishers.}
-
-\item{sort_priority}{Numeric sort priority; higher values can be pinned first.}
+\item{curation_priority}{Numeric research-curation priority.}
 
 \item{plot_html}{Relative path to an optional HTML artifact. Use \code{""}
 when none exists.}
 
-\item{canonical_slug}{Optional canonical slug. Defaults to \code{id}.}
-
 \item{related_ids}{Optional character vector of related plot ids.}
-
-\item{podcast_topics}{Optional character vector of podcast-topic labels.}
-
-\item{report_topics}{Optional character vector of report-topic labels.}
 
 \item{compliance}{Named list. Defaults to educational-only and
 not-investment-advice flags.}
+
+\item{dashboard, published, featured, sort_priority, canonical_slug, podcast_topics, report_topics}{Deprecated schema 1.0 arguments retained temporarily for source
+compatibility. New registries do not emit these fields.}
 }
 \value{
-Named list representing one registry entry.
+Named list representing one schema 2.0 registry entry.
 }
 \description{
-Build one AlphaSync-compatible plot-registry entry
+Build one research-artifact plot-registry entry
 }

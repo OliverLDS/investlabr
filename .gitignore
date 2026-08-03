@@ -3,3 +3,4 @@
 R/.Rhistory
 src/*.o
 src/*.so
+/output/publishing/

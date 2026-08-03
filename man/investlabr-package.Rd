@@ -3,7 +3,6 @@
 \docType{package}
 \name{investlabr-package}
 \alias{investlabr-package}
-\alias{_PACKAGE}
 \alias{investlabr}
 \title{investlabr: Research workflows for macro and cross-asset analysis}
 \description{
@@ -46,6 +45,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Oliver Zhou \email{oliver.yxzhou@gmail.com}
+
+Authors:
+\itemize{
+  \item Oliver Zhou \email{oliver.yxzhou@gmail.com}
+}
 
 }
 \keyword{internal}

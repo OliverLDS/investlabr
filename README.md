@@ -116,6 +116,9 @@ remotes::install_github("OliverLDS/investlabr")
 - Package architecture: [`ARCHITECTURE.md`](./ARCHITECTURE.md)
 - Release notes: [`NEWS.md`](./NEWS.md)
 - Gallery: [`inst/gallery/README.md`](./inst/gallery/README.md)
+- Local task nodes: [`scripts/README.md`](./scripts/README.md)
+- Generated publishing output: [`output/README.md`](./output/README.md)
+- Research artifact contract: [`PUBLISHING_CONTRACT.md`](./PUBLISHING_CONTRACT.md)
 
 ## Current Module Layout
 

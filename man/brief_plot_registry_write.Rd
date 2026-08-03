@@ -2,17 +2,18 @@
 % Please edit documentation in R/brief-plot-registry.R
 \name{brief_plot_registry_write}
 \alias{brief_plot_registry_write}
-\title{Write an AlphaSync-compatible plot registry to JSON}
+\title{Write a research-artifact plot registry to JSON}
 \usage{
 brief_plot_registry_write(
   plots,
-  path = file.path("inst", "gallery", "output", "alphasync-plot-registry.json"),
-  schema_version = "1.0",
+  path = file.path("output", "publishing", "plot-registry.json"),
+  schema_version = "2.0",
   generated_at = Sys.time(),
   source_system = "investlabr",
   base_path_mode = "relative",
-  published_only = FALSE,
-  pretty = TRUE
+  ready_only = FALSE,
+  pretty = TRUE,
+  published_only = NULL
 )
 }
 \arguments{
@@ -21,7 +22,7 @@ brief_plot_registry_write(
 
 \item{path}{Output JSON path.}
 
-\item{schema_version}{Schema version string.}
+\item{schema_version}{Schema version string. Writers emit schema 2.0.}
 
 \item{generated_at}{Generation timestamp. Defaults to current UTC time.}
 
@@ -29,14 +30,16 @@ brief_plot_registry_write(
 
 \item{base_path_mode}{Path-mode label. Defaults to \code{"relative"}.}
 
-\item{published_only}{If \code{TRUE}, only keep entries with
-\code{published = TRUE}.}
+\item{ready_only}{If \code{TRUE}, only keep entries with
+\code{status = "ready"}.}
 
 \item{pretty}{If \code{TRUE}, write pretty JSON.}
+
+\item{published_only}{Deprecated schema 1.0 alias for \code{ready_only}.}
 }
 \value{
 Invisibly returns the registry object written to disk.
 }
 \description{
-Write an AlphaSync-compatible plot registry to JSON
+Write a research-artifact plot registry to JSON
 }

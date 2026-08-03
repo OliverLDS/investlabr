@@ -2,17 +2,18 @@
 % Please edit documentation in R/brief-plot-registry.R
 \name{brief_plot_registry_write_from_meta}
 \alias{brief_plot_registry_write_from_meta}
-\title{Build and write an AlphaSync-compatible plot registry from YAML sidecars}
+\title{Build and write a research-artifact registry from YAML sidecars}
 \usage{
 brief_plot_registry_write_from_meta(
-  meta_dir = file.path("inst", "gallery", "output", "meta"),
-  path = file.path("inst", "gallery", "output", "alphasync-plot-registry.json"),
+  meta_dir = file.path("config", "publishing", "plots"),
+  path = file.path("output", "publishing", "plot-registry.json"),
   output_root = dirname(path),
-  schema_version = "1.0",
+  schema_version = "2.0",
   source_system = "investlabr",
   base_path_mode = "relative",
-  published_only = FALSE,
-  pretty = TRUE
+  ready_only = FALSE,
+  pretty = TRUE,
+  published_only = NULL
 )
 }
 \arguments{
@@ -23,20 +24,22 @@ brief_plot_registry_write_from_meta(
 \item{output_root}{Root directory against which relative asset paths are
 validated.}
 
-\item{schema_version}{Schema version string.}
+\item{schema_version}{Schema version string. Writers emit schema 2.0.}
 
 \item{source_system}{Source-system label.}
 
 \item{base_path_mode}{Path-mode label. Defaults to \code{"relative"}.}
 
-\item{published_only}{If \code{TRUE}, only keep entries with
-\code{published = TRUE}.}
+\item{ready_only}{If \code{TRUE}, only keep entries with
+\code{status = "ready"}.}
 
 \item{pretty}{If \code{TRUE}, write pretty JSON.}
+
+\item{published_only}{Deprecated schema 1.0 alias for \code{ready_only}.}
 }
 \value{
 Invisibly returns the registry object written to disk.
 }
 \description{
-Build and write an AlphaSync-compatible plot registry from YAML sidecars
+Build and write a research-artifact registry from YAML sidecars
 }

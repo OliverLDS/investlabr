@@ -1,5 +1,15 @@
 # investlabr news
 
+## 0.0.6
+
+- Reorganized the installed gallery into research-purpose subdirectories and retained only curated visualization previews under `inst/gallery/assets/`.
+- Moved local rendering, plot-registry generation, and registry validation into single-purpose executable task nodes under `scripts/`, each with help output, explicit side effects, and stable JSON results.
+- Replaced the website-oriented registry integration with a consumer-neutral schema 2.0 research-artifact contract, while retaining schema 1.0 read compatibility during migration.
+- Moved tracked publishing metadata to `config/publishing/plots/` and generated local publishing artifacts to the Git-ignored `output/publishing/` tree.
+- Renamed rendering, registry-build, and registry-validation nodes so their interfaces and defaults do not assume a particular downstream consumer.
+- Promoted repeated forecast preparation, fan simulation, scenario construction, bounded-score, line-chart, and briefing-label helpers into the package module families under `R/`.
+- Documented that external workflow orchestration may compose local task nodes while workflow state, scheduling, and agent identity remain outside `investlabr`.
+
 ## 0.0.5
 
 - Added an AlphaSync-oriented publishing layer for gallery outputs, including reusable plot-registry helpers, JSON manifest emission, YAML sidecars, and structured `plots/` and `thumbnails/` output folders under `inst/gallery/output/`.

@@ -256,6 +256,17 @@ Own:
 - narrative generation
 - memory and autonomous workflow logic
 
+`investlabr` may expose local, single-purpose executable task nodes for
+rendering or validating its own research outputs. Those nodes are callable
+interfaces, not an orchestration engine: composition, scheduling, workflow
+state, and agent identity remain the responsibility of an external workflow
+orchestrator.
+
+Website routes, page schemas, editorial placement, deployment state, and
+consumer-specific registry projection are also out of scope. `investlabr`
+emits consumer-neutral research artifacts and metadata; downstream systems own
+their publishing adapters.
+
 ### Trading packages
 
 Own:

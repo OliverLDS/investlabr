@@ -10,7 +10,8 @@ eval_strat_plot_tsline_eq(
   bt_res_2 = NULL,
   style = NULL,
   context = NULL,
-  caption = NULL
+  caption = NULL,
+  log_eq = FALSE
 )
 }
 \arguments{
@@ -27,6 +28,9 @@ chart is designed for at most two evaluated strategies plus one benchmark.}
 \item{context}{Output context or `NULL` to use the package default.}
 
 \item{caption}{Optional chart caption placed above the configured compiler footer.}
+
+\item{log_eq}{Logical; if `TRUE`, plot \code{log(eq)} on the y-axis instead of
+raw equity.}
 }
 \value{
 ggplot object.

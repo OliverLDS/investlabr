@@ -123,6 +123,40 @@ The repository is in a transition state.
 - Avoid hard-coded local paths, agent objects, or project-specific runtime state.
 - Preserve backward compatibility where practical during migration.
 
+## Repository Execution Surfaces
+
+The repository separates package behavior, examples, executable task nodes,
+and generated artifacts:
+
+- `R/` contains reusable research functions and is the only analytical API.
+- `inst/gallery/` contains human-facing examples organized by research purpose.
+  Gallery scripts may use local data and narrative-specific assumptions, but
+  they are not machine-facing task interfaces.
+- `inst/gallery/_shared/` contains only lightweight example glue for local data
+  access or calls into adjacent packages. Repeated analytical logic should be
+  promoted into `R/`.
+- `scripts/` contains local, single-purpose executable task nodes. Each node
+  supports `-h` and `--help`, documents side effects, and emits stable JSON when
+  it has machine-visible output.
+- `config/publishing/plots/` contains tracked, consumer-neutral research
+  artifact metadata.
+- `output/publishing/` contains generated local publishing artifacts and is not
+  installed with the package or tracked by Git.
+- `inst/gallery/assets/` contains only curated previews that should ship with
+  the installed package.
+
+Executable task nodes may be composed by a human operator or an external
+workflow orchestrator. Scheduling, workflow state, agent identity, memory, and
+private automation remain outside `investlabr`. Task nodes should call package
+functions for reusable behavior. A rendering node may execute explicitly
+declared gallery scripts as internal artifact recipes, but those script paths
+are not a public machine API; the node's CLI and JSON response are the stable
+interface.
+
+Website routes, content-page schemas, editorial destinations, deployment, and
+consumer-specific registry projection belong downstream. See
+`PUBLISHING_CONTRACT.md` for the local artifact handoff.
+
 ## Testing Strategy
 
 Package-level tests should focus on:

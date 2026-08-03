@@ -6,17 +6,28 @@ Use this file as a lightweight backlog for patterns that emerge from daily-analy
 
 | Candidate | Current Location | Suggested Target | Reason |
 | --- | --- | --- | --- |
-| Local FRED loading helpers | Several `real-data-fred-*.R` scripts | `investlabr::prep_*` or `investdatar` | Repeated `get_local_FRED_data()` normalization to `date`, numeric `value`, and labeled long tables |
-| Macro monitor panel builders | `real-data-fred-ci-lending-monitor.R`, policy/liquidity dashboards | `investlabr::brief_*` or `investlabr::viz_*` | Repeated multi-panel monitor pattern with local FRED cache, themed plots, and reader-facing footnotes |
-| Publishing registry helpers | `build-alphasync-plot-registry.R`, `output/meta/*.yaml`, `alphasync-plot-registry.json` | `investlabr::brief_*` | AlphaSync/Hugo publishing needs stable asset metadata, controlled labels, and one machine-readable registry emitted beside rendered plots |
-| Macro forecast helpers | `macro-forecast-gallery-utils.R` and `real-data-fred/yahoo-*forecast/scenario/probability/regime*` scripts | `investlabr::prep_*`, `factor_*`, `sim_*`, `regime_*`, `brief_*`, and `viz_*` | Forward-looking macro research now repeats local series normalization, forward fans, deterministic scenario paths, bounded risk meters, and regime-transition summaries while data access stays in `investdatar` |
+| Local FRED loading helpers | `_shared/macro-forecast.R` and several FRED examples | `investdatar` | Repeated local-cache normalization is data-access glue and should not become an `investlabr` provider API |
+| Macro monitor panel builders | `macro-monitor/real-data-fred-ci-lending-monitor.R`, policy/liquidity dashboards | `investlabr::brief_*` or `investlabr::viz_*` | Repeated multi-panel monitor pattern with local FRED cache, themed plots, and reader-facing footnotes |
 | Treasury curve comparison board helpers | Treasury gallery scripts | `investlabr::factor_yield_curve_*` and `investlabr::viz_*` | Curve date selection, tenor reshaping, and nominal/real curve charting are reusable |
-| Strategyr result adapters | `strategyr-backtest-gallery-utils.R` and strategy gallery scripts | `investlabr::prep_*` and `investlabr::eval_*` | External backtest outputs need stable conversion into research-grade equity plots |
-| Strategy explanation views | `sim-strategy-explain-*.R` | `strategyr` plus `investlabr::viz_*` | Need reusable plots that explain signals, feature states, position changes, and PnL attribution, not only performance |
-| Support/resistance derivation | `real-data-yahoo-candles.R` | `strategyr` | Pivot, cycle, Fibonacci, and scoring logic is strategy/technical-analysis logic, not gallery-only plotting |
-| Candle chart rendering with S/R overlays | `real-data-yahoo-candles.R` | `investlabr::viz_*` | Once S/R points are provided, rendering belongs in investlabr's visualization layer |
+| Strategy explanation views | `strategy-explanation/sim-strategy-explain-*.R` | `strategyr` plus `investlabr::viz_*` | Need reusable plots that explain signals, feature states, position changes, and PnL attribution, not only performance |
+| Support/resistance derivation | `market-charts/real-data-yahoo-candles.R` | `strategyr` | Pivot, cycle, Fibonacci, and scoring logic is strategy/technical-analysis logic, not gallery-only plotting |
+| Candle chart rendering with S/R overlays | `market-charts/real-data-yahoo-candles.R` | `investlabr::viz_*` | Once S/R points are provided, rendering belongs in investlabr's visualization layer |
 | Opportunity-set and frontier summaries | iShares portfolio and opportunity-set scripts | `investlabr::prep_*`, `sim_*`, and `brief_*` | Risk/return grids, efficient-frontier summaries, and embedded tables recur across portfolio research notes |
-| Simulation scenario boards | `sim-*.R` gallery scripts | `investlabr::sim_*` and `investlabr::viz_*` | Scenario data generation and board layout can become reusable research tools |
+| Simulation scenario boards | `simulation/sim-*.R` gallery scripts | `investlabr::sim_*` and `investlabr::viz_*` | Scenario data generation and board layout can become reusable research tools |
+
+## Recently Promoted
+
+- Plot-registry entry construction, JSON writing, sidecar loading, and
+  validation now live in `R/brief-plot-registry.R`; `scripts/` contains only
+  thin executable nodes.
+- Forecast series preparation, forward-change extraction, z-scores, bounded
+  scores, percentile fans, deterministic scenario paths, and shared forecast
+  plots now live in the corresponding `prep_*`, `factor_*`, `sim_*`, `viz_*`,
+  and `brief_*` package modules.
+- External equity-curve result adaptation and ratio-OHLC construction already
+  live in `investlabr::prep_backtest_result_from_equity()` and
+  `investlabr::prep_ratio_ohlc()`; `_shared/strategyr-backtest.R` retains only
+  local data-access and execution glue.
 
 ## Open Design Notes
 
