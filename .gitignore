@@ -3,4 +3,10 @@
 R/.Rhistory
 src/*.o
 src/*.so
+/src/symbols.rds
+/Rplots.pdf
+/tests/testthat/Rplots.pdf
+/tmp/event-board.png
+/tmp/plot.png
+/tmp/us-sector-11-board.png
 /output/publishing/
