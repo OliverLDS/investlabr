@@ -25,7 +25,9 @@ Rscript scripts/render_plot_assets.R --help
 
 Executes explicitly declared gallery scripts as internal rendering recipes and
 writes plots and thumbnails under `output/publishing/`. Gallery paths are not
-part of the node's public interface.
+part of the node's public interface. A successful render also writes resolved
+runtime freshness metadata under `output/publishing/resolved/`; tracked YAML
+sidecars are never rewritten.
 
 ### Build the plot registry
 
@@ -33,10 +35,13 @@ part of the node's public interface.
 Rscript scripts/build_plot_registry.R --help
 ```
 
-Reads tracked schema 2.0 YAML sidecars from `config/publishing/plots/`,
-validates relative asset paths, and writes `output/publishing/plot-registry.json`.
+Joins tracked YAML sidecars from `config/publishing/plots/` with run-local
+renderer metadata, validates relative asset paths, and writes
+`output/publishing/plot-registry.json`.
 The default registry contains only `status: ready` entries; use
-`--include-drafts` to include all non-ready entries for local review.
+`--include-drafts` to include all non-ready entries for local review. Schema
+2.0 compatibility output remains the default. Use `--schema-version 3.0` and a
+separate `--registry` path for migration testing.
 
 ### Validate the plot registry
 
@@ -44,8 +49,8 @@ The default registry contains only `status: ready` entries; use
 Rscript scripts/validate_plot_registry.R --help
 ```
 
-Validates schema version, controlled values, unique plot ids, and local asset
-references without modifying files.
+Validates schemas 1.0, 2.0, or 3.0, controlled values, timestamp ordering,
+unique plot ids, and local asset references without modifying files.
 
 `_node-common.R` is a non-executable implementation helper shared by these
 nodes; it is not itself a workflow step. See

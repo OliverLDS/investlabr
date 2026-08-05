@@ -17,28 +17,28 @@ brief_plot_registry_write(
 )
 }
 \arguments{
-\item{plots}{List of registry entries, typically created with
-\code{brief_plot_registry_entry()}.}
+\item{plots}{Schema 2.0 entries from \code{brief_plot_registry_entry()} or
+canonical schema 3.0 entries from \code{brief_plot_registry_entry_v3()}.}
 
 \item{path}{Output JSON path.}
 
-\item{schema_version}{Schema version string. Writers emit schema 2.0.}
+\item{schema_version}{Output schema. Defaults to compatibility schema 2.0;
+use \code{"3.0"} explicitly for migration testing.}
 
-\item{generated_at}{Generation timestamp. Defaults to current UTC time.}
+\item{generated_at}{Registry-generation timestamp in UTC.}
 
 \item{source_system}{Source-system label.}
 
-\item{base_path_mode}{Path-mode label. Defaults to \code{"relative"}.}
+\item{base_path_mode}{Must be \code{"relative"}.}
 
-\item{ready_only}{If \code{TRUE}, only keep entries with
-\code{status = "ready"}.}
+\item{ready_only}{Keep only ready entries.}
 
-\item{pretty}{If \code{TRUE}, write pretty JSON.}
+\item{pretty}{Write pretty JSON.}
 
-\item{published_only}{Deprecated schema 1.0 alias for \code{ready_only}.}
+\item{published_only}{Deprecated alias for \code{ready_only}.}
 }
 \value{
-Invisibly returns the registry object written to disk.
+Invisibly returns the registry written to disk.
 }
 \description{
 Write a research-artifact plot registry to JSON

@@ -2,12 +2,13 @@
 % Please edit documentation in R/brief-plot-registry.R
 \name{brief_plot_registry_write_from_meta}
 \alias{brief_plot_registry_write_from_meta}
-\title{Build and write a research-artifact registry from YAML sidecars}
+\title{Build and write a research-artifact registry from metadata sidecars}
 \usage{
 brief_plot_registry_write_from_meta(
   meta_dir = file.path("config", "publishing", "plots"),
   path = file.path("output", "publishing", "plot-registry.json"),
   output_root = dirname(path),
+  resolved_meta_dir = file.path(output_root, "resolved"),
   schema_version = "2.0",
   source_system = "investlabr",
   base_path_mode = "relative",
@@ -17,29 +18,30 @@ brief_plot_registry_write_from_meta(
 )
 }
 \arguments{
-\item{meta_dir}{Directory containing one-plot YAML sidecars.}
+\item{meta_dir}{Tracked YAML sidecar directory.}
 
 \item{path}{Output JSON path.}
 
-\item{output_root}{Root directory against which relative asset paths are
-validated.}
+\item{output_root}{Root for relative asset paths.}
 
-\item{schema_version}{Schema version string. Writers emit schema 2.0.}
+\item{resolved_meta_dir}{Run-local metadata emitted by the renderer.}
+
+\item{schema_version}{Output schema. Defaults to compatibility schema 2.0;
+use \code{"3.0"} explicitly for migration testing.}
 
 \item{source_system}{Source-system label.}
 
-\item{base_path_mode}{Path-mode label. Defaults to \code{"relative"}.}
+\item{base_path_mode}{Must be \code{"relative"}.}
 
-\item{ready_only}{If \code{TRUE}, only keep entries with
-\code{status = "ready"}.}
+\item{ready_only}{Keep only ready entries.}
 
-\item{pretty}{If \code{TRUE}, write pretty JSON.}
+\item{pretty}{Write pretty JSON.}
 
-\item{published_only}{Deprecated schema 1.0 alias for \code{ready_only}.}
+\item{published_only}{Deprecated alias for \code{ready_only}.}
 }
 \value{
-Invisibly returns the registry object written to disk.
+Invisibly returns the registry written to disk.
 }
 \description{
-Build and write a research-artifact registry from YAML sidecars
+Build and write a research-artifact registry from metadata sidecars
 }

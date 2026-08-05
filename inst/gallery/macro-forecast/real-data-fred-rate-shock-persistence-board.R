@@ -27,6 +27,11 @@ rate_dt <- rate_dt[!is.na(value)]
 rate_dt[, change_bp := c(NA_real_, diff(value) * 100)]
 rate_dt <- rate_dt[!is.na(change_bp)]
 
+artifact_freshness <- list(
+  data_as_of = investlabr::brief_data_as_of(list(DGS10 = rate_dt[, .(date)])),
+  rule = "latest usable DGS10 observation included in the calibration window"
+)
+
 if (nrow(rate_dt) < lookback_days) {
   stop("Need at least ", lookback_days, " observations for the shock-persistence board.")
 }
@@ -175,7 +180,7 @@ p_realized <- investlabr::viz_theme_apply(
   show_compiler = FALSE
 )
 
-investlabr::gen_grid_of_plots_with_labels(
+board <- investlabr::gen_grid_of_plots_with_labels(
   plots = list(p_level, p_changes, p_sim, p_realized),
   n_rows = 2,
   n_cols = 2,

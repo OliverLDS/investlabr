@@ -2,7 +2,7 @@
 % Please edit documentation in R/brief-plot-registry.R
 \name{brief_plot_registry_entry}
 \alias{brief_plot_registry_entry}
-\title{Build one research-artifact plot-registry entry}
+\title{Build a deprecated schema 2.0 research-artifact registry entry}
 \usage{
 brief_plot_registry_entry(
   id,
@@ -37,63 +37,22 @@ brief_plot_registry_entry(
 )
 }
 \arguments{
-\item{id}{Stable machine-safe plot identifier in lowercase kebab-case.}
+\item{id, title, asset_class, indicator_family, region, frequency, source, plot_image, thumbnail, tags}{Core registry fields.}
 
-\item{title}{Reader-facing plot title.}
+\item{collection, status}{Nullable schema 2.0 fields. The deprecated
+\code{dashboard} and \code{published} arguments are used as fallbacks.}
 
-\item{collection}{High-level research collection. One of \code{"macro"},
-\code{"markets"}, \code{"crypto"}, or \code{"strategies"}.}
+\item{last_updated}{Legacy schema 2.0 artifact date.}
 
-\item{asset_class}{Asset-class label such as \code{"Rates"} or
-\code{"Liquidity"}.}
+\item{subtitle, summary, description_md, section, source_detail, curation_priority, plot_html, related_ids, compliance}{Optional schema 2.0 fields.}
 
-\item{indicator_family}{Indicator family label such as \code{"Yield Curve"}.}
-
-\item{region}{Region label.}
-
-\item{frequency}{Frequency label.}
-
-\item{source}{Source label such as \code{"FRED"}.}
-
-\item{last_updated}{ISO date string or \code{Date}.}
-
-\item{status}{Artifact readiness. One of \code{"draft"}, \code{"ready"}, or
-\code{"archived"}.}
-
-\item{plot_image}{Relative path to the rendered primary plot image.}
-
-\item{thumbnail}{Relative path to the thumbnail image.}
-
-\item{tags}{Character vector of flat tags.}
-
-\item{subtitle}{Optional subtitle.}
-
-\item{summary}{Optional short summary.}
-
-\item{description_md}{Optional longer markdown description.}
-
-\item{section}{Optional narrower grouping such as \code{"rates"} or
-\code{"liquidity"}.}
-
-\item{source_detail}{Optional character vector of source-level details such as
-series ids.}
-
-\item{curation_priority}{Numeric research-curation priority.}
-
-\item{plot_html}{Relative path to an optional HTML artifact. Use \code{""}
-when none exists.}
-
-\item{related_ids}{Optional character vector of related plot ids.}
-
-\item{compliance}{Named list. Defaults to educational-only and
-not-investment-advice flags.}
-
-\item{dashboard, published, featured, sort_priority, canonical_slug, podcast_topics, report_topics}{Deprecated schema 1.0 arguments retained temporarily for source
-compatibility. New registries do not emit these fields.}
+\item{dashboard, published, featured, sort_priority, canonical_slug, podcast_topics, report_topics}{Deprecated schema 1.0 compatibility fields.}
 }
 \value{
-Named list representing one schema 2.0 registry entry.
+A validated schema 2.0 entry that cannot be emitted as schema 3.0.
 }
 \description{
-Build one research-artifact plot-registry entry
+This constructor is retained for source compatibility. New code should use
+\code{brief_plot_registry_entry_v3()}. Legacy dates are never interpreted as
+artifact render times or editorial metadata dates.
 }

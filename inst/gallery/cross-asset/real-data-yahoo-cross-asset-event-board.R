@@ -59,6 +59,8 @@ groups <- list(
 )
 
 all_symbols <- unlist(groups, use.names = FALSE)
+utc_today <- as.Date(format(Sys.time(), tz = "UTC"))
+freshness_inputs <- list()
 # optionally syncing; by default should use local cache
 #invisible(lapply(
 #  all_symbols,
@@ -106,6 +108,8 @@ make_asset_panel <- function(symbols, panel_title) {
   dt_list <- lapply(symbols, function(symbol) {
     dt <- investdatar::get_local_quantmod_OHLC(symbol, src = "yahoo")
     dt <- data.table::as.data.table(dt)[date >= from_date & date <= to_date]
+    dt <- dt[date < utc_today]
+    freshness_inputs[[symbol]] <<- dt[is.finite(close), .(date)]
     dt[, datetime := as.POSIXct(datetime, tz = "UTC")]
     numeric_cols <- names(dt)[vapply(dt, is.numeric, logical(1))]
     if (length(numeric_cols) > 0L) {
@@ -203,6 +207,11 @@ equity_plot <- make_asset_panel(groups$Equity, "Equity")
 bond_plot <- make_asset_panel(groups$Bond, "Bond")
 fx_plot <- make_asset_panel(groups$FX, "FX")
 commodity_plot <- make_asset_panel(groups$Commodity, "Commodity")
+
+artifact_freshness <- list(
+  data_as_of = investlabr::brief_data_as_of(freshness_inputs),
+  rule = "minimum latest completed Yahoo observation across all required symbols and exchange calendars; current UTC-date bars are excluded"
+)
 
 event_text <- paste(
   paste(format(event_dates, "%Y-%m-%d"), event_labels, sep = " = "),

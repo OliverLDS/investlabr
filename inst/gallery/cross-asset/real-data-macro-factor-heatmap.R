@@ -32,6 +32,7 @@ tickers <- c(
 
 start_date <- as.Date("2015-01-01")
 end_date <- Sys.Date()
+utc_today <- as.Date(format(Sys.time(), tz = "UTC"))
 min_obs_full <- 252L
 alignment <- "daily" # Use "weekly" for a lower-frequency robustness view.
 show_macro_values <- TRUE
@@ -152,7 +153,8 @@ get_stock_price_dt <- function(ticker) {
     price_col <- safe_first_col(names(dt), c("adj_close", "adjusted", "close"))
     if (!is.na(price_col)) {
       out <- dt[, .(date = as.Date(date), price = as.numeric(get(price_col)))]
-      out <- out[date >= start_date & date <= end_date & is.finite(price)]
+      # Yahoo's current UTC-date bar may still be incomplete.
+      out <- out[date >= start_date & date <= end_date & date < utc_today & is.finite(price)]
       if (nrow(out) > 0L) return(out)
     }
   }
@@ -176,7 +178,7 @@ get_stock_price_dt <- function(ticker) {
     date = as.Date(get(original_date_col)),
     price = as.numeric(get(original_close_col))
   )]
-  out[date >= start_date & date <= end_date & is.finite(price)]
+  out[date >= start_date & date <= end_date & date < utc_today & is.finite(price)]
 }
 
 get_fred_dt <- function(series_id) {
@@ -324,6 +326,8 @@ if (length(macro_factor_terms) == 0L) {
 # Regression estimation
 # -------------------------------------------------------------------------
 
+ticker_freshness <- list()
+
 estimate_one_ticker <- function(ticker) {
   px <- get_stock_price_dt(ticker)
   if (is.null(px) || nrow(px) < (min_obs_full + 20L)) return(NULL)
@@ -339,6 +343,7 @@ estimate_one_ticker <- function(ticker) {
   aligned_dt <- merge(px, factor_dt, by = "date", all = FALSE)
   aligned_dt <- aligned_dt[complete.cases(aligned_dt)]
   if (nrow(aligned_dt) < min_obs_full) return(NULL)
+  ticker_freshness[[ticker]] <<- aligned_dt[, .(date)]
 
   model_terms <- c(market_factor_terms, macro_factor_terms)
   fit <- stats::lm(
@@ -369,6 +374,14 @@ beta_dt_full[, star := data.table::fifelse(
 
 beta_dt_market <- beta_dt_full[term %in% market_factor_terms]
 beta_dt_macro <- beta_dt_full[term %in% macro_factor_terms]
+
+artifact_freshness <- list(
+  data_as_of = investlabr::brief_data_as_of(c(
+    list(required_factor_matrix = factor_dt[, .(date)]),
+    ticker_freshness
+  )),
+  rule = "minimum latest complete-case model date across the required factor matrix and every included Yahoo instrument; current UTC-date Yahoo bars are excluded"
+)
 
 # -------------------------------------------------------------------------
 # Ticker ordering

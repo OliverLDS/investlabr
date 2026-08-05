@@ -11,18 +11,15 @@ brief_plot_registry_validate(
 )
 }
 \arguments{
-\item{registry}{Registry object or path to a registry JSON file. Schema 1.0
-inputs are normalized for compatibility; schema 2.0 is current.}
+\item{registry}{Registry object or JSON path. Schemas 1.0, 2.0, and 3.0 are
+readable; schema 2.0 remains the default writer output during migration.}
 
-\item{output_root}{Root directory against which relative asset paths are
-validated. Defaults to the registry file's directory when \code{registry}
-is a path.}
+\item{output_root}{Root for relative asset validation.}
 
-\item{require_assets}{Whether referenced plot, thumbnail, and optional HTML
-files must exist.}
+\item{require_assets}{Require referenced assets to exist.}
 }
 \value{
-A named validation summary containing plot counts and ids.
+Named validation summary.
 }
 \description{
 Validate a research-artifact plot registry

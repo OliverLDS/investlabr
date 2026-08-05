@@ -9,6 +9,7 @@ style_name <- "briefing_serif"
 context_name <- "report"
 style <- investlabr::viz_style_get(style_name, context_name)
 palette <- investlabr::viz_palette_get(style_name, context_name, "discrete")
+freshness_inputs <- list()
 year_guides <- data.table(
   date = seq(
     as.Date(format(start_date, "%Y-01-01")),
@@ -25,7 +26,9 @@ get_fred_local <- function(id, label = id) {
   dt[, date := as.Date(date)]
   dt[, value := as.numeric(value)]
   dt[, series := label]
-  dt[!is.na(value)]
+  dt <- dt[!is.na(value)]
+  freshness_inputs[[id]] <<- dt[, .(date)]
+  dt
 }
 
 cut_since <- function(dt, from = start_date) {
@@ -204,6 +207,11 @@ p_wage <- theme_panel(p_wage, legend_position = "none")
 # -------------------------------------------------------------------------
 # Output
 # -------------------------------------------------------------------------
+
+artifact_freshness <- list(
+  data_as_of = investlabr::brief_data_as_of(freshness_inputs),
+  rule = "minimum latest usable observation across required monthly and daily FRED inflation/labor series"
+)
 
 dashboard <- investlabr::gen_grid_of_plots_with_labels(
   plots = list(

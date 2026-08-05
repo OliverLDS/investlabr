@@ -2,6 +2,9 @@
 
 ## 0.0.6
 
+- Added a versioned publishing-freshness contract: schema 3.0 separates artifact render time, underlying data freshness, and editorial metadata updates, while schema 2.0 remains the default compatibility output.
+- Added conservative data-freshness resolution for mixed-frequency FRED inputs, cross-calendar Yahoo data, and multi-instrument factor models, plus run-local renderer metadata that never rewrites tracked sidecars.
+- Retained the exported schema 2.0 registry-entry constructor as a deprecated compatibility API and added a separate strict schema 3.0 constructor.
 - Reorganized the installed gallery into research-purpose subdirectories and retained only curated visualization previews under `inst/gallery/assets/`.
 - Moved local rendering, plot-registry generation, and registry validation into single-purpose executable task nodes under `scripts/`, each with help output, explicit side effects, and stable JSON results.
 - Replaced the website-oriented registry integration with a consumer-neutral schema 2.0 research-artifact contract, while retaining schema 1.0 read compatibility during migration.

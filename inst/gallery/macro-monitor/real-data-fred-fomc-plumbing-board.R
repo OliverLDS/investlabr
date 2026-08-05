@@ -5,6 +5,7 @@ library(investlabr)
 
 start_date <- as.Date("2015-01-01")
 RESERVES_ID <- "WRESBAL"
+freshness_inputs <- list()
 
 # Optional if you have not synced locally yet:
 # invisible(lapply(
@@ -17,6 +18,7 @@ get_fred_series <- function(series_id, label = series_id) {
   dt <- dt[date >= start_date & !is.na(value), .(date, value = as.numeric(value))]
   dt[, series := label]
   setorder(dt, date)
+  freshness_inputs[[series_id]] <<- dt[, .(date)]
   dt
 }
 
@@ -142,7 +144,12 @@ p4 <- ggplot(p4_dt, aes(date, value, color = series)) +
   )
 p4 <- theme_panel(p4, show_compiler = FALSE)
 
-investlabr::gen_grid_of_plots_with_labels(
+artifact_freshness <- list(
+  data_as_of = investlabr::brief_data_as_of(freshness_inputs),
+  rule = "minimum latest usable observation across required daily and weekly FRED plumbing series"
+)
+
+board <- investlabr::gen_grid_of_plots_with_labels(
   plots = list(p1, p2, p3, p4),
   n_rows = 2,
   n_cols = 2,

@@ -19,6 +19,7 @@ usage <- function() {
     "  - Reads local investdatar caches through selected gallery examples.",
     "  - Writes primary plots under OUTPUT_ROOT/plots/.",
     "  - Writes thumbnails under OUTPUT_ROOT/thumbnails/.",
+    "  - Writes run-local freshness metadata under OUTPUT_ROOT/resolved/.",
     "  - Copies curated style/context previews into the same publishing tree.",
     "  - Emits one JSON result to stdout; progress and package messages use stderr.",
     sep = "\n"
@@ -84,7 +85,71 @@ source_gallery_plot <- function(path) {
     result <- source(path, local = env)
     sourced_value <- result$value
   }))
-  resolve_plot_object(env, sourced_value)
+  if (!exists("artifact_freshness", envir = env, inherits = FALSE)) {
+    stop("Gallery recipe did not expose `artifact_freshness`.", call. = FALSE)
+  }
+  list(
+    plot = resolve_plot_object(env, sourced_value),
+    freshness = get("artifact_freshness", envir = env, inherits = FALSE)
+  )
+}
+
+utc_timestamp <- function(x = Sys.time()) {
+  format(as.POSIXct(x, tz = "UTC"), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+}
+
+load_tracked_meta <- function(meta_root, id) {
+  path <- file.path(meta_root, paste0(id, ".yaml"))
+  if (!file.exists(path)) stop("Tracked metadata sidecar not found: ", path, call. = FALSE)
+  meta <- yaml::read_yaml(path)
+  if (is.null(meta$metadata_updated_at) || is.null(meta$time_indexed)) {
+    stop("Tracked metadata lacks `metadata_updated_at` or `time_indexed`: ", id, call. = FALSE)
+  }
+  list(path = path, metadata = meta)
+}
+
+write_resolved_meta <- function(output_root, tracked, rendered_at, freshness) {
+  if (!is.list(freshness) || is.null(freshness$data_as_of) || is.null(freshness$rule)) {
+    stop("Time-indexed recipe freshness must contain `data_as_of` and `rule`.", call. = FALSE)
+  }
+  data_as_of <- as.character(freshness$data_as_of)
+  parsed_data_date <- tryCatch(as.Date(data_as_of), error = function(e) as.Date(NA))
+  if (length(data_as_of) != 1L || is.na(parsed_data_date) || format(parsed_data_date, "%Y-%m-%d") != data_as_of) {
+    stop("Recipe returned an invalid `data_as_of` value.", call. = FALSE)
+  }
+  resolved <- list(
+    id = tracked$id,
+    rendered_at = rendered_at,
+    data_as_of = data_as_of,
+    metadata_updated_at = as.character(tracked$metadata_updated_at),
+    time_indexed = isTRUE(tracked$time_indexed),
+    data_as_of_rule = as.character(freshness$rule)
+  )
+  dir <- file.path(output_root, "resolved")
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+  jsonlite::write_json(
+    resolved,
+    file.path(dir, paste0(tracked$id, ".json")),
+    auto_unbox = TRUE,
+    pretty = TRUE,
+    null = "null"
+  )
+  resolved
+}
+
+write_preview_resolved_meta <- function(output_root, tracked, rendered_at) {
+  resolved <- list(
+    id = tracked$id,
+    rendered_at = rendered_at,
+    data_as_of = NULL,
+    metadata_updated_at = as.character(tracked$metadata_updated_at),
+    time_indexed = FALSE,
+    data_as_of_rule = "not_time_indexed"
+  )
+  dir <- file.path(output_root, "resolved")
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+  jsonlite::write_json(resolved, file.path(dir, paste0(tracked$id, ".json")), auto_unbox = TRUE, pretty = TRUE, null = "null")
+  resolved
 }
 
 args <- tryCatch(parse_args(commandArgs(trailingOnly = TRUE)), error = function(e) {
@@ -101,6 +166,9 @@ tryCatch({
   output_root <- node_resolve_path(args$output_root, repo_root)
   gallery_root <- file.path(repo_root, "inst", "gallery")
   asset_root <- file.path(gallery_root, "assets")
+  meta_root <- file.path(repo_root, "config", "publishing", "plots")
+  tracked_meta_files <- sort(Sys.glob(file.path(meta_root, "*.yaml")))
+  tracked_meta_hashes <- tools::md5sum(tracked_meta_files)
   selected_ids <- node_parse_csv(args$ids)
   known_ids <- c(
     vapply(render_specs, `[[`, character(1), "id"),
@@ -121,13 +189,20 @@ tryCatch({
     dir.create(thumb_dir, recursive = TRUE, showWarnings = FALSE)
     plot_path <- file.path(plot_dir, paste0(spec$id, ".svg"))
     thumb_path <- file.path(thumb_dir, paste0(spec$id, ".png"))
-    plot_obj <- source_gallery_plot(file.path(gallery_root, spec$script))
-    ggplot2::ggsave(plot_path, plot = plot_obj, width = spec$width, height = spec$height, dpi = 144)
-    ggplot2::ggsave(thumb_path, plot = plot_obj, width = 5.5, height = 3.8, dpi = 144)
+    recipe <- source_gallery_plot(file.path(gallery_root, spec$script))
+    ggplot2::ggsave(plot_path, plot = recipe$plot, width = spec$width, height = spec$height, dpi = 144)
+    ggplot2::ggsave(thumb_path, plot = recipe$plot, width = 5.5, height = 3.8, dpi = 144)
+    rendered_at <- utc_timestamp()
+    tracked <- load_tracked_meta(meta_root, spec$id)$metadata
+    resolved <- write_resolved_meta(output_root, tracked, rendered_at, recipe$freshness)
     rendered[[length(rendered) + 1L]] <- list(
       id = spec$id,
       plot_image = normalizePath(plot_path, mustWork = TRUE),
-      thumbnail = normalizePath(thumb_path, mustWork = TRUE)
+      thumbnail = normalizePath(thumb_path, mustWork = TRUE),
+      rendered_at = resolved$rendered_at,
+      data_as_of = resolved$data_as_of,
+      metadata_updated_at = resolved$metadata_updated_at,
+      data_as_of_rule = resolved$data_as_of_rule
     )
     message("Rendered ", spec$id)
   }
@@ -146,11 +221,22 @@ tryCatch({
     if (!file.copy(file.path(asset_root, spec$thumbnail), thumb_path, overwrite = TRUE)) {
       stop("Could not publish curated thumbnail: ", spec$thumbnail, call. = FALSE)
     }
+    rendered_at <- utc_timestamp()
+    tracked <- load_tracked_meta(meta_root, spec$id)$metadata
+    resolved <- write_preview_resolved_meta(output_root, tracked, rendered_at)
     rendered[[length(rendered) + 1L]] <- list(
       id = spec$id,
       plot_image = normalizePath(plot_path, mustWork = TRUE),
-      thumbnail = normalizePath(thumb_path, mustWork = TRUE)
+      thumbnail = normalizePath(thumb_path, mustWork = TRUE),
+      rendered_at = resolved$rendered_at,
+      data_as_of = NULL,
+      metadata_updated_at = resolved$metadata_updated_at,
+      data_as_of_rule = resolved$data_as_of_rule
     )
+  }
+
+  if (!identical(unname(tools::md5sum(tracked_meta_files)), unname(tracked_meta_hashes))) {
+    stop("Rendering modified tracked publishing metadata, which is forbidden.", call. = FALSE)
   }
 
   node_emit_json(list(

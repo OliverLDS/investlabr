@@ -7,6 +7,7 @@ library(investlabr)
 RECENT_ED <- Sys.Date()
 RECENT_BG <- seq(RECENT_ED, by = "-6 months", length.out = 2L)[2L]
 START_DATE <- RECENT_BG
+freshness_inputs <- list()
 
 # Optional if you have not synced locally yet:
 # invisible(lapply(
@@ -18,6 +19,7 @@ get_series <- function(series_id, label) {
   dt <- data.table::as.data.table(investdatar::get_local_FRED_data(series_id))
   dt <- dt[date >= START_DATE & !is.na(value), .(date, value = as.numeric(value))]
   setorder(dt, date)
+  freshness_inputs[[series_id]] <<- dt[, .(date)]
   dt[, `:=`(
     series = label,
     value_trn = value / 1e6
@@ -132,7 +134,12 @@ p4 <- investlabr::viz_theme_apply(
   show_compiler = FALSE
 )
 
-investlabr::gen_grid_of_plots_with_labels(
+artifact_freshness <- list(
+  data_as_of = investlabr::brief_data_as_of(freshness_inputs),
+  rule = "minimum latest usable observation across all required weekly balance-sheet series"
+)
+
+board <- investlabr::gen_grid_of_plots_with_labels(
   plots = list(p1, p2, p3, p4),
   n_rows = 2,
   n_cols = 2,

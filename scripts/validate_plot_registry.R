@@ -17,7 +17,8 @@ usage <- function() {
     "  -h, --help          Show this help message.",
     "",
     "Behavior and side effects:",
-    "  - Reads and validates one registry plus its referenced local assets.",
+    "  - Reads and validates a schema 1.0, 2.0, or 3.0 registry plus its referenced local assets.",
+    "  - Schema 3.0 validation enforces freshness fields and registry/render timestamp ordering.",
     "  - Does not write files.",
     "  - Emits one JSON validation result to stdout.",
     sep = "\n"

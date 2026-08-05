@@ -80,6 +80,11 @@ raw <- data.table::rbindlist(
   fill = TRUE
 )
 raw <- raw[!is.na(date) & !is.na(value)]
+freshness_inputs <- split(raw[, .(date)], raw$series)
+artifact_freshness <- list(
+  data_as_of = investlabr::brief_data_as_of(freshness_inputs),
+  rule = "minimum latest usable observation across required daily and weekly FRED liquidity series before LOCF alignment"
+)
 
 wide_all <- data.table::dcast(raw, date ~ series, value.var = "value")
 data.table::setorder(wide_all, date)

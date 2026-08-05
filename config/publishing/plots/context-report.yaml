@@ -23,7 +23,8 @@ tags:
   - context
   - report
   - gallery
-last_updated: "2026-04-30"
+metadata_updated_at: "2026-08-05"
+time_indexed: false
 status: draft
 curation_priority: 0
 plot_image: plots/markets/context-report.svg
