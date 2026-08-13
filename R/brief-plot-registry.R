@@ -135,6 +135,9 @@ brief_plot_registry_entry <- function(
 #' @param metadata_updated_at ISO date of the latest material human-authored
 #'   metadata change.
 #' @param time_indexed Whether the artifact contains time-indexed data.
+#' @param expected_cadence Expected update cadence of code{data_as_of}. One of
+#'   code{"daily"}, code{"weekly"}, code{"monthly"},
+#'   code{"event_driven"}, or code{"not_time_indexed"}.
 #' @param status Artifact readiness: \code{"draft"}, \code{"ready"}, or
 #'   \code{"archived"}.
 #' @param plot_image Relative primary-plot path.
@@ -152,7 +155,7 @@ brief_plot_registry_entry <- function(
 brief_plot_registry_entry_v3 <- function(
   id, title, collection, asset_class, indicator_family, region, frequency,
   source, rendered_at = NULL, data_as_of = NULL, metadata_updated_at,
-  time_indexed = TRUE, status, plot_image, thumbnail, tags,
+  time_indexed = TRUE, expected_cadence, status, plot_image, thumbnail, tags,
   subtitle = "", summary = "", description_md = "", section = "",
   source_detail = character(), curation_priority = 0, plot_html = "",
   related_ids = character(), compliance = list(
@@ -178,6 +181,7 @@ brief_plot_registry_entry_v3 <- function(
     data_as_of = .brief_registry_nullable_date(data_as_of, "data_as_of"),
     metadata_updated_at = .brief_registry_format_date(metadata_updated_at, "metadata_updated_at"),
     time_indexed = .brief_registry_scalar_logical(time_indexed, "time_indexed"),
+    expected_cadence = .brief_registry_scalar_chr(expected_cadence),
     status = .brief_registry_scalar_chr(status),
     curation_priority = as.integer(curation_priority),
     plot_image = .brief_registry_normalize_rel_path(plot_image),
@@ -366,7 +370,7 @@ brief_plot_registry_validate <- function(registry, output_root = NULL, require_a
       stop("Ready artifact has no run-local resolved metadata; render it first: ", tracked$id, call. = FALSE)
     }
     if (length(resolved)) {
-      allowed <- c("id", "rendered_at", "data_as_of", "metadata_updated_at", "time_indexed", "data_as_of_rule")
+      allowed <- c("id", "rendered_at", "data_as_of", "metadata_updated_at", "time_indexed", "expected_cadence", "data_as_of_rule")
       unknown <- setdiff(names(resolved), allowed)
       if (length(unknown)) stop("Resolved metadata contains unknown fields: ", paste(unknown, collapse = ", "), call. = FALSE)
       if (!identical(as.character(resolved$id), as.character(tracked$id))) stop("Resolved metadata id mismatch for ", tracked$id, call. = FALSE)
@@ -375,6 +379,9 @@ brief_plot_registry_validate <- function(registry, output_root = NULL, require_a
       }
       if (!identical(isTRUE(resolved$time_indexed), isTRUE(tracked$time_indexed))) {
         stop("Resolved metadata `time_indexed` is stale relative to tracked metadata for ", tracked$id, call. = FALSE)
+      }
+      if (!identical(as.character(resolved$expected_cadence), as.character(tracked$expected_cadence))) {
+        stop("Resolved metadata `expected_cadence` is stale relative to tracked metadata for ", tracked$id, call. = FALSE)
       }
     }
     entry <- .brief_registry_v3_from_list(c(
@@ -399,6 +406,7 @@ brief_plot_registry_validate <- function(registry, output_root = NULL, require_a
     rendered_at = x$rendered_at, data_as_of = x$data_as_of,
     metadata_updated_at = x$metadata_updated_at,
     time_indexed = .brief_registry_value_or_default(x$time_indexed, TRUE),
+    expected_cadence = x$expected_cadence,
     status = x$status, plot_image = x$plot_image, thumbnail = x$thumbnail,
     tags = x$tags, subtitle = .brief_registry_value_or_default(x$subtitle, ""),
     summary = .brief_registry_value_or_default(x$summary, ""),
@@ -414,14 +422,14 @@ brief_plot_registry_validate <- function(registry, output_root = NULL, require_a
 
 .brief_registry_is_v3_entry <- function(x) {
   is.list(x) && all(c(
-    "rendered_at", "data_as_of", "metadata_updated_at", "time_indexed"
+    "rendered_at", "data_as_of", "metadata_updated_at", "time_indexed", "expected_cadence"
   ) %in% names(x)) && !"last_updated" %in% names(x)
 }
 
 .brief_registry_v3_to_v2 <- function(x) {
   out <- x
   out$last_updated <- x$data_as_of
-  out[c("rendered_at", "data_as_of", "metadata_updated_at", "time_indexed")] <- NULL
+  out[c("rendered_at", "data_as_of", "metadata_updated_at", "time_indexed", "expected_cadence")] <- NULL
   order <- c(
     "id", "title", "subtitle", "summary", "description_md", "collection",
     "section", "asset_class", "indicator_family", "region", "frequency",
@@ -439,7 +447,7 @@ brief_plot_registry_validate <- function(registry, output_root = NULL, require_a
   allowed <- setdiff(.brief_registry_v3_fields(), c("rendered_at", "data_as_of"))
   unknown <- setdiff(names(x), allowed)
   if (length(unknown)) stop("Metadata sidecar contains unknown field(s): ", paste(unknown, collapse = ", "), call. = FALSE)
-  required <- c("id", "title", "collection", "asset_class", "indicator_family", "region", "frequency", "source", "metadata_updated_at", "time_indexed", "status", "plot_image", "thumbnail", "tags")
+  required <- c("id", "title", "collection", "asset_class", "indicator_family", "region", "frequency", "source", "metadata_updated_at", "time_indexed", "expected_cadence", "status", "plot_image", "thumbnail", "tags")
   missing <- setdiff(required, names(x))
   if (length(missing)) stop("Metadata sidecar is missing fields: ", paste(missing, collapse = ", "), call. = FALSE)
   .brief_registry_format_date(x$metadata_updated_at, "metadata_updated_at")
@@ -460,7 +468,7 @@ brief_plot_registry_validate <- function(registry, output_root = NULL, require_a
   "id", "title", "subtitle", "summary", "description_md", "collection",
   "section", "asset_class", "indicator_family", "region", "frequency",
   "source", "source_detail", "tags", "rendered_at", "data_as_of",
-  "metadata_updated_at", "time_indexed", "status", "curation_priority",
+  "metadata_updated_at", "time_indexed", "expected_cadence", "status", "curation_priority",
   "plot_image", "thumbnail", "plot_html", "related_ids", "compliance"
 )
 
@@ -476,6 +484,18 @@ brief_plot_registry_validate <- function(registry, output_root = NULL, require_a
 
 .brief_registry_validate_v3_entry <- function(x) {
   .brief_registry_validate_common(x)
+  .brief_registry_assert_choice(
+    x$expected_cadence,
+    c("daily", "weekly", "monthly", "event_driven", "not_time_indexed"),
+    "expected_cadence"
+  )
+  if (identical(x$expected_cadence, "not_time_indexed")) {
+    if (isTRUE(x$time_indexed) || !is.null(x$data_as_of)) {
+      stop("`not_time_indexed` requires `time_indexed: false` and `data_as_of: null`.", call. = FALSE)
+    }
+  } else if (!isTRUE(x$time_indexed)) {
+    stop("Time-indexed expected cadences require `time_indexed: true`.", call. = FALSE)
+  }
   if (identical(x$status, "ready") && is.null(x$rendered_at)) stop("Ready artifacts require non-null `rendered_at`.", call. = FALSE)
   if (identical(x$status, "ready") && isTRUE(x$time_indexed) && is.null(x$data_as_of)) stop("Ready time-indexed artifacts require non-null `data_as_of`.", call. = FALSE)
   if (!is.null(x$rendered_at)) {

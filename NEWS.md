@@ -2,6 +2,7 @@
 
 ## 0.0.6
 
+- Added producer-owned `expected_cadence` to canonical schema 3 publishing metadata, with explicit tracked sidecar values and compatibility projection that leaves schema 2 unchanged.
 - Fixed the Yahoo cross-asset event board's timezone-shifted monthly axis and added SVG-level visible-extent validation so published freshness cannot exceed the rendered data paths.
 - Isolated gallery recipes from renderer command-line arguments and made grid composition return an undrawn gtable for reproducible direct rendering.
 - Added a versioned publishing-freshness contract: schema 3.0 separates artifact render time, underlying data freshness, and editorial metadata updates, while schema 2.0 remains the default compatibility output.

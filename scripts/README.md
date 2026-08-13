@@ -30,6 +30,8 @@ runtime freshness metadata under `output/publishing/resolved/`; tracked YAML
 sidecars are never rewritten. Renderer CLI arguments are isolated from sourced
 gallery recipes, and recipes may expose an artifact-specific visible-extent
 check that must pass before freshness metadata is written.
+Resolved metadata carries the tracked `expected_cadence` so registry joins can
+reject stale or mismatched producer metadata.
 
 ### Build the plot registry
 

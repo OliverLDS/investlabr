@@ -14,8 +14,12 @@ Rscript scripts/build_plot_registry.R
 Each sidecar uses relative `plot_image`, `thumbnail`, and optional `plot_html`
 paths rooted at `output/publishing/`. Use `status: draft`, `status: ready`, or
 `status: archived` to describe artifact readiness. `metadata_updated_at` is the
-date of the latest material human-authored metadata change, and `time_indexed`
-declares whether a ready artifact requires a data-derived freshness date.
+date of the latest material human-authored metadata change, `time_indexed`
+declares whether a ready artifact requires a data-derived freshness date, and
+`expected_cadence` declares the producer-owned update cadence of that date.
+Use `daily`, `weekly`, `monthly`, `event_driven`, or `not_time_indexed`.
+Cadence follows the slowest required input for the artifact unless an explicit
+event-driven rule is documented.
 
 Do not place `rendered_at`, `data_as_of`, or legacy `last_updated` in tracked
 sidecars. The renderer writes the first two under

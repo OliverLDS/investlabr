@@ -109,8 +109,8 @@ load_tracked_meta <- function(meta_root, id) {
   path <- file.path(meta_root, paste0(id, ".yaml"))
   if (!file.exists(path)) stop("Tracked metadata sidecar not found: ", path, call. = FALSE)
   meta <- yaml::read_yaml(path)
-  if (is.null(meta$metadata_updated_at) || is.null(meta$time_indexed)) {
-    stop("Tracked metadata lacks `metadata_updated_at` or `time_indexed`: ", id, call. = FALSE)
+  if (is.null(meta$metadata_updated_at) || is.null(meta$time_indexed) || is.null(meta$expected_cadence)) {
+    stop("Tracked metadata lacks `metadata_updated_at`, `time_indexed`, or `expected_cadence`: ", id, call. = FALSE)
   }
   list(path = path, metadata = meta)
 }
@@ -130,6 +130,7 @@ write_resolved_meta <- function(output_root, tracked, rendered_at, freshness) {
     data_as_of = data_as_of,
     metadata_updated_at = as.character(tracked$metadata_updated_at),
     time_indexed = isTRUE(tracked$time_indexed),
+    expected_cadence = as.character(tracked$expected_cadence),
     data_as_of_rule = as.character(freshness$rule)
   )
   dir <- file.path(output_root, "resolved")
@@ -151,6 +152,7 @@ write_preview_resolved_meta <- function(output_root, tracked, rendered_at) {
     data_as_of = NULL,
     metadata_updated_at = as.character(tracked$metadata_updated_at),
     time_indexed = FALSE,
+    expected_cadence = as.character(tracked$expected_cadence),
     data_as_of_rule = "not_time_indexed"
   )
   dir <- file.path(output_root, "resolved")
@@ -222,6 +224,7 @@ tryCatch({
       data_as_of = resolved$data_as_of,
       visible_data_as_of = if (is.null(visible_data_as_of)) NULL else format(visible_data_as_of, "%Y-%m-%d"),
       metadata_updated_at = resolved$metadata_updated_at,
+      expected_cadence = resolved$expected_cadence,
       data_as_of_rule = resolved$data_as_of_rule
     )
     message("Rendered ", spec$id)
@@ -251,6 +254,7 @@ tryCatch({
       rendered_at = resolved$rendered_at,
       data_as_of = NULL,
       metadata_updated_at = resolved$metadata_updated_at,
+      expected_cadence = resolved$expected_cadence,
       data_as_of_rule = resolved$data_as_of_rule
     )
   }

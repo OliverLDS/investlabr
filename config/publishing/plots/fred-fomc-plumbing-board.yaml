@@ -32,8 +32,9 @@ tags:
   - reserves
   - on rrp
   - balance sheet
-metadata_updated_at: "2026-08-05"
+metadata_updated_at: "2026-08-13"
 time_indexed: true
+expected_cadence: weekly
 status: ready
 curation_priority: 88
 plot_image: plots/macro/fred-fomc-plumbing-board.svg

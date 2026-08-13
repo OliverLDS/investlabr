@@ -35,9 +35,15 @@ Schema 3.0 separates three meanings that schema 2.0 combined:
 - `metadata_updated_at` is the tracked `YYYY-MM-DD` date when descriptive or
   curation metadata was last materially changed. Rerendering and data sync do
   not change it.
+- `expected_cadence` is the expected update frequency of `data_as_of`, not the
+  render frequency. It is producer-owned tracked metadata and is one of
+  `daily`, `weekly`, `monthly`, `event_driven`, or `not_time_indexed`.
 
-Ready time-indexed artifacts require all three values. A genuinely
-non-time-indexed artifact may use `data_as_of: null`. Schema 3.0 forbids
+Ready time-indexed artifacts require all three freshness values. A cadence must
+reflect the slowest required input relevant to the published artifact, unless a
+documented event-driven rule applies. `daily`, `weekly`, `monthly`, and
+`event_driven` require `time_indexed: true`. `not_time_indexed` requires
+`time_indexed: false` and `data_as_of: null`. Schema 3.0 forbids
 `last_updated`.
 
 Example schema 3.0 entry:
@@ -62,6 +68,7 @@ Example schema 3.0 entry:
   "data_as_of": "2026-08-04",
   "metadata_updated_at": "2026-08-05",
   "time_indexed": true,
+  "expected_cadence": "daily",
   "status": "ready",
   "curation_priority": 75,
   "plot_image": "plots/macro/fred-rate-shock-persistence-board.svg",
@@ -91,6 +98,9 @@ contributed to the artifact.
   excluded unless a recipe can explicitly establish that it is complete.
 - Factor heatmaps use the minimum latest complete-case model date across the
   required factor matrix and every instrument included in the reported model.
+- The current macro-factor heatmap uses `daily`: it is intended to refresh when
+  its full daily complete-case factor matrix advances, rather than only when a
+  discrete research event occurs.
 - Missing values on a latest bar are removed before the per-series maximum is
   calculated. Forward filling can align a plot but cannot advance the source's
   freshness date.
@@ -110,6 +120,7 @@ default schema 2.0 writer projects:
 | `rendered_at` | omitted |
 | `metadata_updated_at` | omitted |
 | `time_indexed` | omitted |
+| `expected_cadence` | omitted |
 
 The compatibility writer never infers `rendered_at` or
 `metadata_updated_at` from a legacy `last_updated`. Validation continues to

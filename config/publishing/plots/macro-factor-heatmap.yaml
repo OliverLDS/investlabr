@@ -27,8 +27,9 @@ tags:
   - ai
   - crypto
   - macro
-metadata_updated_at: "2026-08-05"
+metadata_updated_at: "2026-08-13"
 time_indexed: true
+expected_cadence: daily
 status: ready
 curation_priority: 82
 plot_image: plots/markets/macro-factor-heatmap.svg

@@ -23,8 +23,9 @@ tags:
   - context
   - dashboard
   - gallery
-metadata_updated_at: "2026-08-05"
+metadata_updated_at: "2026-08-13"
 time_indexed: false
+expected_cadence: not_time_indexed
 status: draft
 curation_priority: 0
 plot_image: plots/markets/context-dashboard.svg

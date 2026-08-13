@@ -25,8 +25,9 @@ tags:
   - duration
   - fed
   - persistence
-metadata_updated_at: "2026-08-05"
+metadata_updated_at: "2026-08-13"
 time_indexed: true
+expected_cadence: daily
 status: ready
 curation_priority: 75
 plot_image: plots/macro/fred-rate-shock-persistence-board.svg

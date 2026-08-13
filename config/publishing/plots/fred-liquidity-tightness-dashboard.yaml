@@ -37,8 +37,9 @@ tags:
   - effr
   - iorb
   - tga
-metadata_updated_at: "2026-08-05"
+metadata_updated_at: "2026-08-13"
 time_indexed: true
+expected_cadence: weekly
 status: ready
 curation_priority: 90
 plot_image: plots/macro/fred-liquidity-tightness-dashboard.svg

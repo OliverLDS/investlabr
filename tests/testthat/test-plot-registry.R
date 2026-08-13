@@ -1,6 +1,7 @@
 registry_v3_entry <- function(
   id = "us-yield-curve-10y-2y", status = "ready", time_indexed = TRUE,
-  rendered_at = "2026-08-05T09:15:00Z", data_as_of = "2026-08-04"
+  rendered_at = "2026-08-05T09:15:00Z", data_as_of = "2026-08-04",
+  expected_cadence = if (time_indexed) "daily" else "not_time_indexed"
 ) {
   brief_plot_registry_entry_v3(
     id = id,
@@ -15,11 +16,26 @@ registry_v3_entry <- function(
     data_as_of = data_as_of,
     metadata_updated_at = "2026-08-05",
     time_indexed = time_indexed,
+    expected_cadence = expected_cadence,
     status = status,
     plot_image = paste0("plots/macro/", id, ".svg"),
     thumbnail = paste0("thumbnails/macro/", id, ".png"),
     tags = c("rates", "yield curve")
   )
+}
+
+find_publishing_repo_root <- function() {
+  starts <- unique(c(getwd(), testthat::test_path(), dirname(testthat::test_path())))
+  for (start in starts) {
+    current <- normalizePath(start, mustWork = FALSE)
+    repeat {
+      if (dir.exists(file.path(current, "config", "publishing", "plots"))) return(current)
+      parent <- dirname(current)
+      if (identical(parent, current)) break
+      current <- parent
+    }
+  }
+  NULL
 }
 
 registry_object <- function(entry, schema = "3.0", generated_at = "2026-08-05T09:16:00Z") {
@@ -34,7 +50,7 @@ registry_object <- function(entry, schema = "3.0", generated_at = "2026-08-05T09
 
 write_sidecar_fixture <- function(
   root, resolved_metadata_updated_at = "2026-08-05",
-  resolved_time_indexed = TRUE
+  resolved_time_indexed = TRUE, resolved_expected_cadence = "daily"
 ) {
   dir.create(file.path(root, "meta"), recursive = TRUE)
   dir.create(file.path(root, "resolved"), recursive = TRUE)
@@ -47,7 +63,7 @@ write_sidecar_fixture <- function(
     "id: test-artifact", "title: Test artifact", "collection: macro",
     "asset_class: Rates", "indicator_family: Test", "region: United States",
     "frequency: Daily", "source: FRED", "metadata_updated_at: '2026-08-05'",
-    "time_indexed: true", "status: ready", "plot_image: plots/macro/test.svg",
+    "time_indexed: true", "expected_cadence: daily", "status: ready", "plot_image: plots/macro/test.svg",
     "thumbnail: thumbnails/macro/test.png", "tags:", "  - test"
   ), sidecar)
   jsonlite::write_json(list(
@@ -55,6 +71,7 @@ write_sidecar_fixture <- function(
     data_as_of = "2026-08-04",
     metadata_updated_at = resolved_metadata_updated_at,
     time_indexed = resolved_time_indexed,
+    expected_cadence = resolved_expected_cadence,
     data_as_of_rule = "test conservative rule"
   ), file.path(root, "resolved", "test-artifact.json"), auto_unbox = TRUE)
   sidecar
@@ -66,6 +83,7 @@ test_that("schema 3.0 entries contain distinct publishing dates", {
   expect_identical(entry$data_as_of, "2026-08-04")
   expect_identical(entry$metadata_updated_at, "2026-08-05")
   expect_true(entry$time_indexed)
+  expect_identical(entry$expected_cadence, "daily")
   expect_false("last_updated" %in% names(entry))
   expect_true(brief_plot_registry_validate(registry_object(entry), require_assets = FALSE)$valid)
 })
@@ -123,7 +141,7 @@ test_that("schema 3.0 rejects malformed dates and timestamps", {
       id = "bad-metadata-date", title = "Bad", collection = "macro",
       asset_class = "Rates", indicator_family = "Test", region = "United States",
       frequency = "Daily", source = "FRED", rendered_at = "2026-08-05T09:15:00Z",
-      data_as_of = "2026-08-04", metadata_updated_at = "2026-02-30",
+      data_as_of = "2026-08-04", metadata_updated_at = "2026-02-30", expected_cadence = "daily",
       status = "ready", plot_image = "plots/macro/a.svg",
       thumbnail = "thumbnails/macro/a.png", tags = "test"
     ),
@@ -141,6 +159,36 @@ test_that("ready and draft artifacts enforce appropriate runtime fields", {
   expect_null(draft$data_as_of)
   ready_non_time <- registry_v3_entry(time_indexed = FALSE, data_as_of = NULL)
   expect_null(ready_non_time$data_as_of)
+})
+
+test_that("schema 3.0 requires a constrained expected cadence", {
+  expect_error(
+    brief_plot_registry_entry_v3(
+      id = "missing-cadence", title = "Missing", collection = "macro",
+      asset_class = "Rates", indicator_family = "Test", region = "United States",
+      frequency = "Daily", source = "FRED", rendered_at = "2026-08-05T09:15:00Z",
+      data_as_of = "2026-08-04", metadata_updated_at = "2026-08-05",
+      time_indexed = TRUE, status = "ready", plot_image = "plots/macro/a.svg",
+      thumbnail = "thumbnails/macro/a.png", tags = "test"
+    ),
+    "missing"
+  )
+  expect_error(registry_v3_entry(expected_cadence = "hourly"), "expected_cadence")
+  for (cadence in c("daily", "weekly", "monthly", "event_driven")) {
+    expect_identical(registry_v3_entry(expected_cadence = cadence)$expected_cadence, cadence)
+  }
+  non_time <- registry_v3_entry(
+    time_indexed = FALSE, data_as_of = NULL, expected_cadence = "not_time_indexed"
+  )
+  expect_identical(non_time$expected_cadence, "not_time_indexed")
+  expect_error(
+    registry_v3_entry(expected_cadence = "not_time_indexed"),
+    "not_time_indexed.*time_indexed"
+  )
+  expect_error(
+    registry_v3_entry(time_indexed = FALSE, expected_cadence = "weekly"),
+    "Time-indexed expected cadences"
+  )
 })
 
 test_that("publishing dates cannot postdate rendering", {
@@ -187,7 +235,7 @@ test_that("schema 2.0 compatibility maps last_updated from data_as_of", {
   )
   emitted <- reg$plots[[1]]
   expect_identical(emitted$last_updated, "2026-08-04")
-  expect_false(any(c("rendered_at", "data_as_of", "metadata_updated_at", "time_indexed") %in% names(emitted)))
+  expect_false(any(c("rendered_at", "data_as_of", "metadata_updated_at", "time_indexed", "expected_cadence") %in% names(emitted)))
   expect_true(brief_plot_registry_validate(path, require_assets = FALSE)$valid)
 })
 
@@ -200,6 +248,7 @@ test_that("schema 3.0 writer emits scalar deterministic JSON", {
   parsed <- jsonlite::read_json(path, simplifyVector = FALSE)
   expect_type(parsed$plots[[1]]$rendered_at, "character")
   expect_type(parsed$plots[[1]]$time_indexed, "logical")
+  expect_identical(parsed$plots[[1]]$expected_cadence, "daily")
   expect_type(parsed$plots[[1]]$tags, "list")
   expect_identical(parsed$plots[[1]]$tags, list("rates", "yield curve"))
 })
@@ -216,7 +265,7 @@ test_that("schema 1.0 and 2.0 remain readable", {
 
   v2 <- registry_v3_entry()
   v2$last_updated <- v2$data_as_of
-  v2[c("rendered_at", "data_as_of", "metadata_updated_at", "time_indexed")] <- NULL
+  v2[c("rendered_at", "data_as_of", "metadata_updated_at", "time_indexed", "expected_cadence")] <- NULL
   expect_true(brief_plot_registry_validate(registry_object(v2, "2.0"), require_assets = FALSE)$valid)
 })
 
@@ -284,8 +333,56 @@ test_that("sidecar joins reject stale time_indexed", {
   )
 })
 
+test_that("sidecar joins reject stale expected_cadence", {
+  root <- file.path(tempdir(), paste0("registry-cadence-mismatch-", Sys.getpid()))
+  unlink(root, recursive = TRUE)
+  write_sidecar_fixture(root, resolved_expected_cadence = "weekly")
+  expect_error(
+    brief_plot_registry_write_from_meta(
+      meta_dir = file.path(root, "meta"), path = file.path(root, "registry.json"),
+      output_root = root, resolved_meta_dir = file.path(root, "resolved"),
+      schema_version = "3.0"
+    ),
+    "`expected_cadence` is stale"
+  )
+})
+
+test_that("all ready publishing sidecars declare valid schema 3 cadences", {
+  repo <- find_publishing_repo_root()
+  skip_if(is.null(repo), "Tracked publishing sidecars are not installed with the package.")
+  sidecar_paths <- sort(Sys.glob(file.path(repo, "config", "publishing", "plots", "*.yaml")))
+  sidecars <- lapply(sidecar_paths, yaml::read_yaml)
+  ready <- Filter(function(x) identical(x$status, "ready"), sidecars)
+  expect_length(ready, 7L)
+  expected <- c(
+    "fred-balance-sheet-mirror-board" = "weekly",
+    "fred-fomc-plumbing-board" = "weekly",
+    "fred-inflation-labor-dashboard" = "monthly",
+    "fred-liquidity-tightness-dashboard" = "weekly",
+    "fred-rate-shock-persistence-board" = "daily",
+    "macro-factor-heatmap" = "daily",
+    "yahoo-cross-asset-event-board" = "daily"
+  )
+  observed <- vapply(ready, `[[`, character(1), "expected_cadence")
+  names(observed) <- vapply(ready, `[[`, character(1), "id")
+  expect_identical(observed[sort(names(expected))], expected[sort(names(expected))])
+  for (sidecar in ready) {
+    entry <- .brief_registry_v3_from_list(c(
+      sidecar,
+      list(rendered_at = "2026-08-13T09:15:00Z", data_as_of = "2026-08-04")
+    ))
+    expect_true(
+      brief_plot_registry_validate(
+        registry_object(entry, generated_at = "2026-08-13T09:16:00Z"),
+        require_assets = FALSE
+      )$valid
+    )
+  }
+})
+
 test_that("preview rendering does not modify tracked metadata", {
-  repo <- normalizePath(testthat::test_path("..", ".."), mustWork = TRUE)
+  repo <- find_publishing_repo_root()
+  skip_if(is.null(repo), "Rendering node is not installed with the package.")
   script <- file.path(repo, "scripts", "render_plot_assets.R")
   skip_if_not(file.exists(script))
   sidecars <- sort(Sys.glob(file.path(repo, "config", "publishing", "plots", "*.yaml")))
@@ -301,5 +398,6 @@ test_that("preview rendering does not modify tracked metadata", {
   expect_identical(unname(tools::md5sum(sidecars)), unname(before))
   resolved <- jsonlite::read_json(file.path(output, "resolved", "context-report.json"), simplifyVector = FALSE)
   expect_null(resolved$data_as_of)
+  expect_identical(resolved$expected_cadence, "not_time_indexed")
   expect_match(resolved$rendered_at, "Z$")
 })
