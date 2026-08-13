@@ -32,7 +32,12 @@ library(investlabr)
   x[nzchar(x)]
 }
 
-args <- .parse_args(commandArgs(trailingOnly = TRUE))
+gallery_args <- if (exists(".investlabr_gallery_args", inherits = FALSE)) {
+  .investlabr_gallery_args
+} else {
+  commandArgs(trailingOnly = TRUE)
+}
+args <- .parse_args(gallery_args)
 from_date <- as.Date(args$from_date)
 to_date <- as.Date(args$to_date)
 event_dates <- as.Date(.split_arg(args$event_dates))
@@ -61,6 +66,7 @@ groups <- list(
 all_symbols <- unlist(groups, use.names = FALSE)
 utc_today <- as.Date(format(Sys.time(), tz = "UTC"))
 freshness_inputs <- list()
+panel_latest_dates <- list()
 # optionally syncing; by default should use local cache
 #invisible(lapply(
 #  all_symbols,
@@ -127,6 +133,7 @@ make_asset_panel <- function(symbols, panel_title) {
 
   panel_dt <- data.table::rbindlist(dt_list, fill = TRUE)
   panel_dt[, datetime := as.POSIXct(datetime, tz = "UTC")]
+  panel_latest_dates[[panel_title]] <<- max(panel_dt[is.finite(index100), date])
   last_labels <- panel_dt[!is.na(index100), .SD[.N], by = symbol]
   last_labels <- .spread_last_labels(last_labels, "index100", min_gap_frac = 0.10)
   label_pad <- max(1, ceiling(0.08 * uniqueN(panel_dt$datetime)))
@@ -190,7 +197,8 @@ make_asset_panel <- function(symbols, panel_title) {
     scale_x_datetime(
       limits = c(min(panel_dt$datetime), x_limit_right),
       date_breaks = "1 month",
-      date_labels = "%Y-%m"
+      date_labels = "%Y-%m",
+      timezone = "UTC"
     )
 
   p <- investlabr::viz_theme_apply(
@@ -212,6 +220,15 @@ artifact_freshness <- list(
   data_as_of = investlabr::brief_data_as_of(freshness_inputs),
   rule = "minimum latest completed Yahoo observation across all required symbols and exchange calendars; current UTC-date bars are excluded"
 )
+
+artifact_render_check <- function(svg_path) {
+  investlabr:::.brief_svg_check_time_extent(
+    svg_path = svg_path,
+    latest_dates = as.Date(vapply(panel_latest_dates, format, character(1), "%Y-%m-%d")),
+    n_rows = 2L,
+    n_cols = 2L
+  )
+}
 
 event_text <- paste(
   paste(format(event_dates, "%Y-%m-%d"), event_labels, sep = " = "),

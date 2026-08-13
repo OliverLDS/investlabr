@@ -28,7 +28,7 @@
 #' @inheritParams viz_style_get
 #' @param show_compiler Whether to append the configured plot compiler name to the footer.
 #'
-#' @return A `gtable` object returned by `gridExtra::grid.arrange()`.
+#' @return A `gtable` object returned by `gridExtra::arrangeGrob()`.
 #' @export
 gen_grid_of_plots_with_labels <- function(
   plots,
@@ -128,7 +128,7 @@ gen_grid_of_plots_with_labels <- function(
   bottom_text <- .viz_wrap_footer_text(bottom_text, n_cols = n_cols, show_row_labs = show_row_labs)
   bottom_grob <- if (!is.null(bottom_text) && nzchar(bottom_text)) grid::textGrob(bottom_text, gp = bottom_gp) else NULL
 
-  gridExtra::grid.arrange(
+  gridExtra::arrangeGrob(
     grobs = grobs,
     layout_matrix = lay,
     widths = widths,

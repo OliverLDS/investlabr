@@ -27,7 +27,9 @@ Executes explicitly declared gallery scripts as internal rendering recipes and
 writes plots and thumbnails under `output/publishing/`. Gallery paths are not
 part of the node's public interface. A successful render also writes resolved
 runtime freshness metadata under `output/publishing/resolved/`; tracked YAML
-sidecars are never rewritten.
+sidecars are never rewritten. Renderer CLI arguments are isolated from sourced
+gallery recipes, and recipes may expose an artifact-specific visible-extent
+check that must pass before freshness metadata is written.
 
 ### Build the plot registry
 

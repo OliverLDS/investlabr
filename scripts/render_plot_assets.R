@@ -78,6 +78,8 @@ resolve_plot_object <- function(env, sourced_value) {
 
 source_gallery_plot <- function(path) {
   env <- new.env(parent = globalenv())
+  env$.investlabr_gallery_args <- character()
+  env$commandArgs <- function(trailingOnly = FALSE) character()
   sourced_value <- NULL
   grDevices::pdf(NULL)
   on.exit(grDevices::dev.off(), add = TRUE)
@@ -90,7 +92,12 @@ source_gallery_plot <- function(path) {
   }
   list(
     plot = resolve_plot_object(env, sourced_value),
-    freshness = get("artifact_freshness", envir = env, inherits = FALSE)
+    freshness = get("artifact_freshness", envir = env, inherits = FALSE),
+    render_check = if (exists("artifact_render_check", envir = env, inherits = FALSE)) {
+      get("artifact_render_check", envir = env, inherits = FALSE)
+    } else {
+      NULL
+    }
   )
 }
 
@@ -191,6 +198,18 @@ tryCatch({
     thumb_path <- file.path(thumb_dir, paste0(spec$id, ".png"))
     recipe <- source_gallery_plot(file.path(gallery_root, spec$script))
     ggplot2::ggsave(plot_path, plot = recipe$plot, width = spec$width, height = spec$height, dpi = 144)
+    visible_data_as_of <- NULL
+    if (is.function(recipe$render_check)) {
+      check_result <- recipe$render_check(plot_path)
+      if (!is.list(check_result) || is.null(check_result$visible_data_as_of)) {
+        stop("Artifact render check must return `visible_data_as_of`: ", spec$id, call. = FALSE)
+      }
+      visible_data_as_of <- as.Date(check_result$visible_data_as_of)
+      recipe_data_as_of <- as.Date(recipe$freshness$data_as_of)
+      if (is.na(visible_data_as_of) || visible_data_as_of < recipe_data_as_of) {
+        stop("Rendered visible extent predates `data_as_of` for artifact: ", spec$id, call. = FALSE)
+      }
+    }
     ggplot2::ggsave(thumb_path, plot = recipe$plot, width = 5.5, height = 3.8, dpi = 144)
     rendered_at <- utc_timestamp()
     tracked <- load_tracked_meta(meta_root, spec$id)$metadata
@@ -201,6 +220,7 @@ tryCatch({
       thumbnail = normalizePath(thumb_path, mustWork = TRUE),
       rendered_at = resolved$rendered_at,
       data_as_of = resolved$data_as_of,
+      visible_data_as_of = if (is.null(visible_data_as_of)) NULL else format(visible_data_as_of, "%Y-%m-%d"),
       metadata_updated_at = resolved$metadata_updated_at,
       data_as_of_rule = resolved$data_as_of_rule
     )

@@ -57,7 +57,7 @@ gen_grid_of_plots_with_labels(
 \item{show_compiler}{Whether to append the configured plot compiler name to the footer.}
 }
 \value{
-A `gtable` object returned by `gridExtra::grid.arrange()`.
+A `gtable` object returned by `gridExtra::arrangeGrob()`.
 }
 \description{
 Arrange plots in a labeled grid layout

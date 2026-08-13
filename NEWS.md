@@ -2,6 +2,8 @@
 
 ## 0.0.6
 
+- Fixed the Yahoo cross-asset event board's timezone-shifted monthly axis and added SVG-level visible-extent validation so published freshness cannot exceed the rendered data paths.
+- Isolated gallery recipes from renderer command-line arguments and made grid composition return an undrawn gtable for reproducible direct rendering.
 - Added a versioned publishing-freshness contract: schema 3.0 separates artifact render time, underlying data freshness, and editorial metadata updates, while schema 2.0 remains the default compatibility output.
 - Added conservative data-freshness resolution for mixed-frequency FRED inputs, cross-calendar Yahoo data, and multi-instrument factor models, plus run-local renderer metadata that never rewrites tracked sidecars.
 - Retained the exported schema 2.0 registry-entry constructor as a deprecated compatibility API and added a separate strict schema 3.0 constructor.
