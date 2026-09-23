@@ -91,6 +91,7 @@
 #' @param bt_res_list data.table of backtest rows (from \code{eval_strat_performance()}).
 #' @param target_return numeric annual target return (e.g., 0.10).
 #' @return List with \code{optimal_weights} (named numeric) and \code{optimal_weights_table} (data.frame of nonzero weights).
+#' @example inst/examples/portfolio.R
 #' @export
 get_optimal_weights <- function(bt_res_list, target_return = 0.10) {
   cov_mat <- .bt_res_list_to_ret_cov_mat(bt_res_list)
@@ -113,6 +114,7 @@ get_optimal_weights <- function(bt_res_list, target_return = 0.10) {
 #' @param bt_res_list data.table of backtest rows (with list-col \code{log_ret_dt}).
 #' @param target_return numeric annual target return.
 #' @return Invisibly: single-row data.table (portfolio backtest) with metrics and list-col \code{log_ret_dt}.
+#' @example inst/examples/portfolio.R
 #' @export
 eval_portfolio_performance <- function(bt_res_list, target_return) {
   weight_res <- get_optimal_weights(bt_res_list, target_return = target_return)

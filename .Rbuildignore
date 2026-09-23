@@ -16,3 +16,7 @@
 ^tests/testthat/Rplots\.pdf$
 ^tmp$
 ^Rplots\.pdf$
+^\.github$
+^CRAN_PREPARATION\.md$
+^cran-comments\.md$
+^LICENSE\.md$

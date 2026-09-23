@@ -6,6 +6,7 @@
 #' @inheritParams viz_style_get
 #'
 #' @return A ggplot object.
+#' @example inst/examples/events.R
 #' @export
 gen_plot_event_tsline_cum_ret <- function(res, threshold = 0.02, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -35,6 +36,7 @@ gen_plot_event_tsline_cum_ret <- function(res, threshold = 0.02, style = NULL, c
 #' @inheritParams viz_style_get
 #'
 #' @return A ggplot object.
+#' @example inst/examples/events.R
 #' @export
 gen_plot_comparing_events <- function(first_event_res, second_event_res, first_event_label, second_event_label, first_event_color = NULL, second_event_color = NULL, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)

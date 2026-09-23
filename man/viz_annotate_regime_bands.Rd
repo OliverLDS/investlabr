@@ -38,3 +38,21 @@ A `ggplot` object with shaded regime bands.
 \description{
 Add regime-band annotations to a plot
 }
+\examples{
+viz_style_get("policy_memo", "report")
+viz_palette_get("institutional_blue")
+local({
+  old <- options(investlabr.viz.style = "research_note", investlabr.viz.context = "report")
+  on.exit(options(old))
+  viz_style_set("research_note", "report")
+})
+data <- data.frame(date = as.Date("2025-01-01") + 0:9, value = 1:10)
+p <- ggplot2::ggplot(data, ggplot2::aes(date, value)) + ggplot2::geom_line()
+p <- viz_theme_apply(p, style = "policy_memo", show_compiler = FALSE)
+p <- viz_annotate_last_value(p, data, "date", "value")
+p <- viz_annotate_event_lines(p, data.frame(datetime = as.Date("2025-01-05")))
+p <- viz_annotate_regime_bands(p, data.frame(
+  start = as.Date("2025-01-02"), end = as.Date("2025-01-04")
+))
+viz_annotate_source_caption(p, "Synthetic data", "Illustration only")
+}

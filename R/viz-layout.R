@@ -29,6 +29,7 @@
 #' @param show_compiler Whether to append the configured plot compiler name to the footer.
 #'
 #' @return A `gtable` object returned by `gridExtra::arrangeGrob()`.
+#' @example inst/examples/layouts.R
 #' @export
 gen_grid_of_plots_with_labels <- function(
   plots,
@@ -151,6 +152,7 @@ gen_grid_of_plots_with_labels <- function(
 #' @inheritParams viz_style_get
 #'
 #' @return A faceted ggplot object.
+#' @example inst/examples/layouts.R
 #' @export
 gen_facet_plot_from_multicol_ts <- function(DT, id_vars, measure_vars, measure_labels, style = NULL, context = NULL, show_compiler = TRUE) {
   resolved <- .viz_resolve_style(style = style, context = context)

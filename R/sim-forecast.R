@@ -8,6 +8,7 @@
 #'
 #' @return A data.table containing p10, p25, p50, p75, and p90 levels by
 #'   horizon, including horizon zero.
+#' @example inst/examples/forecast.R
 #' @export
 sim_forward_fan <- function(
   start_value,
@@ -76,8 +77,9 @@ sim_forward_fan <- function(
 #' @param horizon_months Number of forward monthly steps.
 #' @param start_date First scenario date.
 #'
-#' @return Long-form data.table with code{date}, code{scenario}, and
-#'   code{value} columns.
+#' @return Long-form data.table with \code{date}, \code{scenario}, and
+#'   \code{value} columns.
+#' @example inst/examples/forecast.R
 #' @export
 sim_scenario_path <- function(
   start_value,

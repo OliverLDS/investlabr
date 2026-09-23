@@ -15,24 +15,26 @@ License: MIT + file LICENSE
 URL: https://github.com/OliverLDS/investlabr
 BugReports: https://github.com/OliverLDS/investlabr/issues
 Encoding: UTF-8
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.1.0)
 Imports:
-    data.table,
-    ggplot2,
+    data.table (>= 1.12.4),
+    ggplot2 (>= 3.5.0),
     ggrepel,
     grid,
     gridExtra,
     jsonlite,
     patchwork,
     quadprog,
+    rlang,
     scales,
     stats,
+    utils,
     yaml,
     Rcpp
 LinkingTo:
     Rcpp
 Suggests:
+    svglite,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Remote: github::OliverLDS/investlabr
 Config/roxygen2/version: 8.0.0

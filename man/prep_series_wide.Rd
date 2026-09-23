@@ -7,8 +7,8 @@
 prep_series_wide(series_list, fill_forward = TRUE)
 }
 \arguments{
-\item{series_list}{List of data frames or data.tables containing code{date},
-code{value}, and code{series} columns.}
+\item{series_list}{List of data frames or data.tables containing \code{date},
+\code{value}, and \code{series} columns.}
 
 \item{fill_forward}{Whether to carry each series forward after reshaping.}
 }
@@ -17,4 +17,16 @@ A data.table with one row per date and one column per series.
 }
 \description{
 Combine labeled time series into a research-ready wide table
+}
+\examples{
+prep_fill_forward(c(NA, 1, NA, 2))
+a <- data.frame(date = as.Date("2025-01-01") + c(0, 2),
+                value = c(4, 4.2), series = "A")
+b <- data.frame(date = as.Date("2025-01-01") + c(1, 2),
+                value = c(3, 3.1), series = "B")
+prep_series_wide(list(a, b))
+prep_zscore(c(1, 2, 3, 4))
+prep_recent_changes(c(4, 4.1, 4.2, 4.15), lookback = 2)
+score <- factor_bounded_score(prep_zscore(c(1, 2, 3, 4)))
+brief_score_label(tail(score, 1))
 }

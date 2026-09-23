@@ -47,6 +47,7 @@
 #' @param seed Optional integer seed for reproducibility.
 #'
 #' @return `data.table` with columns `t`, `value`, and `innovation`.
+#' @example inst/examples/time-series.R
 #' @export
 sim_ar1_dgp <- function(n, a1, y_lag1 = 0, burn = 50, sigma = 1, drift = 0, trend_slope = 0, seed = NULL) {
   .sim_validate_length_args(n, burn)
@@ -75,6 +76,7 @@ sim_ar1_dgp <- function(n, a1, y_lag1 = 0, burn = 50, sigma = 1, drift = 0, tren
 #' @param y_lag2 Second initial lagged value.
 #'
 #' @return `data.table` with columns `t`, `value`, and `innovation`.
+#' @example inst/examples/time-series.R
 #' @export
 sim_ar2_dgp <- function(n, a1, a2, y_lag1 = 0, y_lag2 = 0, burn = 50, sigma = 1, drift = 0, trend_slope = 0, seed = NULL) {
   .sim_validate_length_args(n, burn)
@@ -104,6 +106,7 @@ sim_ar2_dgp <- function(n, a1, a2, y_lag1 = 0, y_lag2 = 0, burn = 50, sigma = 1,
 #' @param y_lag3 Third initial lagged value.
 #'
 #' @return `data.table` with columns `t`, `value`, and `innovation`.
+#' @example inst/examples/time-series.R
 #' @export
 sim_ar3_dgp <- function(n, a1, a2, a3, y_lag1 = 0, y_lag2 = 0, y_lag3 = 0, burn = 50, sigma = 1, drift = 0, trend_slope = 0, seed = NULL) {
   .sim_validate_length_args(n, burn)
@@ -134,6 +137,7 @@ sim_ar3_dgp <- function(n, a1, a2, a3, y_lag1 = 0, y_lag2 = 0, y_lag3 = 0, burn 
 #' @param e_lag1 Initial lagged innovation.
 #'
 #' @return `data.table` with columns `t`, `value`, and `innovation`.
+#' @example inst/examples/time-series.R
 #' @export
 sim_ma1_dgp <- function(n, b1, e_lag1 = 0, burn = 50, sigma = 1, seed = NULL) {
   .sim_validate_length_args(n, burn)
@@ -165,6 +169,7 @@ sim_ma1_dgp <- function(n, b1, e_lag1 = 0, burn = 50, sigma = 1, seed = NULL) {
 #' @param seed Optional integer seed for reproducibility.
 #'
 #' @return `data.table` with columns `t`, `value`, `innovation`, and `sigma2`.
+#' @example inst/examples/time-series.R
 #' @export
 sim_arch1_dgp <- function(n, alpha0, alpha1, e_lag1_sq = 0, burn = 50, seed = NULL) {
   .sim_validate_length_args(n, burn)
@@ -200,6 +205,7 @@ sim_arch1_dgp <- function(n, alpha0, alpha1, e_lag1_sq = 0, burn = 50, seed = NU
 #' @param seed Optional integer seed for reproducibility.
 #'
 #' @return `data.table` with columns `t`, `value`, `innovation`, and `sigma2`.
+#' @example inst/examples/time-series.R
 #' @export
 sim_garch11_dgp <- function(n, alpha0, alpha1, beta1, sigma2_0 = NULL, burn = 50, z_dist = c("norm", "stdt"), df = 8, seed = NULL) {
   .sim_validate_length_args(n, burn)

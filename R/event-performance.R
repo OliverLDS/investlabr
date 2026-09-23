@@ -46,6 +46,7 @@
 #' @param pos_hit_threshold Positive return threshold used to count upside hits.
 #' @param neg_hit_threshold Negative return threshold used to count downside hits.
 #' @return Invisibly: data.table (one row) with summary stats and list-cols \code{performance_by_cases}, \code{performance_by_horizons}.
+#' @example inst/examples/events.R
 #' @export
 eval_event_performance <- function(DT, event_col, event_score_cols = character(0L), H = 1L:42L, pos_hit_threshold = 0.05, neg_hit_threshold = -0.05) {
   datetime <- DT$datetime

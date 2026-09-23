@@ -7,6 +7,7 @@
 #'   the plot caption.
 #'
 #' @return A ggplot2 object showing an OHLC candlestick chart.
+#' @example inst/examples/candles.R
 #' @export
 viz_candle_base <- function(DT, style = NULL, context = NULL, show_compiler = TRUE) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -68,6 +69,7 @@ viz_candle_base <- function(DT, style = NULL, context = NULL, show_compiler = TR
 #' @inheritParams viz_style_get
 #'
 #' @return A ggplot2 object showing candlestick chart with support and resistance lines.
+#' @example inst/examples/candles.R
 #' @export
 gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near_frac = 0.01, label_digits = 2, show_ema_lines = FALSE, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -215,6 +217,7 @@ gen_candle_plots_with_sr_lines <- function(DT, support_pts, resistance_pts, near
 #' @inheritParams viz_style_get
 #'
 #' @return A ggplot2 object showing candlesticks with support/resistance zones.
+#' @example inst/examples/candles.R
 #' @export
 gen_candle_plots_with_sr_dts <- function(
   DT,

@@ -14,6 +14,7 @@
 #'
 #' @return An ISO date string representing the latest common usable
 #'   observation.
+#' @example inst/examples/registry.R
 #' @export
 brief_data_as_of <- function(series, date_col = "date", completed_before = NULL) {
   if (!is.list(series) || length(series) == 0L) {
@@ -66,6 +67,7 @@ brief_data_as_of <- function(series, date_col = "date", completed_before = NULL)
 #'   Deprecated schema 1.0 compatibility fields.
 #'
 #' @return A validated schema 2.0 entry that cannot be emitted as schema 3.0.
+#' @example inst/examples/registry-legacy.R
 #' @export
 brief_plot_registry_entry <- function(
   id, title, collection = NULL, asset_class, indicator_family, region,
@@ -151,6 +153,7 @@ brief_plot_registry_entry <- function(
 #' @param compliance Named compliance flags.
 #'
 #' @return A canonical schema 3.0 entry. Writers may project it to schema 2.0.
+#' @example inst/examples/registry.R
 #' @export
 brief_plot_registry_entry_v3 <- function(
   id, title, collection, asset_class, indicator_family, region, frequency,
@@ -208,6 +211,7 @@ brief_plot_registry_entry_v3 <- function(
 #' @param published_only Deprecated alias for \code{ready_only}.
 #'
 #' @return Invisibly returns the registry written to disk.
+#' @example inst/examples/registry.R
 #' @export
 brief_plot_registry_write <- function(
   plots, path = file.path("output", "publishing", "plot-registry.json"),
@@ -273,6 +277,7 @@ brief_plot_registry_write <- function(
 #' @inheritParams brief_plot_registry_write
 #'
 #' @return Invisibly returns the registry written to disk.
+#' @example inst/examples/registry-sidecars.R
 #' @export
 brief_plot_registry_write_from_meta <- function(
   meta_dir = file.path("config", "publishing", "plots"),
@@ -300,6 +305,7 @@ brief_plot_registry_write_from_meta <- function(
 #' @param require_assets Require referenced assets to exist.
 #'
 #' @return Named validation summary.
+#' @example inst/examples/registry.R
 #' @export
 brief_plot_registry_validate <- function(registry, output_root = NULL, require_assets = TRUE) {
   registry_path <- NULL

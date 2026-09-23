@@ -5,6 +5,7 @@
 #' @param elevated Minimum score labeled elevated.
 #'
 #' @return A concise reader-facing character label.
+#' @example inst/examples/preparation.R
 #' @export
 brief_score_label <- function(score, moderate = 40, elevated = 70) {
   if (length(score) != 1L || !is.finite(score)) return("Latest: unavailable")

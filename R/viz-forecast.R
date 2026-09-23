@@ -1,7 +1,7 @@
 #' Plot a forward percentile fan
 #'
-#' @param fan_dt Data frame containing code{horizon}, code{p10}, code{p25},
-#'   code{p50}, code{p75}, and code{p90}.
+#' @param fan_dt Data frame containing \code{horizon}, \code{p10}, \code{p25},
+#'   \code{p50}, and \code{p75}, and \code{p90}.
 #' @param title Plot title.
 #' @param subtitle Plot subtitle.
 #' @param y_label Y-axis label.
@@ -10,6 +10,7 @@
 #' @inheritParams viz_style_get
 #'
 #' @return A ggplot object.
+#' @example inst/examples/forecast.R
 #' @export
 viz_forward_fan <- function(
   fan_dt,
@@ -63,6 +64,7 @@ viz_forward_fan <- function(
 #' @inheritParams viz_style_get
 #'
 #' @return A ggplot object.
+#' @example inst/examples/forecast.R
 #' @export
 viz_series_lines <- function(
   data,

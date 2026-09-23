@@ -11,6 +11,7 @@
 #' @param yield_dates A vector of dates for which yields should be retrieved.
 #'
 #' @return A data.table containing yield data across maturities and dates.
+#' @example inst/examples/yield-curves.R
 #' @export
 get_yield_data_DT <- function(yield_dt_list, yield_dates) {
   maturity_months <- c(1, 3, 6, 12, 24, 36, 60, 84, 120, 240, 360)
@@ -32,6 +33,7 @@ get_yield_data_DT <- function(yield_dt_list, yield_dates) {
 #' @inheritParams viz_style_get
 #'
 #' @return A ggplot2 object visualizing selected yield curves.
+#' @example inst/examples/yield-curves.R
 #' @export
 gen_yield_curve_plot <- function(DT, selected_windows = c("Now", "One week ago", "One month ago"), style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -65,6 +67,7 @@ gen_yield_curve_plot <- function(DT, selected_windows = c("Now", "One week ago",
 #' @inheritParams viz_style_get
 #'
 #' @return A faceted ggplot2 object comparing yield curves across multiple time windows.
+#' @example inst/examples/yield-curves.R
 #' @export
 gen_yield_curve_plot_grid <- function(DT, selected_windows = c("Now", "One week ago", "One month ago", "Six months ago", "One year ago"), style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)

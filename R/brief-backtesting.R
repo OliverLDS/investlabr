@@ -5,6 +5,7 @@
 #' @param opt_portfolio_line logical; unused placeholder.
 #' @inheritParams viz_style_get
 #' @return ggplot object.
+#' @example inst/examples/backtests.R
 #' @export
 eval_strat_plot_scatter_maxdd_annret <- function(bt_res_list, plot_title = "", opt_portfolio_line = FALSE, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -37,6 +38,7 @@ eval_strat_plot_scatter_maxdd_annret <- function(bt_res_list, plot_title = "", o
 #'   raw equity.
 #' @inheritParams viz_style_get
 #' @return ggplot object.
+#' @example inst/examples/backtests.R
 #' @export
 eval_strat_plot_tsline_eq <- function(bt_res, benchmark_bt_res = NULL, bt_res_2 = NULL, style = NULL, context = NULL, caption = NULL, log_eq = FALSE) {
   resolved <- .viz_resolve_style(style = style, context = context)

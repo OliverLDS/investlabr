@@ -1,5 +1,11 @@
 # investlabr news
 
+## Development
+
+- Prepared CRAN-facing imports, dependency minimums, MIT license metadata, and executable help examples for all exported functions.
+- Added hosted Linux, Windows, and macOS R CMD checks, including R-devel and PDF manual generation, without requiring local package checks.
+- Made the US sector gallery print its board without automatically saving files or launching a platform-specific viewer.
+
 ## 0.0.6
 
 - Added producer-owned `expected_cadence` to canonical schema 3 publishing metadata, with explicit tracked sidecar values and compatibility projection that leaves schema 2 unchanged.

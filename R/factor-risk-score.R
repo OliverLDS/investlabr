@@ -5,6 +5,7 @@
 #' @param scale Positive logistic scale.
 #'
 #' @return Numeric score bounded between 0 and 100.
+#' @example inst/examples/preparation.R
 #' @export
 factor_bounded_score <- function(z, center = 0, scale = 1.2) {
   if (!is.numeric(scale) || length(scale) != 1L || !is.finite(scale) || scale <= 0) {

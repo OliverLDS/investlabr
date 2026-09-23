@@ -10,6 +10,7 @@
 #'
 #' @return A one-row `data.table` with summary metrics and a `log_ret_dt`
 #'   list-column.
+#' @example inst/examples/backtests.R
 #' @export
 prep_backtest_result_from_equity <- function(equity, datetime, asset_name, strat_label) {
   stopifnot(length(equity) == length(datetime), all(equity > 0))
@@ -48,6 +49,7 @@ prep_backtest_result_from_equity <- function(equity, datetime, asset_name, strat
 #' @param ratio_symbol Character label for the synthetic ratio.
 #'
 #' @return A `data.table` with OHLC columns for the synthetic ratio.
+#' @example inst/examples/candles.R
 #' @export
 prep_ratio_ohlc <- function(numerator_dt, denominator_dt, ratio_symbol) {
   numerator <- data.table::as.data.table(data.table::copy(numerator_dt))

@@ -298,6 +298,7 @@
 #' @param context Output context such as `"report"`, `"slide"`, or `"dashboard"`.
 #'
 #' @return Invisibly returns the resolved style object.
+#' @example inst/examples/styles.R
 #' @export
 viz_style_set <- function(style = "research_note", context = "report") {
   options(
@@ -313,6 +314,7 @@ viz_style_set <- function(style = "research_note", context = "report") {
 #' @param context Output context or `NULL` to use the package default.
 #'
 #' @return Named list describing colors, sizing, and theme settings.
+#' @example inst/examples/styles.R
 #' @export
 viz_style_get <- function(style = NULL, context = NULL) {
   .viz_resolve_style(style = style, context = context)
@@ -325,6 +327,7 @@ viz_style_get <- function(style = NULL, context = NULL) {
 #' @param palette One of `"discrete"` or `"sequential"`.
 #'
 #' @return Character vector of colors.
+#' @example inst/examples/styles.R
 #' @export
 viz_palette_get <- function(style = NULL, context = NULL, palette = c("discrete", "sequential")) {
   palette <- match.arg(palette)
@@ -342,6 +345,7 @@ viz_palette_get <- function(style = NULL, context = NULL, palette = c("discrete"
 #' @param show_compiler Whether to append the configured plot compiler name to the caption.
 #'
 #' @return A styled `ggplot` object.
+#' @example inst/examples/styles.R
 #' @export
 viz_theme_apply <- function(plot, style = NULL, context = NULL, legend_position = NULL, base_family = NULL, show_compiler = TRUE) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -394,6 +398,7 @@ viz_theme_apply <- function(plot, style = NULL, context = NULL, legend_position 
 #' @param context Output context or `NULL` to use the package default.
 #'
 #' @return A `ggplot` object with a last-value annotation.
+#' @example inst/examples/styles.R
 #' @export
 viz_annotate_last_value <- function(plot, data, x, y, label = NULL, prefix = "", digits = 2, color = NULL, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -432,6 +437,7 @@ viz_annotate_last_value <- function(plot, data, x, y, label = NULL, prefix = "",
 #' @param context Output context or `NULL` to use the package default.
 #'
 #' @return A `ggplot` object with event annotations.
+#' @example inst/examples/styles.R
 #' @export
 viz_annotate_event_lines <- function(plot, event_dt, x_col = "datetime", label_col = NULL, color = NULL, linetype = "dashed", alpha = 0.45, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -476,6 +482,7 @@ viz_annotate_event_lines <- function(plot, event_dt, x_col = "datetime", label_c
 #' @param context Output context or `NULL` to use the package default.
 #'
 #' @return A `ggplot` object with shaded regime bands.
+#' @example inst/examples/styles.R
 #' @export
 viz_annotate_regime_bands <- function(plot, regime_dt, xmin_col = "start", xmax_col = "end", fill = NULL, alpha = 0.12, style = NULL, context = NULL) {
   resolved <- .viz_resolve_style(style = style, context = context)
@@ -500,6 +507,7 @@ viz_annotate_regime_bands <- function(plot, regime_dt, xmin_col = "start", xmax_
 #' @param note Optional note appended after the source.
 #'
 #' @return A `ggplot` object with an updated caption.
+#' @example inst/examples/styles.R
 #' @export
 viz_annotate_source_caption <- function(plot, source_text, note = NULL) {
   caption <- if (is.null(note) || !nzchar(note)) {

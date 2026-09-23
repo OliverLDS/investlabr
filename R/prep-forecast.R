@@ -3,6 +3,7 @@
 #' @param x Vector containing values and missing observations.
 #'
 #' @return A vector with missing values filled from the latest prior observation.
+#' @example inst/examples/preparation.R
 #' @export
 prep_fill_forward <- function(x) {
   if (length(x) == 0L) return(x)
@@ -20,11 +21,12 @@ prep_fill_forward <- function(x) {
 
 #' Combine labeled time series into a research-ready wide table
 #'
-#' @param series_list List of data frames or data.tables containing code{date},
-#'   code{value}, and code{series} columns.
+#' @param series_list List of data frames or data.tables containing \code{date},
+#'   \code{value}, and \code{series} columns.
 #' @param fill_forward Whether to carry each series forward after reshaping.
 #'
 #' @return A data.table with one row per date and one column per series.
+#' @example inst/examples/preparation.R
 #' @export
 prep_series_wide <- function(series_list, fill_forward = TRUE) {
   if (!is.list(series_list) || length(series_list) == 0L) {
@@ -49,8 +51,9 @@ prep_series_wide <- function(series_list, fill_forward = TRUE) {
 #'
 #' @param x Numeric vector.
 #'
-#' @return Numeric z-scores. Returns all code{NA} when dispersion is zero or
+#' @return Numeric z-scores. Returns all \code{NA} when dispersion is zero or
 #'   unavailable.
+#' @example inst/examples/preparation.R
 #' @export
 prep_zscore <- function(x) {
   sdv <- stats::sd(x, na.rm = TRUE)
@@ -64,6 +67,7 @@ prep_zscore <- function(x) {
 #' @param lookback Maximum number of recent changes to return.
 #'
 #' @return Numeric vector of recent finite first differences.
+#' @example inst/examples/preparation.R
 #' @export
 prep_recent_changes <- function(x, lookback = 252L) {
   lookback <- as.integer(lookback)

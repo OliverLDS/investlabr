@@ -205,6 +205,7 @@
 #' @param debug_mode Whether to retain additional diagnostic columns.
 #'
 #' @return A data.table of rolling monthly performance statistics.
+#' @example inst/examples/monthly-statistics.R
 #' @export
 gen_rolling_monthly_stats <- function(transaction_dt, N_rolling = 6L, debug_mode = FALSE) {
   trades <- transaction_dt[action == "close", .(datetime, pre_fee_log_ret, is_win)]
@@ -363,6 +364,7 @@ gen_rolling_monthly_stats <- function(transaction_dt, N_rolling = 6L, debug_mode
 #' @param fee_sides Number of sides used when applying the simplified fee model.
 #' @param tz Time zone used when coercing input timestamps.
 #' @return Invisibly: data.table (one row) with metrics and list-col \code{log_ret_dt}.
+#' @example inst/examples/backtests.R
 #' @export
 eval_strat_performance <- function(DT, pos_col_name, bg_time = as.POSIXct(NA), ed_time = as.POSIXct(NA), fee_rate = 0.0007, funding_rate = 0.00004, interest_rate = 0.00005, leverage = 1, rf_rate = 0, mode = c("new_open", "last_close"), fee_sides = 1L, tz = Sys.timezone()) {
   mode <- match.arg(mode)

@@ -50,3 +50,11 @@ sim_ar3_dgp(
 \description{
 Simulate an AR(3) data-generating process
 }
+\examples{
+head(sim_ar1_dgp(30, a1 = 0.7, seed = 1))
+head(sim_ar2_dgp(30, a1 = 0.5, a2 = 0.2, seed = 1))
+head(sim_ar3_dgp(30, a1 = 0.4, a2 = 0.2, a3 = 0.1, seed = 1))
+head(sim_ma1_dgp(30, b1 = 0.5, seed = 1))
+head(sim_arch1_dgp(30, alpha0 = 0.1, alpha1 = 0.4, seed = 1))
+head(sim_garch11_dgp(30, alpha0 = 0.1, alpha1 = 0.1, beta1 = 0.8, seed = 1))
+}
