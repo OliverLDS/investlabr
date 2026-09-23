@@ -40,8 +40,8 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
       - uses: r-lib/actions/setup-tinytex@v2
-      - name: Install fonts for the Windows PDF manual
-        if: runner.os == 'Windows'
+      - name: Install fonts for the PDF manual
+        if: runner.os != 'macOS'
         run: Rscript -e "tinytex::tlmgr_install('collection-fontsrecommended')"
       - uses: r-lib/actions/check-r-package@v2
         with:
