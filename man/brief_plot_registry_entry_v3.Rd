@@ -62,9 +62,9 @@ metadata change.}
 
 \item{time_indexed}{Whether the artifact contains time-indexed data.}
 
-\item{expected_cadence}{Expected update cadence of code{data_as_of}. One of
-code{"daily"}, code{"weekly"}, code{"monthly"},
-code{"event_driven"}, or code{"not_time_indexed"}.}
+\item{expected_cadence}{Expected update cadence of \code{data_as_of}. One of
+\code{"daily"}, \code{"weekly"}, \code{"monthly"},
+\code{"event_driven"}, or \code{"not_time_indexed"}.}
 
 \item{status}{Artifact readiness: \code{"draft"}, \code{"ready"}, or
 \code{"archived"}.}

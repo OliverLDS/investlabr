@@ -137,9 +137,9 @@ brief_plot_registry_entry <- function(
 #' @param metadata_updated_at ISO date of the latest material human-authored
 #'   metadata change.
 #' @param time_indexed Whether the artifact contains time-indexed data.
-#' @param expected_cadence Expected update cadence of code{data_as_of}. One of
-#'   code{"daily"}, code{"weekly"}, code{"monthly"},
-#'   code{"event_driven"}, or code{"not_time_indexed"}.
+#' @param expected_cadence Expected update cadence of \code{data_as_of}. One of
+#'   \code{"daily"}, \code{"weekly"}, \code{"monthly"},
+#'   \code{"event_driven"}, or \code{"not_time_indexed"}.
 #' @param status Artifact readiness: \code{"draft"}, \code{"ready"}, or
 #'   \code{"archived"}.
 #' @param plot_image Relative primary-plot path.

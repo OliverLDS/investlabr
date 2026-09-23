@@ -370,7 +370,7 @@ gen_candle_plots_with_sr_dts <- function(
   )
 
   atr_specs <- .viz_market_atr_specs(style = resolved)
-  p_atr <- ggplot2::ggplot(DT[(.N + 1 - window_length):.N, ], ggplot2::aes(x = datetime, y = atr_logr_12)) +
+  p_atr <- ggplot2::ggplot(DT, ggplot2::aes(x = datetime, y = atr_logr_12)) +
     ggplot2::geom_line(ggplot2::aes(y = atr_q_10_12_300), linewidth = 0.4, linetype = "dotted", color = atr_specs$low) +
     ggplot2::geom_line(ggplot2::aes(y = atr_q_20_12_300), linewidth = 0.4, linetype = "dashed", color = atr_specs$mid) +
     ggplot2::geom_line(ggplot2::aes(y = atr_q_80_12_300), linewidth = 0.4, linetype = "dashed", color = atr_specs$mid) +

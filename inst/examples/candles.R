@@ -4,6 +4,9 @@ bars <- data.table::data.table(
 )
 bars[, high := pmax(open, close) + 1]
 bars[, low := pmin(open, close) - 1]
+bars[, `:=`(atr_logr_12 = 0.025 + 0.002 * sin(0:9),
+            atr_q_10_12_300 = 0.015, atr_q_20_12_300 = 0.020,
+            atr_q_80_12_300 = 0.030, atr_q_90_12_300 = 0.035)]
 viz_candle_base(bars, show_compiler = FALSE)
 gen_candle_plots_with_sr_lines(bars, support_pts = 99, resistance_pts = 110)
 support <- data.table::data.table(zone_low = 98, zone_high = 100,
