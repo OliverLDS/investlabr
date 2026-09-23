@@ -1,0 +1,66 @@
+name: CRAN submission candidate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: true
+      - name: Build source tarball
+        run: |
+          R CMD build .
+          sha256sum investlabr_*.tar.gz > SOURCE_SHA256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cran-source-${{ github.sha }}
+          path: |
+            investlabr_*.tar.gz
+            SOURCE_SHA256.txt
+          if-no-files-found: error
+
+  check-devel:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      _R_CHECK_FORCE_SUGGESTS_: true
+      NOT_CRAN: false
+      OMP_NUM_THREADS: 2
+      OPENBLAS_NUM_THREADS: 2
+    steps:
+      - uses: actions/checkout@v6
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: devel
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          needs: check
+      - uses: r-lib/actions/setup-tinytex@v2
+      - name: Install PDF manual fonts
+        run: tlmgr install collection-fontsrecommended
+      - uses: actions/download-artifact@v4
+        with:
+          name: cran-source-${{ github.sha }}
+          path: candidate
+      - name: Verify source checksum
+        working-directory: candidate
+        run: sha256sum --check SOURCE_SHA256.txt
+      - name: Check the exact submission tarball
+        run: R CMD check --as-cran candidate/investlabr_*.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cran-candidate-check-${{ github.sha }}
+          path: investlabr.Rcheck/
+          if-no-files-found: warn

@@ -16,6 +16,10 @@ On 2026-09-23, the official CRAN current-package and archive URLs and the
 Bioconductor release-package URL returned 404 for `investlabr`. This is a
 point-in-time name check, not a reservation or a guarantee of acceptance.
 
+On 2026-09-24, the maintainer confirmed ownership or redistribution permission
+for code adapted from older repositories and curated gallery preview images.
+The `URL` and `BugReports` pages in `DESCRIPTION` both returned HTTP 200.
+
 ## Implemented
 
 - Public function help includes runnable synthetic examples, shared as source
@@ -42,10 +46,15 @@ requests. Check logs are retained as Actions artifacts. Source-only publishing
 integration tests can skip in the installed package; the public registry API
 tests still run. Real-data gallery recipes remain optional manual workflows.
 
+For the submission candidate, dispatch `CRAN submission candidate` from the
+reviewed commit. Its build job uses hosted R release and uploads the source
+tarball with a SHA-256 checksum. Its R-devel job verifies that checksum and
+checks the same tarball with `R CMD check --as-cran`. Submit only the tarball
+from that successful run; do not rebuild it locally.
+
 ## Before submission
 
 - Recheck the package name immediately before submission.
-- Verify package URLs and review attribution for adapted code and chart assets.
 - Review `cran-comments.md` against the final source tarball and rerun checks
   if package source changes.
 - Consider a short introductory vignette after the required help examples pass.
