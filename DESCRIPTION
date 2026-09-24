@@ -1,6 +1,6 @@
 Package: investlabr
 Title: Research Workflows for Macro and Cross-Asset Analysis
-Version: 0.0.6
+Version: 0.0.6.1
 Authors@R: person("Oliver", "Zhou", email = "oliver.yxzhou@gmail.com",
                  role = c("aut", "cre"))
 Author: Oliver Zhou [aut, cre]
@@ -11,6 +11,11 @@ Description: Reusable research workflows for macro-financial and
     macro data into analysis-ready research tables, factor and indicator
     constructions, event and regime overlays, sensitivity estimates,
     scenario comparisons, and research-grade visualization outputs.
+    Portfolio risk-return comparisons use the mean-variance framework of
+    Markowitz (1952) <doi:10.1111/j.1540-6261.1952.tb01525.x>.
+    Research-side volatility simulations include the generalized
+    autoregressive conditional heteroskedasticity model of
+    Bollerslev (1986) <doi:10.1016/0304-4076(86)90063-1>.
 License: MIT + file LICENSE
 URL: https://github.com/OliverLDS/investlabr
 BugReports: https://github.com/OliverLDS/investlabr/issues

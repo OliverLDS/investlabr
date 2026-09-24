@@ -1,7 +1,8 @@
 # investlabr news
 
-## Development
+## 0.0.6.1
 
+- Fixed README links to repository-only documentation for CRAN source packages and added method references to `DESCRIPTION`.
 - Prepared CRAN-facing imports, dependency minimums, MIT license metadata, and executable help examples for all exported functions.
 - Added hosted Linux, Windows, and macOS R CMD checks, including R-devel and PDF manual generation, without requiring local package checks.
 - Made the US sector gallery print its board without automatically saving files or launching a platform-specific viewer.

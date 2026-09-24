@@ -106,19 +106,19 @@ remotes::install_github("OliverLDS/investlabr")
 
 ## Requirements
 
-- R >= 3.5.0
+- R >= 4.1.0
 - Core imports: `data.table`, `ggplot2`, `quadprog`, `Rcpp`
 - Visualization helpers: `ggrepel`, `patchwork`, `gridExtra`, `scales`
 
 ## Repository Docs
 
-- Package scope: [`PACKAGE_SCOPE.md`](./PACKAGE_SCOPE.md)
-- Package architecture: [`ARCHITECTURE.md`](./ARCHITECTURE.md)
+- Package scope: [`PACKAGE_SCOPE.md`](https://github.com/OliverLDS/investlabr/blob/main/PACKAGE_SCOPE.md)
+- Package architecture: [`ARCHITECTURE.md`](https://github.com/OliverLDS/investlabr/blob/main/ARCHITECTURE.md)
 - Release notes: [`NEWS.md`](./NEWS.md)
 - Gallery: [`inst/gallery/README.md`](./inst/gallery/README.md)
-- Local task nodes: [`scripts/README.md`](./scripts/README.md)
-- Generated publishing output: [`output/README.md`](./output/README.md)
-- Research artifact contract: [`PUBLISHING_CONTRACT.md`](./PUBLISHING_CONTRACT.md)
+- Local task nodes: [`scripts/README.md`](https://github.com/OliverLDS/investlabr/blob/main/scripts/README.md)
+- Generated publishing output: [`output/README.md`](https://github.com/OliverLDS/investlabr/blob/main/output/README.md)
+- Research artifact contract: [`PUBLISHING_CONTRACT.md`](https://github.com/OliverLDS/investlabr/blob/main/PUBLISHING_CONTRACT.md)
 
 ## Current Module Layout
 

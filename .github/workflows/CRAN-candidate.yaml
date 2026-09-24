@@ -20,6 +20,9 @@ jobs:
         run: |
           R CMD build .
           sha256sum investlabr_*.tar.gz > SOURCE_SHA256.txt
+      - name: Check README links against source tarball
+        run: |
+          Rscript -e 'archive <- Sys.glob("investlabr_*.tar.gz"); stopifnot(length(archive) == 1L); files <- utils::untar(archive, list = TRUE); parts <- unlist(strsplit(readLines("README.md", warn = FALSE), "](", fixed = TRUE), use.names = FALSE); refs <- parts[startsWith(parts, "./")]; refs <- unique(vapply(strsplit(substring(refs, 3L), ")", fixed = TRUE), function(x) x[[1L]], character(1))); missing <- setdiff(paste0("investlabr/", refs), files); if (length(missing)) stop("README links absent from source archive: ", paste(missing, collapse = ", "))'
       - uses: actions/upload-artifact@v4
         with:
           name: cran-source-${{ github.sha }}
