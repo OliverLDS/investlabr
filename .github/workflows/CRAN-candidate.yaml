@@ -46,9 +46,12 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           needs: check
+      - uses: r-lib/actions/setup-pandoc@v2
       - uses: r-lib/actions/setup-tinytex@v2
       - name: Install PDF manual fonts
         run: tlmgr install collection-fontsrecommended
+      - name: Install HTML validation tool
+        run: sudo apt-get install -y tidy
       - uses: actions/download-artifact@v4
         with:
           name: cran-source-${{ github.sha }}
@@ -58,6 +61,9 @@ jobs:
         run: sha256sum --check SOURCE_SHA256.txt
       - name: Check the exact submission tarball
         run: R CMD check --as-cran candidate/investlabr_*.tar.gz
+      - name: Reject unexpected check notes
+        run: |
+          Rscript -e 'log <- readLines("investlabr.Rcheck/00check.log"); status <- grep("^Status:", log, value = TRUE); notes <- grep("^\\* checking .* \\.\\.\\. NOTE$", log, value = TRUE); if (length(status) != 1L || !identical(status, "Status: 1 NOTE") || length(notes) != 1L || !grepl("CRAN incoming feasibility", notes, fixed = TRUE)) stop("Unexpected R CMD check status; inspect 00check.log")'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
