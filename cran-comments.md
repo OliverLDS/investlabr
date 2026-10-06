@@ -1,13 +1,12 @@
 ## Resubmission
 
-This resubmission addresses the feedback on version 0.0.6:
+This resubmission addresses the feedback on version 0.0.6.1:
 
-* Replaced five README file URIs pointing to files excluded from the source
-  tarball with links to their public repository pages.
-* Added author-year DOI references for the portfolio mean-variance and GARCH
-  simulation methods in `DESCRIPTION`.
-* Corrected the README minimum R version to match `DESCRIPTION` and increased
-  the package version to 0.0.6.1.
+* Removed default relative output paths from both exported plot-registry
+  writers in `R/brief-plot-registry.R`; callers must now supply `path`.
+* Confirmed that their examples and tests write only to temporary directories.
+* Added regression tests for the missing-path behavior and increased the
+  package version to 0.0.6.2.
 
 ## Test environments
 

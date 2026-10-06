@@ -1,5 +1,9 @@
 # investlabr news
 
+## 0.0.6.2
+
+- Require an explicit output path for the registry writers so package functions never write to the working directory by default, as requested by CRAN.
+
 ## 0.0.6.1
 
 - Fixed README links to repository-only documentation for CRAN source packages and added method references to `DESCRIPTION`.

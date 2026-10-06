@@ -200,7 +200,8 @@ brief_plot_registry_entry_v3 <- function(
 #'
 #' @param plots Schema 2.0 entries from \code{brief_plot_registry_entry()} or
 #'   canonical schema 3.0 entries from \code{brief_plot_registry_entry_v3()}.
-#' @param path Output JSON path.
+#' @param path Explicit output JSON path. No file is written unless a path is
+#'   supplied; examples should use a location under \code{tempdir()}.
 #' @param schema_version Output schema. Defaults to compatibility schema 2.0;
 #'   use \code{"3.0"} explicitly for migration testing.
 #' @param generated_at Registry-generation timestamp in UTC.
@@ -214,11 +215,12 @@ brief_plot_registry_entry_v3 <- function(
 #' @example inst/examples/registry.R
 #' @export
 brief_plot_registry_write <- function(
-  plots, path = file.path("output", "publishing", "plot-registry.json"),
+  plots, path,
   schema_version = "2.0", generated_at = Sys.time(),
   source_system = "investlabr", base_path_mode = "relative",
   ready_only = FALSE, pretty = TRUE, published_only = NULL
 ) {
+  if (missing(path)) stop("`path` must be supplied explicitly.", call. = FALSE)
   if (!is.null(published_only)) {
     warning("`published_only` is deprecated; use `ready_only`.", call. = FALSE)
     ready_only <- isTRUE(published_only)
@@ -271,7 +273,8 @@ brief_plot_registry_write <- function(
 #' Build and write a research-artifact registry from metadata sidecars
 #'
 #' @param meta_dir Tracked YAML sidecar directory.
-#' @param path Output JSON path.
+#' @param path Explicit output JSON path. No file is written unless a path is
+#'   supplied; examples should use a location under \code{tempdir()}.
 #' @param output_root Root for relative asset paths.
 #' @param resolved_meta_dir Run-local metadata emitted by the renderer.
 #' @inheritParams brief_plot_registry_write
@@ -281,13 +284,14 @@ brief_plot_registry_write <- function(
 #' @export
 brief_plot_registry_write_from_meta <- function(
   meta_dir = file.path("config", "publishing", "plots"),
-  path = file.path("output", "publishing", "plot-registry.json"),
+  path,
   output_root = dirname(path),
   resolved_meta_dir = file.path(output_root, "resolved"),
   schema_version = "2.0", source_system = "investlabr",
   base_path_mode = "relative", ready_only = FALSE, pretty = TRUE,
   published_only = NULL
 ) {
+  if (missing(path)) stop("`path` must be supplied explicitly.", call. = FALSE)
   plots <- .brief_registry_load_meta_dir(meta_dir, output_root, resolved_meta_dir)
   brief_plot_registry_write(
     plots = plots, path = path, schema_version = schema_version,

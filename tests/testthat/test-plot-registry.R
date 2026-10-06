@@ -253,6 +253,17 @@ test_that("schema 3.0 writer emits scalar deterministic JSON", {
   expect_identical(parsed$plots[[1]]$tags, list("rates", "yield curve"))
 })
 
+test_that("registry writers require an explicit output path", {
+  expect_error(
+    brief_plot_registry_write(list(registry_v3_entry())),
+    "`path` must be supplied explicitly"
+  )
+  expect_error(
+    brief_plot_registry_write_from_meta(meta_dir = tempfile("absent-meta-")),
+    "`path` must be supplied explicitly"
+  )
+})
+
 test_that("schema 1.0 and 2.0 remain readable", {
   v1 <- list(
     id = "legacy-plot", title = "Legacy", dashboard = "macro",

@@ -6,7 +6,7 @@
 \usage{
 brief_plot_registry_write(
   plots,
-  path = file.path("output", "publishing", "plot-registry.json"),
+  path,
   schema_version = "2.0",
   generated_at = Sys.time(),
   source_system = "investlabr",
@@ -20,7 +20,8 @@ brief_plot_registry_write(
 \item{plots}{Schema 2.0 entries from \code{brief_plot_registry_entry()} or
 canonical schema 3.0 entries from \code{brief_plot_registry_entry_v3()}.}
 
-\item{path}{Output JSON path.}
+\item{path}{Explicit output JSON path. No file is written unless a path is
+supplied; examples should use a location under \code{tempdir()}.}
 
 \item{schema_version}{Output schema. Defaults to compatibility schema 2.0;
 use \code{"3.0"} explicitly for migration testing.}

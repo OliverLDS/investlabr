@@ -6,7 +6,7 @@
 \usage{
 brief_plot_registry_write_from_meta(
   meta_dir = file.path("config", "publishing", "plots"),
-  path = file.path("output", "publishing", "plot-registry.json"),
+  path,
   output_root = dirname(path),
   resolved_meta_dir = file.path(output_root, "resolved"),
   schema_version = "2.0",
@@ -20,7 +20,8 @@ brief_plot_registry_write_from_meta(
 \arguments{
 \item{meta_dir}{Tracked YAML sidecar directory.}
 
-\item{path}{Output JSON path.}
+\item{path}{Explicit output JSON path. No file is written unless a path is
+supplied; examples should use a location under \code{tempdir()}.}
 
 \item{output_root}{Root for relative asset paths.}
 

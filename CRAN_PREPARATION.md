@@ -1,13 +1,18 @@
 # CRAN preparation
 
-The package is being prepared for resubmission after feedback on its initial
-0.0.6 submission. This document is excluded from the source package. Do not
+The package is being prepared for resubmission after feedback on versions
+0.0.6 and 0.0.6.1. This document is excluded from the source package. Do not
 treat an Actions result as CRAN approval.
 
 CRAN reported five README links to repository-only files absent from the source
 tarball and requested a method reference in `DESCRIPTION`. Version 0.0.6.1
 replaces those links with repository URLs, cites the mean-variance and GARCH
 methods it includes, and corrects the README minimum R version.
+
+CRAN then identified default writes to the working directory in the two
+exported plot-registry writers. Version 0.0.6.2 requires callers to supply an
+explicit `path`; examples and tests use temporary directories. This changes
+only the implicit-output behavior, not the registry schema or JSON format.
 
 ## Hosted check result
 
